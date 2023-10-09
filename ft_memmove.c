@@ -1,18 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isprint.c                                       :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/05 15:48:56 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/09 14:11:28 by mkong            ###   ########.fr       */
+/*   Created: 2023/10/09 19:26:52 by mkong             #+#    #+#             */
+/*   Updated: 2023/10/09 19:37:20 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isprint(int c)
+#include<stdlib.h>
+
+void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	if (32 <= c && c <= 126)
-		return (1);
-	return (0);
+	unsigned char	*dst_start;
+	unsigned char	*src_start;
+
+	dst_start = dst;
+	src_start = src;
+	while (len > 0)
+	{
+		*dst_start = *src_start;
+		dst_start++;
+		src_start++;
+		len--;
+	}
+	return (dst);
 }

@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 16:10:56 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/05 17:01:19 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/09 14:21:27 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ size_t	ft_strlen(const char *s)
 	while (s[index])
 	{
 		index++;
-		lenght++;
+		length++;
 	}
 	return (length);
 }

@@ -1,18 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isprint.c                                       :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/05 15:48:56 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/09 14:11:28 by mkong            ###   ########.fr       */
+/*   Created: 2023/10/09 14:41:12 by mkong             #+#    #+#             */
+/*   Updated: 2023/10/09 18:59:04 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isprint(int c)
+#include <stdlib.h>
+
+void	*ft_memset(void *b, int c, size_t len)
 {
-	if (32 <= c && c <= 126)
-		return (1);
-	return (0);
+	unsigned char	*start;
+
+	start = (unsigned char *)b;
+	while (len > 0)
+	{
+		*start = c;
+		start++;
+		len--;
+	}
+	return (b);
 }

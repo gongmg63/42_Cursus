@@ -1,18 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isprint.c                                       :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/05 15:48:56 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/09 14:11:28 by mkong            ###   ########.fr       */
+/*   Created: 2023/10/09 19:37:37 by mkong             #+#    #+#             */
+/*   Updated: 2023/10/09 19:52:44 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isprint(int c)
+#include<stdlib.h>
+
+size_t	ft_strlcpy(char *restrict dst, const char *restrict src, size_t dstsize)
 {
-	if (32 <= c && c <= 126)
-		return (1);
-	return (0);
+	size_t	index;
+
+	index = 0;
+	while (dstsize > 1 && src[index] != '\0')
+	{
+		dst[index] = src[index];
+		index++;
+		dstsize--;
+	}
+	dst[index] = '\0';
+	index = 0;
+	while (src[index] != 0)
+		index++;
+	return (index);
 }
