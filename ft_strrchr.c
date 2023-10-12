@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:26:58 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/11 14:30:59 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/12 16:43:17 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ char	*ft_strrchr(const char *s, int c)
 	while (*s)
 	{
 		if (*s == c)
-			prt = s;
+			prt = (char *)s;
 		s++;
 	}
 	if (*s == c)
-		return (*s);
+		return ((char *)s);
 	return (prt);
 }

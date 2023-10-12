@@ -6,12 +6,11 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:48:10 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/11 17:11:44 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/12 16:55:35 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include<stdlib.h>
-#include"ft_strncmp.c"
+#include "libft.h"
 
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {

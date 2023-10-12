@@ -6,9 +6,11 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 17:14:33 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/09 18:59:29 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/12 16:52:45 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "libft.h"
 
 void	ft_bzero(void *s, size_t n)
 {

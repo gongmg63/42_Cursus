@@ -6,11 +6,11 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 14:41:12 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/09 18:59:04 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/12 16:53:58 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "libft.h"
 
 void	*ft_memset(void *b, int c, size_t len)
 {

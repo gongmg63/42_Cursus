@@ -6,11 +6,11 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:23:43 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/11 15:53:55 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/12 16:53:05 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include<stdlib.h>
+#include "libft.h"
 
 void	*ft_memchr(const void *s, int c, size_t n)
 {
