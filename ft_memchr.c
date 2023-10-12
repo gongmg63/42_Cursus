@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/05 16:10:56 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/11 17:42:16 by mkong            ###   ########.fr       */
+/*   Created: 2023/10/11 14:23:43 by mkong             #+#    #+#             */
+/*   Updated: 2023/10/11 15:53:55 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include<stdlib.h>
 
-size_t	ft_strlen(const char *s)
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	size_t	length;
+	unsigned char	*ptr;
 
-	length = 0;
-	while (*s)
+	ptr = (unsigned char *)s;
+	while (n > 0)
 	{
-		s++;
-		length++;
+		if (*ptr == c)
+			return (ptr);
+		ptr++;
+		n--;
 	}
-	return (length);
+	return (0);
 }

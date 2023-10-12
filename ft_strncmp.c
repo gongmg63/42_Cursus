@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/05 16:10:56 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/11 17:42:16 by mkong            ###   ########.fr       */
+/*   Created: 2023/10/11 14:27:33 by mkong             #+#    #+#             */
+/*   Updated: 2023/10/11 14:32:09 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include<stdlib.h>
 
-size_t	ft_strlen(const char *s)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	size_t	length;
-
-	length = 0;
-	while (*s)
+	while (n > 0 && (*s1 || *s2))
 	{
-		s++;
-		length++;
+		if (*s1 != *s2)
+			return (*s1 - *s2);
+		n--;
+		s1++;
+		s2++;
 	}
-	return (length);
+	return (0);
 }

@@ -1,26 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/05 16:10:56 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/11 17:42:16 by mkong            ###   ########.fr       */
+/*   Created: 2023/10/11 17:33:54 by mkong             #+#    #+#             */
+/*   Updated: 2023/10/11 18:40:33 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include<stdlib.h>
 
-size_t	ft_strlen(const char *s)
+void	*ft_calloc(size_t count, size_t size)
 {
-	size_t	length;
+	void	*arr;
+	size_t	len;
 
-	length = 0;
-	while (*s)
+	len = size * count;
+	arr = (void *)malloc(len);
+	if (arr == NULL)
+			return (0);
+	while (len > 0)
 	{
-		s++;
-		length++;
+		arr[len - 1] = 0;
+		len--;
 	}
-	return (length);
+	return (arr);
 }
