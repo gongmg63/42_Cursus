@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 15:48:10 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/12 16:55:35 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/12 20:26:04 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 
 	if (!(*needle))
 		return ((char *)haystack);
-	needle_len = 0;
+	needle_len = ft_strlen(needle);
 	haystack_start = 0;
-	while (needle[needle_len])
-		needle_len++;
-	while (haystack_start + needle_len > len)
+	while (haystack_start + needle_len <= len)
 	{
 		if (!ft_strncmp(haystack + haystack_start, needle, needle_len))
 			return ((char *)(haystack + haystack_start));

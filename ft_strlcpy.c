@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 19:37:37 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/12 16:55:01 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/12 19:54:03 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 		index++;
 		dstsize--;
 	}
-	dst[index] = '\0';
+	if (dstsize != 0)
+		dst[index] = '\0';
 	index = 0;
 	while (src[index] != 0)
 		index++;
