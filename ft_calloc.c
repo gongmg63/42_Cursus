@@ -20,7 +20,7 @@ void	*ft_calloc(size_t count, size_t size)
 	len = size * count;
 	arr = (void *)malloc(len);
 	if (arr == NULL)
-			return (0);
+		return (0);
 	while (len > 0)
 	{
 		arr[len - 1] = 0;
