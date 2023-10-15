@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 16:36:20 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/15 17:16:26 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/15 17:25:16 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 	result = (char *)malloc(sizeof(char *) * (s_len + 1));
 	if (result == 0)
 		return (0);
-	while (s_len > 0)
+	while (idx < s_len)
 	{
 		*(result + idx) = (*f)(idx, *(s + idx));
 		idx++;
 	}
+	*(result + idx) = '\0';
 	return (result);
 }

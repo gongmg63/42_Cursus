@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 15:48:19 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/15 16:34:56 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/15 17:49:03 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,17 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	char	*result;
 
 	s_len = ft_strlen(s);
-	result = (char *)malloc(sizeof(char) * len + 1);
-	if (result == 0 || start + len - 1 > s_len)
+	if (start > s_len)
+	{
+		result = (char *)malloc(sizeof(char) * 1);
+		*result = '\0';
+		return (result);
+	}
+	if (start + len > s_len)
+		len = s_len - start - 1;
+	result = (char *)malloc(sizeof(char) * (len + 1));
+	if (result == 0)
 		return (0);
-	ft_strlcpy(result, s + start, len);
+	ft_strlcpy(result, s + start, len + 1);
 	return (result);
 }
