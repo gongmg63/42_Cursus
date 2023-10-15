@@ -6,13 +6,13 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 17:17:23 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/12 20:53:16 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/15 14:18:24 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 int	ft_atoi(const char *str)
 {
-	unsigned int	result;
+	long long		result;
 	int				sign;
 
 	result = 0;
