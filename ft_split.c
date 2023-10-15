@@ -6,12 +6,12 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 16:24:29 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/13 20:52:42 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/15 14:29:37 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
+
 int	count_words(const char *s, char c)
 {
 	int	cnt;
@@ -30,10 +30,18 @@ int	count_words(const char *s, char c)
 	return (cnt);
 }
 
+char	*add_word(char *word, const char *s, char c)
+{
+	if (ft_strchr(s, c) == 0)
+		word = ft_strdup(s);
+	else
+		word = ft_strdup(ft_substr(s, 0, ft_strchr(s, c) - s + 1));
+	return (word);
+}
+
 char	**ft_split(char const *s, char c)
 {
 	char	**words;
-	size_t	one_word_len;
 	size_t	index;
 
 	words = (char **)malloc(sizeof(char *) * ((count_words(s, c) + 1)));
@@ -46,13 +54,7 @@ char	**ft_split(char const *s, char c)
 			s++;
 		else
 		{
-			if (ft_strchr(s, c) == 0)
-				words[index] = ft_strdup(s);
-			else
-			{
-				one_word_len = ft_strchr(s, c) - s;
-				words[index] = ft_strdup(ft_substr(s, 0, one_word_len + 1));
-			}
+			words[index] = add_word(words[index], s, c);
 			s = ft_strchr(s, c);
 			index++;
 		}
