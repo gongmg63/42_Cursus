@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 15:42:18 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/16 14:25:41 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/16 15:45:37 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ char	*ft_strtrim(char const *s1, char const *set)
 	while (*s1 && ft_strrchr(set, *(s1 + s1_len)))
 		s1_len--;
 	result = (char *)malloc(s1_len + 2);
+	if (result == 0)
+		return (0);
 	ft_strlcpy(result, s1, s1_len + 2);
 	return (result);
 }
