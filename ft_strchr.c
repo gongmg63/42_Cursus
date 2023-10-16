@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:26:26 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/13 18:17:20 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/16 14:26:03 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strchr(const char *s, int c)
 	s_len = ft_strlen(s);
 	while (s_len >= 0)
 	{
-		if (*s == c)
+		if (*s == (char)c)
 			return ((char *)s);
 		s++;
 		s_len--;

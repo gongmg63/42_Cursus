@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 19:37:37 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/12 19:54:03 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/16 14:16:23 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,17 @@
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
-	size_t	index;
+	size_t	src_len;
 
-	index = 0;
-	while (dstsize > 1 && src[index] != '\0')
+	src_len = ft_strlen(src);
+	while (dstsize > 1 && *src)
 	{
-		dst[index] = src[index];
-		index++;
+		*dst = *src;
+		dst++;
+		src++;
 		dstsize--;
 	}
 	if (dstsize != 0)
-		dst[index] = '\0';
-	index = 0;
-	while (src[index] != 0)
-		index++;
-	return (index);
+		*dst = '\0';
+	return (src_len);
 }

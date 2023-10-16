@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 16:24:29 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/15 14:29:37 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/16 14:51:56 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*add_word(char *word, const char *s, char c)
 	if (ft_strchr(s, c) == 0)
 		word = ft_strdup(s);
 	else
-		word = ft_strdup(ft_substr(s, 0, ft_strchr(s, c) - s + 1));
+		word = ft_strdup(ft_substr(s, 0, ft_strchr(s, c) - s));
 	return (word);
 }
 

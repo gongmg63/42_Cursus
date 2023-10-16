@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 15:48:19 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/15 17:49:03 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/16 15:10:15 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (result);
 	}
 	if (start + len > s_len)
-		len = s_len - start - 1;
+		len = s_len - start;
 	result = (char *)malloc(sizeof(char) * (len + 1));
 	if (result == 0)
 		return (0);
