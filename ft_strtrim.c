@@ -6,11 +6,12 @@
 /*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 15:42:18 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/18 16:52:06 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/18 17:13:59 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
 
 char	*ft_strtrim(char const *s1, char const *set)
 {

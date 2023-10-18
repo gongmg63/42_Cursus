@@ -6,11 +6,12 @@
 /*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 16:24:29 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/18 16:31:20 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/18 17:16:21 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
 
 static int	count_words(const char *s, char c)
 {

@@ -6,13 +6,12 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 16:40:34 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/16 13:30:26 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/18 17:19:53 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
-# include <stdlib.h>
 # include <unistd.h>
 
 int		ft_isalpha(int c);

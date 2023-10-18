@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 14:56:01 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/15 16:32:39 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/18 17:30:52 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
 
-int	check_int_len(int n)
+static int	check_int_len(int n)
 {
 	int	len;
 
@@ -29,7 +30,7 @@ int	check_int_len(int n)
 	return (len);
 }
 
-void	c_arr_reverse(char *s, int len)
+static void	c_arr_reverse(char *s, int len)
 {
 	char	tmp;
 	int		idx;
@@ -53,7 +54,7 @@ char	*ft_itoa(int n)
 
 	len = check_int_len(n);
 	idx = 0;
-	result = (char *)malloc(len + 1);
+	result = (char *)malloc(sizeof(char) * (len + 1));
 	if (result == 0)
 		return (0);
 	*(result + len) = '\0';
