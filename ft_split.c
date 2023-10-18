@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 16:24:29 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/16 18:23:23 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/18 16:02:03 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,25 @@ static int	count_words(const char *s, char c)
 
 static char	*add_word(char *word, const char *s, char c)
 {
+	char	*s_substr;
+
 	if (ft_strchr(s, c) == 0)
 		word = ft_strdup(s);
 	else
-		word = ft_strdup(ft_substr(s, 0, ft_strchr(s, c) - s));
+	{
+		s_substr = ft_substr(s, 0, ft_strchr(s, c) - s);
+		word = ft_strdup(s_substr);
+		free(s_substr);
+	}
 	return (word);
 }
 
-static void	two_dimension_free(char **words, int len)
+static void	two_dimension_free(char **words, int idx)
 {
-	int	i;
-
-	i = 0;
-	while (i < len)
+	while (idx >= 0)
 	{
-		free(*(words + i));
-		i++;
+		free(words[idx]);
+		idx--;
 	}
 	free(words);
 }
@@ -55,10 +58,10 @@ static void	two_dimension_free(char **words, int len)
 char	**ft_split(char const *s, char c)
 {
 	char	**words;
-	size_t	index;
+	size_t	idx;
 
 	words = (char **)malloc(sizeof(char *) * ((count_words(s, c) + 1)));
-	index = 0;
+	idx = 0;
 	if (words == 0)
 		return (0);
 	while (s && *s)
@@ -67,16 +70,16 @@ char	**ft_split(char const *s, char c)
 			s++;
 		else
 		{
-			words[index] = add_word(words[index], s, c);
-			if (!words[index])
+			words[idx] = add_word(words[idx], s, c);
+			if (!words[idx])
 			{
-				two_dimension_free(words, count_words(s, c));
+				two_dimension_free(words, idx);
 				return (0);
 			}
 			s = ft_strchr(s, c);
-			index++;
+			idx++;
 		}
 	}
-	words[index] = 0;
+	words[idx] = 0;
 	return (words);
 }
