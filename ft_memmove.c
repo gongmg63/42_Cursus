@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 19:26:52 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/18 17:30:10 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/18 18:54:15 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 
 	dst_tmp = (unsigned char *)dst;
 	src_tmp = (const unsigned char *)src;
-	if (src || dst)
+	if (dst || src)
 	{
 		if (dst <= src)
 		{
