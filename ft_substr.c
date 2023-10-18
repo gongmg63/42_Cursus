@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 15:48:19 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/18 15:55:53 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/18 16:28:25 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	char	*result;
 
 	s_len = ft_strlen(s);
-	if (start > s_len)
+	if (start >= s_len)
 	{
 		result = (char *)malloc(sizeof(char) * 1);
+		if (result == 0)
+			return (0);
 		*result = '\0';
 		return (result);
 	}

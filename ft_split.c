@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 16:24:29 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/18 16:02:03 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/18 16:31:20 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ static char	*add_word(char *word, const char *s, char c)
 	else
 	{
 		s_substr = ft_substr(s, 0, ft_strchr(s, c) - s);
+		if (s_substr == 0)
+			return (0);
 		word = ft_strdup(s_substr);
 		free(s_substr);
 	}
