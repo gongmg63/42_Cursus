@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 16:35:03 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/20 16:40:00 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/25 17:17:29 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_list	*ft_lstlast(t_list *lst)
 {
-	while (lst->next)
+	while (lst && lst->next)
 		lst = lst->next;
 	return (lst);
 }
