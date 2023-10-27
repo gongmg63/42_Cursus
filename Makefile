@@ -17,10 +17,13 @@ $(NAME) : $(OBJS_MANDATORY)
 clean : 
 	rm -f $(OBJS_MANDATORY) $(OBJS_BONUS)
 
-fclean : clean
+fclean : 
+	make clean
 	rm -f $(NAME)
 
-re : fclean all
+re : 
+	make fclean 
+	make all
 
 bonus : $(OBJS_MANDATORY) $(OBJS_BONUS)
 	ar -rc $(NAME) $(OBJS_MANDATORY) $(OBJS_BONUS) $(HEADER)
@@ -28,4 +31,4 @@ bonus : $(OBJS_MANDATORY) $(OBJS_BONUS)
 %.o : %.c $(HEADER)
 	cc $(CFLAGS) -c $< -o $@
 
-.PHONY : all clean fclean re
+.PHONY : all clean fclean re bonus

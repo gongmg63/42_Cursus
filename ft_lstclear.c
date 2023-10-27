@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 15:27:23 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/25 17:09:58 by mkong            ###   ########.fr       */
+/*   Updated: 2023/10/27 17:35:24 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 
 void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
-	t_list	*next_node;
+	t_list	*prev_node;
 
 	while (*lst)
 	{
-		next_node = (*lst)->next;
-		(*del)((*lst)->content);
-		free(*lst);
-		*lst = next_node;
+		prev_node = *lst;
+		(*lst) = (*lst)->next;
+		(*del)(prev_node->content);
+		free(prev_node);
 	}
 }
