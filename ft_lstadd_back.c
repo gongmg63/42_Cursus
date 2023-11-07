@@ -16,6 +16,8 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 {
 	t_list	*node;
 
+	if (lst == 0)
+		return ;
 	node = *lst;
 	if (*lst == 0)
 	{
