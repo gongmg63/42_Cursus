@@ -6,13 +6,19 @@ OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 NAME = libft.a
 HEADER = libft.h
 
-all : $(NAME)
+all : LAST_ALL
 
-$(NAME) : $(OBJS_MANDATORY)
+bonus : LAST_BONUS
+
+LAST_ALL : $(OBJS_MANDATORY)
+	rm -f LAST_BONUS
 	ar -rc $(NAME) $(OBJS_MANDATORY) $(HEADER)
+	touch $@
 
-%.o : %.c $(HEADER)
-	cc $(CFLAGS) -c $< -o $@
+LAST_BONUS : $(OBJS_MANDATORY) $(OBJS_BONUS)
+	rm -f LAST_ALL
+	ar -rc $(NAME) $(OBJS_MANDATORY) $(OBJS_BONUS) $(HEADER)
+	touch $@
 
 clean : 
 	rm -f $(OBJS_MANDATORY) $(OBJS_BONUS)
@@ -20,13 +26,11 @@ clean :
 fclean : 
 	make clean
 	rm -f $(NAME)
+	rm -f LAST_ALL LAST_BONUS
 
 re : 
 	make fclean 
 	make all
-
-bonus : $(OBJS_MANDATORY) $(OBJS_BONUS)
-	ar -rc $(NAME) $(OBJS_MANDATORY) $(OBJS_BONUS) $(HEADER)
 
 %.o : %.c $(HEADER)
 	cc $(CFLAGS) -c $< -o $@
