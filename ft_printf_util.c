@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_util.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 19:50:31 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/10 19:56:31 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/13 15:53:42 by gongmingu        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <stdlib.h>
 
 size_t	ft_strlen(const char *s)
 {
@@ -25,7 +26,7 @@ size_t	ft_strlen(const char *s)
 	return (length);
 }
 
-int	ft_intlen(int n)
+int	ft_intlen(int n, int base)
 {
 	int	len;
 
@@ -36,19 +37,29 @@ int	ft_intlen(int n)
 		len++;
 	while (n != 0)
 	{
-		n /= 10;
+		n /= base;
 		len++;
 	}
 	return (len);
 }
 
-char	*itohex(int n)
+void	str_upper(char *s)
+{
+	while (*s)
+	{
+		if ('a' <= *s && *s <= 'z')
+			*s -= 32;
+		s++;
+	}
+}
+
+char	*ft_itohex(int n, char c)
 {
 	char	*result;
 	int		index;
 	int		len;
 
-	len = ft_intlen(n);
+	len = ft_intlen(n, 16);
 	result = (char *)malloc(sizeof(char) * len);
 	index = len;
 	while (--index >= 0)
@@ -56,6 +67,8 @@ char	*itohex(int n)
 		result[index] = "0123456789abcdef"[n % 16];
 		n /= 16;
 	}
-	result[len] = '\n';
+	result[len] = '\0';
+	if (c == 'X')
+		str_upper(result);
 	return (result);
 }

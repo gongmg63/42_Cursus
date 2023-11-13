@@ -1,28 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/10 19:20:52 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/13 16:57:17 by gongmingu        ###   ########.fr       */
+/*   Created: 2023/11/13 15:47:03 by gongmingu         #+#    #+#             */
+/*   Updated: 2023/11/13 16:57:16 by gongmingu        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
-# include <unistd.h>
-# include <stdarg.h>
+#include "ft_printf.h"
+#include <stdio.h>
 
-void	ft_putchar_va(char c);
-size_t	ft_strlen(const char *s);
-int		ft_intlen(int n,int base);
-char    *ft_itohex(int n, char c);
-void	ft_putstr_va(char *s);
-void	ft_putnbr_va(int n);
-void	ft_putunnbr_va(unsigned int n);
-void    ft_puthex_va(int n, char c);
-void    ft_putadd_va(unsigned long long add);
-
-#endif
+int main()
+{
+	int a = 10;
+	void	*z;
+	printf("first : %c %s %d %u %% %x %X %p \n",'a', "abcd", -2147483648,4000000000,160, 160, &a);
+	ft_printf("ft_first : %c %s %d %u %% %x %X %p \n",'a', "abcd", -2147483648,4000000000,160, 160, &a);
+}
