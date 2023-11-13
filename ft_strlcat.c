@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 20:00:03 by mkong             #+#    #+#             */
-/*   Updated: 2023/10/18 17:22:11 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/10 17:05:20 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	size_t	len_dst;
 	size_t	len_src;
 
-	len_dst = ft_strlen(dst);
 	len_src = ft_strlen(src);
+	if (dst == 0 && dstsize == 0)
+		return (len_src);
+	len_dst = ft_strlen(dst);
 	dst += len_dst;
 	if (dstsize <= len_dst)
 		return (dstsize + len_src);
