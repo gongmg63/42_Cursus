@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 13:21:41 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/13 16:55:27 by gongmingu        ###   ########.fr       */
+/*   Updated: 2023/11/13 20:14:53 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	check_and_print(char c, va_list ap)
 	if (c == 's')
 		return (ft_putstr_va(va_arg(ap, char *)));
 	if (c == 'p')
-		return (ft_putadd_va(va_arg(ap, unsigned long long)));
+		return (ft_putadd_va(va_arg(ap, void *)));
 	if (c == 'd' || c == 'i')
 		return (ft_putnbr_va(va_arg(ap, int)));
 	if (c == 'u')

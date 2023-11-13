@@ -3,19 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putadd_va.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/13 15:28:59 by gongmingu         #+#    #+#             */
-/*   Updated: 2023/11/13 16:57:20 by gongmingu        ###   ########.fr       */
+/*   Created: 2023/11/13 20:06:22 by mkong             #+#    #+#             */
+/*   Updated: 2023/11/13 20:14:22 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void    ft_putadd_va(unsigned long long add)
+void	ft_putadd_va(void *add)
 {
-    unsigned long long  l_add;
-
-    l_add = (unsigned long long)add;
-    ft_puthex_va(l_add, 'p');
+	ft_puthex_va((unsigned long long) add, 'p');
 }
