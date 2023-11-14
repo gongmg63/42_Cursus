@@ -1,19 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putadd_va.c                                     :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/13 20:06:22 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/14 15:40:03 by gongmingu        ###   ########.fr       */
+/*   Created: 2023/11/14 16:44:03 by mkong             #+#    #+#             */
+/*   Updated: 2023/11/14 16:46:45 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_putadd_va(unsigned long long add)
+size_t	ft_strlen(const char *s)
 {
-	ft_putstr_va("0x");
-	ft_puthex_va(add, 'p');
+	size_t	length;
+
+	length = 0;
+	while (*s)
+	{
+		s++;
+		length++;
+	}
+	return (length);
 }

@@ -1,5 +1,5 @@
 CFLAGS = -Wall -Wextra -Werror
-SRCS_MANDATORY = ft_printf.c ft_putchar_va.c ft_putstr_va.c ft_putnbr_va.c ft_putunnbr_va.c ft_puthex_va.c ft_putadd_va.c ft_printf_util.c
+SRCS_MANDATORY = ft_printf.c ft_putchar_va.c ft_putstr_va.c ft_putnbr_va.c ft_puthex_va.c ft_putadd_va.c ft_strlen.c ft_itohex.c
 OBJS_MANDATORY = $(SRCS_MANDATORY:.c=.o)
 NAME = libftprintf.a
 HEADER = ft_printf.h

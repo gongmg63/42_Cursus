@@ -6,7 +6,7 @@
 /*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 19:52:04 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/13 15:54:04 by gongmingu        ###   ########.fr       */
+/*   Updated: 2023/11/14 16:11:58 by gongmingu        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,10 @@
 
 void	ft_putstr_va(char *s)
 {
+	if (s == 0)
+	{
+		write(1, "(null)", 6);
+		return ;
+	}
 	write(1, s, ft_strlen(s));
 }

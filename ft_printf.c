@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 13:21:41 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/13 20:14:53 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/14 16:34:18 by gongmingu        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ void	check_and_print(char c, va_list ap)
 	if (c == 's')
 		return (ft_putstr_va(va_arg(ap, char *)));
 	if (c == 'p')
-		return (ft_putadd_va(va_arg(ap, void *)));
-	if (c == 'd' || c == 'i')
-		return (ft_putnbr_va(va_arg(ap, int)));
-	if (c == 'u')
-		return (ft_putunnbr_va(va_arg(ap, int)));
+		return (ft_putadd_va(va_arg(ap, unsigned long long)));
+	if (c == 'd' || c == 'i' || c == 'u')
+		return (ft_putnbr_va(va_arg(ap, int), c));
 	if (c == 'x' || c == 'X')
 		return (ft_puthex_va(va_arg(ap, int), c));
 	if (c == '%')

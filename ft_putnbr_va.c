@@ -3,39 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putnbr_va.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 19:53:09 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/13 14:48:15 by gongmingu        ###   ########.fr       */
+/*   Updated: 2023/11/14 16:52:44 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_putnbr_va(int n)
+static void rec_write(unsigned int n)
 {
-	char	n_array[10];
-	int		count;
+	char	num;
 
-	count = 0;
+	num = '0';
+	if (n != 0)
+	{
+		rec_write(n / 10);
+		num += (n % 10);
+		write (1, &num, 1);
+	}
+}
+
+void	ft_putnbr_va(int n, char c)
+{
+	unsigned int	num;
+
 	if (n == 0)
+	{
 		write(1, "0", 1);
-	if (n < 0)
+		return ;
+	}
+	if (n < 0 && (c == 'i' || c == 'd'))
 	{
-		if (n == -2147483648)
-		{
-			write(1, "-2147483648", 11);
-			return ;
-		}
 		write(1, "-", 1);
-		n = (-1) * n;
+		num = n * (-1);
 	}
-	while (n != 0)
-	{
-		n_array[count] = n % 10 + '0';
-		n /= 10;
-		++count;
-	}
-	while (--count != -1)
-		write(1, n_array + count, 1);
+	else
+		num = n;
+	rec_write(num);
 }
