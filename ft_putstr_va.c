@@ -3,21 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr_va.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 19:52:04 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/14 16:11:58 by gongmingu        ###   ########.fr       */
+/*   Updated: 2023/11/15 16:16:22 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_putstr_va(char *s)
+void	ft_putstr_va(char *s, int *len)
 {
+	int	n;
+
 	if (s == 0)
 	{
-		write(1, "(null)", 6);
+		ft_putstr_va("(null)", len);
 		return ;
 	}
-	write(1, s, ft_strlen(s));
+	n = write(1, s, ft_strlen(s));
+	if (n == -1)
+		*len = -1;
+	else
+		*len += n;
 }

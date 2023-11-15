@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 15:47:03 by gongmingu         #+#    #+#             */
-/*   Updated: 2023/11/14 17:10:34 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/15 16:10:26 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@ int main()
 {
 	int a = 10;
 	void	*z;
-	printf("   first : %c %s %d %u %% %x %X %p \n",'a', 0, -1,4000000000,160, -16, &a);
-	ft_printf("ft_first : %c %s %d %u %% %x %X %p \n",'a', 0, -1,4000000000,160, -16, &a);
-	printf("   second : %d %d \n", 1, 3.14, 5);
-	ft_printf("ft_second : %d %d \n", 1, 3.14, 5);
+	int b,c,d,e;
+
+	b = printf("   first : %c %s %d %u %% %x %X %p \n",'a', 0, -1,4000000000,160, -16, &a);
+	c = ft_printf("ft_first : %c %s %d %u %% %x %X %p \n",'a', 0, -1,4000000000,160, -16, &a);
+	d = printf("%s", "");
+	e = ft_printf("%s", "");
+	printf("p : %d f : %d \np : %d f : %d \n", b,c,d,e);
 }

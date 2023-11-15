@@ -6,40 +6,44 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 19:53:09 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/14 16:52:44 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/15 16:41:07 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void rec_write(unsigned int n)
+static void	rec_write(unsigned int n, int *len)
 {
 	char	num;
 
 	num = '0';
 	if (n != 0)
 	{
-		rec_write(n / 10);
-		num += (n % 10);
-		write (1, &num, 1);
+		rec_write(n / 10, len);
+		if (*len == -1)
+			return ;
+		num += n % 10;
+		ft_putchar_va(num, len);
 	}
 }
 
-void	ft_putnbr_va(int n, char c)
+void	ft_putnbr_va(int n, char c, int *len)
 {
 	unsigned int	num;
 
 	if (n == 0)
 	{
-		write(1, "0", 1);
+		ft_putchar_va('0', len);
 		return ;
 	}
 	if (n < 0 && (c == 'i' || c == 'd'))
 	{
-		write(1, "-", 1);
+		ft_putchar_va('-', len);
+		if (*len == -1)
+			return ;
 		num = n * (-1);
 	}
 	else
 		num = n;
-	rec_write(num);
+	rec_write(num, len);
 }

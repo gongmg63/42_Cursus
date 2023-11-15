@@ -3,29 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gongmingu <gongmingu@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 13:21:41 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/14 16:34:18 by gongmingu        ###   ########.fr       */
+/*   Updated: 2023/11/15 16:28:31 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	check_and_print(char c, va_list ap)
+void	check_and_print(char c, va_list ap, int *len)
 {
 	if (c == 'c')
-		return (ft_putchar_va(va_arg(ap, int)));
+		return (ft_putchar_va(va_arg(ap, int), len));
 	if (c == 's')
-		return (ft_putstr_va(va_arg(ap, char *)));
+		return (ft_putstr_va(va_arg(ap, char *), len));
 	if (c == 'p')
-		return (ft_putadd_va(va_arg(ap, unsigned long long)));
+		return (ft_putadd_va(va_arg(ap, unsigned long long), len));
 	if (c == 'd' || c == 'i' || c == 'u')
-		return (ft_putnbr_va(va_arg(ap, int), c));
+		return (ft_putnbr_va(va_arg(ap, int), c, len));
 	if (c == 'x' || c == 'X')
-		return (ft_puthex_va(va_arg(ap, int), c));
+		return (ft_puthex_va(va_arg(ap, int), c, len));
 	if (c == '%')
-		write(1, "%", 1);
+		return (ft_putchar_va('%', len));
 }
 
 int	ft_printf(const char *format, ...)
@@ -39,14 +39,14 @@ int	ft_printf(const char *format, ...)
 	{
 		if (*format == '%')
 		{
-			len++;
 			format++;
-			check_and_print(*format, ap);
+			check_and_print(*format, ap, &len);
 		}
 		else
-			write(1, format, 1);
+			ft_putchar_va(*format, &len);
+		if (len == -1)
+			return (-1);
 		format++;
-		len++;
 	}
 	va_end(ap);
 	return (len);

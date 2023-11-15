@@ -3,16 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putchar_va.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkong <mkong@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 19:48:03 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/10 19:49:32 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/15 16:13:26 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_putchar_va(char c)
+void	ft_putchar_va(char c, int *len)
 {
-	write(1, &c, 1);
+	int	n;
+
+	n = write(1, &c, 1);
+	if (n == -1)
+		*len = -1;
+	else
+		*len += n;
 }
