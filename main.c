@@ -1,20 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 17:41:55 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/16 13:37:12 by mkong            ###   ########.fr       */
+/*   Created: 2023/11/16 13:51:16 by mkong             #+#    #+#             */
+/*   Updated: 2023/11/16 16:55:50 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include <unistd.h>
-# include <stdlib.h>
+#include "get_next_line.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
 
-char	*get_next_line(int fd);
 
-#endif
+
+int main()
+{
+	int		fd = open("abc", O_RDONLY);
+	char	*str;
+
+	
+}
