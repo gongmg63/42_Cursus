@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:47 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/16 17:00:25 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/17 18:46:29 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
 #endif
+
+#include <stdio.h>
 
 static size_t	check_newline(const char *str)
 {
@@ -25,7 +27,22 @@ static size_t	check_newline(const char *str)
 		cnt++;
 		str++;
 	}
+	if (*str == '\n')
+		cnt++;
 	return (cnt);
+}
+
+static size_t	ft_strlen(char *s)
+{
+	size_t	length;
+
+	length = 0;
+	while (*s)
+	{
+		s++;
+		length++;
+	}
+	return (length);
 }
 
 static char	*ft_strndup(const char *s1, size_t n)
@@ -33,6 +50,7 @@ static char	*ft_strndup(const char *s1, size_t n)
 	char	*arr;
 	int		idx;
 
+	idx = 0;
 	arr = (char *)malloc(sizeof(char) * (n + 1));
 	if (arr == 0)
 		return (0);
@@ -69,55 +87,25 @@ static size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	return (len_dst + len_src);
 }
 
-static char	*ft_strnjoin(char const *s1, char const *s2, size_t n)
+static char	*ft_strnjoin(char *s1, char const *s2, size_t n)
 {
 	char	*result;
 	size_t	s1_len;
 
-	s1_len = check_newline(s1);
+	s1_len = ft_strlen(s1);
 	result = (char *)malloc(sizeof(char) * (s1_len + n + 1));
 	if (result == 0)
 		return (0);
 	*result = '\0';
 	ft_strlcat(result, s1, s1_len + 1);
 	ft_strlcat(result, s2, s1_len + n + 1);
+	free(s1);
 	return (result);
 }
 
-char	*get_next_line(int fd)
+static size_t	check_nl(char *buf)
 {
-	static size_t	idx;
-	static char		*buf;
-	char			*str;
-	size_t			l_len;
-
-	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (buf == 0)
-		return (0);
-	read(fd, buf, BUFFER_SIZE);
-	buf[BUFFER_SIZE] = 0;
-	l_len = check_newline(buf);
-	if (buf[idx + l_len] == '\n')
-		str = ft_strndup(buf + idx, l_len + 1);
-	else
-	{
-		str = ft_strndup(buf + idx, l_len);
-		while (buf[idx + l_len] != '\n' && (l_len + idx == BUFFER_SIZE))
-		{
-			idx = 0;
-			read(fd, buf, BUFFER_SIZE);
-			l_len = check_newline(buf);
-			str = ft_strnjoin(str, buf, l_len + 1);
-		}
-	}
-	idx += l_len + 1;
-	free(buf);
-	return (str);
-}
-
-static int	check_nl(char *buf)
-{
-	int	cnt;
+	size_t	cnt;
 
 	cnt = 1;
 	while (*buf)
@@ -130,57 +118,75 @@ static int	check_nl(char *buf)
 	return (0);
 }
 
-static size_t	ft_strlen(char *s)
-{
-	size_t	length;
-
-	length = 0;
-	while (*s)
-	{
-		s++;
-		length++;
-	}
-	return (length);
-}
-
 static char	*deln_buf(char *buf)
 {
 	char	*str;
 	size_t	st_idx;
 
-	st_idx = check_nl(buf) + 1;
-	if (buf[st_idx])
-	{
-		str = ft_strndup(buf + st_idx, ft_strlen(buf + st_idx));
-		if (str == 0)
-			return (0);
-	}
-	else
-		str = 0;
+	st_idx = check_nl(buf);
+	str = ft_strndup(buf + st_idx, BUFFER_SIZE - st_idx);
+	if (str == 0)
+		return (0);
 	free(buf);
 	return (str);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buf;
-	char		*str;
+	static char	*str;
+	char		*r_str;
+	char		*buf;
 	ssize_t		r_bytes;
 
+	r_bytes = BUFFER_SIZE;
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == 0)
+		return (0);
+	if (str == 0)
 	{
-		buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (buf == 0)
-			return (0);
-		read(fd, buf, BUFFER_SIZE);
+		r_bytes = read(fd, buf, BUFFER_SIZE);
+		buf[r_bytes] = 0;
+		str = ft_strndup(buf, r_bytes);
 	}
-	if (!check_nl(buf))
+	if (check_nl(str))
 	{
-		str = ft_strndup(buf, check_nl(buf));
-		buf = deln_buf(buf);
+		r_str = ft_strndup(str, check_nl(str));
+		str = deln_buf(str);
 	}
 	else
 	{
-		
+		r_str = ft_strndup(str, ft_strlen(str));
+		while (r_bytes == BUFFER_SIZE && !check_nl(str))
+		{
+			r_bytes = read(fd, buf, BUFFER_SIZE);
+			buf[r_bytes] = 0;
+			if (r_bytes != 0)
+				str = ft_strndup(buf, r_bytes);
+			if (check_nl(str))
+			{
+				r_str = ft_strnjoin(r_str, str, check_nl(str));
+				str = deln_buf(str);
+			}
+			else
+				r_str = ft_strnjoin(r_str, str, r_bytes);
+		}
 	}
+	free(buf);
+	return (r_str);
+}
+
+#include <fcntl.h>
+
+
+int main()
+{
+	int		fd = open("abc", O_RDONLY);
+	char	*a;
+
+	a = get_next_line(fd);
+	printf("main : %s \n", a);
+	a = get_next_line(fd);
+	printf("main 2 : %s \n", a);
+	a = get_next_line(fd);
+	printf("main 3 : %s \n", a);
 }
