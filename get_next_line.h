@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:55 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/17 21:22:05 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/18 12:41:51 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # endif
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdio.h>
 
 char	*get_next_line(int fd);
 size_t	check_nl(char *buf);
