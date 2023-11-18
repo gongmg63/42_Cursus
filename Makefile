@@ -1,3 +1,4 @@
+CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS_MANDATORY = ft_printf.c ft_putchar_va.c ft_putstr_va.c ft_putnbr_va.c ft_puthex_va.c ft_putadd_va.c ft_strlen.c ft_itohex.c
 OBJS_MANDATORY = $(SRCS_MANDATORY:.c=.o)
@@ -10,7 +11,7 @@ $(NAME) : $(OBJS_MANDATORY)
 	ar -rc $(NAME) $(OBJS_MANDATORY) $(HEADER)
 
 %.o : %.c $(HEADER)
-	cc $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean : 
 	rm -f $(OBJS_MANDATORY)

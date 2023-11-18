@@ -6,13 +6,13 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 13:21:41 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/15 16:28:31 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/18 13:21:02 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	check_and_print(char c, va_list ap, int *len)
+static void	check_and_print(char c, va_list ap, int *len)
 {
 	if (c == 'c')
 		return (ft_putchar_va(va_arg(ap, int), len));
