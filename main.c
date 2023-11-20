@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 13:51:16 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/18 17:33:57 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/20 14:28:15 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int main()
 	a = get_next_line(fd);
 	printf("main 3 : %s \n", a);
 	a = get_next_line(fd);
-	printf("main 3 : %s \n", a);
+	printf("main 4 : %s \n", a);
+	a = get_next_line(fd);
+	printf("main 5 : %s \n", a);
 }
-

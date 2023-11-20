@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:52 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/17 21:21:57 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/20 20:24:30 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,40 +40,33 @@ size_t	ft_strlen(const char *s)
 	return (length);
 }
 
-size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
+char	*ft_strnjoin(char *s1, char const *s2, size_t n)
 {
-	size_t	len_dst;
-	size_t	len_src;
+	char	*result;
+	size_t	s1_len;
+	size_t	idx;
 
-	len_src = ft_strlen(src);
-	if (dst == 0 && dstsize == 0)
-		return (len_src);
-	len_dst = ft_strlen(dst);
-	dst += len_dst;
-	if (dstsize <= len_dst)
-		return (dstsize + len_src);
-	while (dstsize - 1 > len_dst && *src != '\0')
+	idx = 0;
+	s1_len = ft_strlen(s1);
+	result = (char *)malloc(sizeof(char) * (s1_len + n + 1));
+	if (result == 0)
 	{
-		*dst = *src;
-		dst++;
-		src++;
-		dstsize--;
-	}
-	*dst = '\0';
-	return (len_dst + len_src);
-}
-
-char	*deln_buf(char *buf)
-{
-	char	*str;
-	size_t	st_idx;
-
-	st_idx = check_nl(buf);
-	str = ft_strndup(buf + st_idx, BUFFER_SIZE - st_idx);
-	if (str == 0)
+		free(s1);
 		return (0);
-	free(buf);
-	return (str);
+	}
+	while (idx < s1_len)
+	{
+		result[idx] = s1[idx];
+		idx++;
+	}
+	while (n-- > 0)
+	{
+		result[idx] = s2[idx - s1_len];
+		idx++;
+	}
+	result[idx] = 0;
+	free(s1);
+	return (result);
 }
 
 char	*ft_strndup(const char *s1, size_t n)
