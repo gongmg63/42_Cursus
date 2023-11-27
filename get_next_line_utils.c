@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:52 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/20 20:24:30 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/27 20:34:57 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ size_t	check_nl(char *buf)
 {
 	size_t	cnt;
 
+	if (buf == 0)
+		return (0);
 	cnt = 1;
 	while (*buf)
 	{
@@ -46,19 +48,18 @@ char	*ft_strnjoin(char *s1, char const *s2, size_t n)
 	size_t	s1_len;
 	size_t	idx;
 
-	idx = 0;
+	idx = 0 - 1;
+	if (n == 0)
+		return (s1);
 	s1_len = ft_strlen(s1);
-	result = (char *)malloc(sizeof(char) * (s1_len + n + 1));
+	result = (char *)malloc(s1_len + n + 1);
 	if (result == 0)
 	{
 		free(s1);
 		return (0);
 	}
-	while (idx < s1_len)
-	{
+	while (++idx < s1_len)
 		result[idx] = s1[idx];
-		idx++;
-	}
 	while (n-- > 0)
 	{
 		result[idx] = s2[idx - s1_len];
@@ -75,7 +76,9 @@ char	*ft_strndup(const char *s1, size_t n)
 	int		idx;
 
 	idx = 0;
-	arr = (char *)malloc(sizeof(char) * (n + 1));
+	if (n == 0)
+		return (0);
+	arr = (char *)malloc(n + 1);
 	if (arr == 0)
 		return (0);
 	while (n != 0)

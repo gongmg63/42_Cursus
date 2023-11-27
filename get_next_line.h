@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:55 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/20 20:25:28 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/27 13:11:55 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_list
 	int		fd;
 	char	*str;
 	size_t	idx;
+	ssize_t	r_bytes;
 }				t_list;
 
 #endif
