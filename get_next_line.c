@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:47 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/27 20:31:45 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/27 21:09:17 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ char	*get_next_line(int fd)
 	static t_list	*lst;
 	char			*r_str;
 
-	if (fd < 0 || read(fd, NULL, 0) == -1)
+	if (fd < 0 || read(fd, 0, 0) == -1)
 		return (free_lst(&lst, 0, 1));
 	r_str = 0;
 	if (lst == 0)
@@ -101,8 +101,6 @@ char	*get_next_line(int fd)
 	}
 	if (lst->str != 0 && lst->r_bytes != 0)
 		r_str = str_make(lst, r_str);
-	if (lst == 0)
-		return (0);
 	if (lst->str[lst->idx] == 0)
 		free_lst(&lst, 0, 0);
 	if (lst->r_bytes == 0)
