@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:47 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/27 21:09:17 by mkong            ###   ########.fr       */
+/*   Updated: 2023/11/28 17:37:17 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*free_lst(t_list **lst, char *r_str, int fail)
 			free((*lst)->str);
 		(*lst)->str = 0;
 		(*lst)->idx = 0;
-		if (fail)
+		if (fail) //fail 이 1이면 lst는 0으로 된다
 		{
 			free(*lst);
 			*lst = 0;
@@ -44,32 +44,57 @@ char	*dup_or_join(t_list *lst, char *r_str, size_t n)
 	return (r_str);
 }
 
-char	*str_make(t_list *lst, char *r_str)
+char	*str_make(t_list **lst, char *r_str) 
+//이중 포인터가 아닐 경우 이 함수 내에서는 lst의 값이 수정 되지만 이 함수를 호출한 함수에서는 적용이 안된다..
 {
-	while (!check_nl(lst->str + lst->idx) && lst->r_bytes != 0)
+	while (!check_nl((*lst)->str + (*lst)->idx) && (*lst)->r_bytes != 0)
 	{
-		r_str = dup_or_join(lst, r_str, BUFFER_SIZE - lst->idx);
+		r_str = dup_or_join((*lst), r_str, BUFFER_SIZE - (*lst)->idx);
 		if (r_str == 0)
 			return (0);
-		free(lst->str);
-		lst->str = 0;
-		lst->str = (char *)malloc(BUFFER_SIZE + 1);
-		if (lst->str == 0)
-			return (free_lst(&lst, r_str, 1));
-		lst->r_bytes = read(lst->fd, lst->str, BUFFER_SIZE);
-		if (lst->r_bytes == -1)
-			return (free_lst(&lst, r_str, 1));
-		lst->str[lst->r_bytes] = 0;
-		lst->idx = 0;
+		free((*lst)->str);
+		(*lst)->str = 0;
+		(*lst)->str = (char *)malloc(BUFFER_SIZE + 1);
+		if ((*lst)->str == 0)
+			return (free_lst(lst, r_str, 1));
+		(*lst)->r_bytes = read((*lst)->fd, (*lst)->str, BUFFER_SIZE);
+		if ((*lst)->r_bytes == -1)
+			return (free_lst(lst, r_str, 1));
+		(*lst)->str[(*lst)->r_bytes] = 0;
+		(*lst)->idx = 0;
 	}
-	if (check_nl(lst->str + lst->idx))
+	if (check_nl((*lst)->str + (*lst)->idx))
 	{
-		r_str = dup_or_join(lst, r_str, check_nl(lst->str + lst->idx));
+		r_str = dup_or_join((*lst), r_str, check_nl((*lst)->str + (*lst)->idx));
 		return (r_str);
 	}
-	if (lst->r_bytes != BUFFER_SIZE)
-		r_str = dup_or_join(lst, r_str, lst->r_bytes - lst->idx);
+	if ((*lst)->r_bytes != BUFFER_SIZE)
+		r_str = dup_or_join(lst, r_str, (*lst)->r_bytes - (*lst)->idx);
 	return (r_str);
+}
+
+char	*set_lst(t_list **lst, int fd)
+{
+	if (*lst == 0)
+	{
+		*lst = (t_list *)malloc(sizeof(t_list));
+		if (lst == 0)
+			return (0);
+		(*lst)->idx = 0;
+		(*lst)->fd = fd;
+		(*lst)->str = 0;
+	}
+	if ((*lst)->str == 0)
+	{
+		(*lst)->str = (char *)malloc(BUFFER_SIZE + 1);
+		if ((*lst)->str == 0)
+			return (free_lst(lst, 0, 1));
+		(*lst)->r_bytes = read(fd, (*lst)->str, BUFFER_SIZE);
+		if ((*lst)->r_bytes == -1)
+			return (free_lst(lst, 0, 1));
+		(*lst)->str[(*lst)->r_bytes] = 0;
+	}
+	return ((*lst)->str);
 }
 
 char	*get_next_line(int fd)
@@ -80,31 +105,33 @@ char	*get_next_line(int fd)
 	if (fd < 0 || read(fd, 0, 0) == -1)
 		return (free_lst(&lst, 0, 1));
 	r_str = 0;
-	if (lst == 0)
-	{
-		lst = (t_list *)malloc(sizeof(t_list));
-		if (lst == 0)
-			return (0);
-		lst->idx = 0;
-		lst->fd = fd;
-		lst->str = 0;
-	}
-	if (lst->str == 0)
-	{
-		lst->str = (char *)malloc(BUFFER_SIZE + 1);
-		if (lst->str == 0)
-			return (free_lst(&lst, r_str, 1));
-		lst->r_bytes = read(fd, lst->str, BUFFER_SIZE);
-		if (lst->r_bytes == -1)
-			return (free_lst(&lst, r_str, 1));
-		lst->str[lst->r_bytes] = 0;
-	}
+	if (!set_lst(&lst, fd))
+		return (0);
+	// if (lst == 0)
+	// {
+	// 	lst = (t_list *)malloc(sizeof(t_list));
+	// 	if (lst == 0)
+	// 		return (0);
+	// 	lst->idx = 0;
+	// 	lst->fd = fd;
+	// 	lst->str = 0;
+	// }
+	// if (lst->str == 0)
+	// {
+	// 	lst->str = (char *)malloc(BUFFER_SIZE + 1);
+	// 	if (lst->str == 0)
+	// 		return (free_lst(&lst, r_str, 1));
+	// 	lst->r_bytes = read(fd, lst->str, BUFFER_SIZE);
+	// 	if (lst->r_bytes == -1)
+	// 		return (free_lst(&lst, r_str, 1));
+	// 	lst->str[lst->r_bytes] = 0;
+	// }
 	if (lst->str != 0 && lst->r_bytes != 0)
-		r_str = str_make(lst, r_str);
-	if (lst->str[lst->idx] == 0)
-		free_lst(&lst, 0, 0);
-	if (lst->r_bytes == 0)
-		free_lst(&lst, 0, 1);
+		r_str = str_make(&lst, r_str); //여기서 나왔을 때 lst가 해제 되었다면..
+	if (lst != 0 && (lst->str[lst->idx] == 0 || lst->r_bytes == 0)) // 밑에 조건을 한 줄로
+		free_lst(&lst, 0, !(lst->r_bytes));
+	// if (lst->r_bytes == 0)
+	// 	free_lst(&lst, 0, 1);
 	return (r_str);
 }
 
