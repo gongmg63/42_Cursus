@@ -6,109 +6,114 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:47 by mkong             #+#    #+#             */
-/*   Updated: 2023/12/01 13:51:22 by mkong            ###   ########.fr       */
+/*   Updated: 2023/12/04 17:19:19 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*free_lst(t_list **lst, char *r_str, int fail)
+static ssize_t	read_file(t_node_ *head)
 {
-	if (*lst != 0)
+	ssize_t	rbytes;
+
+	rbytes = BUFFER_SIZE;
+	if (head->buf == 0)
 	{
-		if ((*lst)->str != 0)
-			free((*lst)->str);
-		(*lst)->str = 0;
-		(*lst)->idx = 0;
-		if (fail)
+		head->buf = (char *)malloc(BUFFER_SIZE + 1);
+		if (head->buf == 0)
+			return (-1);
+		rbytes = read(head->fd, head->buf, BUFFER_SIZE);
+		head->idx = 0;
+		if (rbytes == -1)
 		{
-			free(*lst);
-			*lst = 0;
+			free(head->buf);
+			head->buf = 0;
+			head->idx = 0;
+			return (rbytes);
 		}
+		head->buf[rbytes] = 0;
 	}
-	if (r_str != 0)
-		free(r_str);
-	return (0);
+	return (rbytes);
 }
 
-static char	*set_lst(t_list **lst, int fd)
+static t_node_	*set_node_(int fd, ssize_t *rbytes, t_node_ *head)
 {
-	if (*lst == 0)
+	if (head == 0)
 	{
-		*lst = (t_list *)malloc(sizeof(t_list));
-		if (*lst == 0)
+		head = (t_node_ *)malloc(sizeof(t_node_));
+		if (head == 0)
 			return (0);
-		(*lst)->idx = 0;
-		(*lst)->fd = fd;
-		(*lst)->str = 0;
+		head->fd = fd;
+		head->buf = 0;
+		head->idx = 0;
 	}
-	if ((*lst)->str == 0)
-	{
-		(*lst)->str = (char *)malloc(BUFFER_SIZE + 1);
-		if ((*lst)->str == 0)
-			return (free_lst(lst, 0, 1));
-		(*lst)->r_bytes = read(fd, (*lst)->str, BUFFER_SIZE);
-		if ((*lst)->r_bytes == -1)
-			return (free_lst(lst, 0, 1));
-		(*lst)->str[(*lst)->r_bytes] = 0;
-		(*lst)->idx = 0;
-	}
-	return ((*lst)->str);
+	*rbytes = read_file(head);
+	return (head);
 }
 
-static char	*dup_or_join(t_list **lst, char *r_str, size_t n)
+static char	*make_str(t_node_ *h, ssize_t *rbytes)
 {
-	if (r_str == 0)
-		r_str = ft_strndup((*lst)->str + (*lst)->idx, n);
-	else
-		r_str = ft_strnjoin(r_str, (*lst)->str + (*lst)->idx, n);
-	if (r_str == 0)
-		return (free_lst(lst, r_str, 1));
-	(*lst)->idx += check_nl((*lst)->str + (*lst)->idx);
-	return (r_str);
-}
+	char	*str;
 
-static char	*str_make(t_list **lst, char *r_str)
-{
-	while (!check_nl((*lst)->str + (*lst)->idx) && (*lst)->r_bytes != 0)
+	str = 0;
+	while (!check_nl(h->buf + h->idx) && (*rbytes > 0))
 	{
-		if ((*lst)->r_bytes == BUFFER_SIZE)
-			r_str = dup_or_join(lst, r_str, BUFFER_SIZE - (*lst)->idx);
+		if (str == 0)
+			str = ft_strndup(h->buf + h->idx, ft_strlen(h->buf + h->idx));
 		else
-			r_str = dup_or_join(lst, r_str, (*lst)->r_bytes - (*lst)->idx);
-		if (r_str == 0)
-			return (free_lst(lst, r_str, 1));
-		free((*lst)->str);
-		(*lst)->str = 0;
-		if (!set_lst(lst, (*lst)->fd))
-		{
-			free(r_str);
+			str = ft_strnjoin(str, h->buf, *rbytes);
+		if (str == 0)
 			return (0);
-		}
+		h->idx = 0;
+		free(h->buf);
+		h->buf = 0;
+		*rbytes = read_file(h);
 	}
-	if (check_nl((*lst)->str + (*lst)->idx))
+	if ((*rbytes > 0) && check_nl(h->buf + h->idx))
 	{
-		r_str = dup_or_join(lst, r_str, check_nl((*lst)->str + (*lst)->idx));
-		return (r_str);
+		if (str == 0)
+			str = ft_strndup(h->buf + h->idx, check_nl(h->buf + h->idx));
+		else
+			str = ft_strnjoin(str, h->buf, check_nl(h->buf));
+		h->idx += check_nl(h->buf + h->idx);
 	}
-	if ((*lst)->r_bytes != BUFFER_SIZE)
-		r_str = dup_or_join(lst, r_str, (*lst)->r_bytes - (*lst)->idx);
-	return (r_str);
+	return (str);
+}
+
+static char	*free_lst(t_node_ **head, char *str, ssize_t rbytes)
+{
+	if (*head == 0)
+		return (0);
+	free((*head)->buf);
+	(*head)->buf = 0;
+	(*head)->idx = 0;
+	if (rbytes <= 0)
+	{
+		free((*head));
+		*head = 0;
+	}
+	free(str);
+	return (0);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_list	*lst;
-	char			*r_str;
+	static t_node_	*head;
+	char			*str;
+	ssize_t			rbytes;
 
-	if (fd < 0 || read(fd, 0, 0) == -1)
-		return (free_lst(&lst, 0, 1));
-	r_str = 0;
-	if (!set_lst(&lst, fd))
+	str = 0;
+	if (fd < 0)
 		return (0);
-	if (lst->str != 0 && lst->r_bytes != 0)
-		r_str = str_make(&lst, r_str);
-	if (lst != 0 && lst->str[lst->idx] == 0)
-		free_lst(&lst, 0, (lst->r_bytes < BUFFER_SIZE));
-	return (r_str);
+	head = set_node_(fd, &rbytes, head);
+	if (head == 0)
+		return (0);
+	str = make_str(head, &rbytes);
+	if (rbytes == -1)
+		return (free_lst(&head, str, rbytes));
+	if (str == 0)
+		return (free_lst(&head, str, 0));
+	if (head->buf[head->idx] == 0 || rbytes == 0)
+		free_lst(&head, 0, rbytes);
+	return (str);
 }

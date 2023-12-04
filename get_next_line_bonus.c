@@ -6,13 +6,13 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:47 by mkong             #+#    #+#             */
-/*   Updated: 2023/12/01 21:27:40 by mkong            ###   ########.fr       */
+/*   Updated: 2023/12/04 17:05:58 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-ssize_t	read_file(t_node_ *head)
+static ssize_t	read_file(t_node_ *head)
 {
 	ssize_t	rbytes;
 
@@ -36,7 +36,7 @@ ssize_t	read_file(t_node_ *head)
 	return (rbytes);
 }
 
-t_node_	*set_node_(t_list *lst, int fd, ssize_t *rbytes, t_node_ *head)
+static t_node_	*set_node_(t_list *lst, int fd, ssize_t *rbytes, t_node_ *head)
 {
 	t_node_	*prev;
 
@@ -65,7 +65,7 @@ t_node_	*set_node_(t_list *lst, int fd, ssize_t *rbytes, t_node_ *head)
 	return (head);
 }
 
-char	*make_str(t_node_ *h, ssize_t *rbytes)
+static char	*make_str(t_node_ *h, ssize_t *rbytes)
 {
 	char	*str;
 
@@ -94,11 +94,11 @@ char	*make_str(t_node_ *h, ssize_t *rbytes)
 	return (str);
 }
 
-char	*free_lst(t_list *lst, t_node_ *head, char *str, ssize_t rbytes)
+static char	*free_lst(t_list *lst, t_node_ *head, char *str, ssize_t rbytes)
 {
 	t_node_	*temp;
 
-	if (!head)
+	if (head == 0)
 		return (0);
 	free(head->buf);
 	head->buf = 0;
@@ -129,7 +129,7 @@ char	*get_next_line(int fd)
 
 	str = 0;
 	if (fd < 0)
-		return (free_lst(&lst, 0, 0, -1));
+		return (0);
 	head = set_node_(&lst, fd, &rbytes, lst.head);
 	if (head == 0)
 		return (0);

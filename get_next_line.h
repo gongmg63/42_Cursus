@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:55 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/29 16:53:52 by mkong            ###   ########.fr       */
+/*   Updated: 2023/12/04 17:18:19 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,11 @@ size_t	ft_strlen(const char *s);
 char	*ft_strnjoin(char *s1, char const *s2, size_t n);
 char	*ft_strndup(const char *s1, size_t n);
 
-typedef struct s_list
+typedef struct s_node
 {
-	int		fd;
-	char	*str;
-	size_t	idx;
-	ssize_t	r_bytes;
-}				t_list;
+	int				fd;
+	char			*buf;
+	size_t			idx;
+}				t_node_;
 
 #endif

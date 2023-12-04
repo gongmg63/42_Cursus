@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:55 by mkong             #+#    #+#             */
-/*   Updated: 2023/12/01 21:26:34 by mkong            ###   ########.fr       */
+/*   Updated: 2023/12/04 16:57:16 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ typedef struct s_node
 typedef struct s_list
 {
 	t_node_	*head;
-	t_node_	*tail;
 }				t_list;
 
 #endif
