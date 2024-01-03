@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 16:34:56 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/03 16:48:11 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/03 17:32:05 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,21 @@ void	insert_arg(t_deque *deq, int ac, char **av)
 			exit(1);
 		}
 		while (strs[s_idx] != 0)
-			push_back(deq, ft_atoi(strs[s_idx++]));
+		{
+			push_back(deq, ft_atoi(strs[s_idx]));
+			s_idx++;
+		}
 		two_dimension_free(strs, s_idx - 1);
+		av_idx++;
 	}
 }
 
 int	main(int ac, char *av[])
 {
-	char	**strs;
 	t_deque	*deq;
 
+	deq = (t_deque *)malloc(sizeof(t_deque));
 	initalize(deq);
 	insert_arg(deq, ac, av);
-	for (int i = 0;i < ac - 1; ++i)
-	{
-		ft_printf("%d\n", deq->data[i]);
-	}
 	exit(0);
 }
