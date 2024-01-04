@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:39:52 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/03 17:29:11 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/04 21:08:03 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	re_allocate(t_deque *deq, int capacity)
 		new_data[tmp_tail] = deq->data[tmp_tail];
 	if (deq->head > deq->tail)
 	{
-		while (deq->capacity - tmp_head > 0)
+		while (capacity > tmp_head)
 		{
 			new_data[tmp_head] = deq->data[tmp_head - capacity / 2];
 			tmp_head++;

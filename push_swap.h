@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 12:48:44 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/04 15:59:25 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/04 20:51:59 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,10 @@ void	push_front(t_deque *deq, int data);
 void	pop_front(t_deque *deq);
 void	pop_back(t_deque *deq);
 void	radix_sort(t_deque *da, t_deque *db);
+void	pab(t_deque *d1, t_deque *d2, char a_b);
+void	rab(t_deque *deq, char a_b);
+
+void	deq_print(t_deque *deq);
+
 
 #endif

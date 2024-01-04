@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 16:34:56 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/04 15:04:02 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/04 21:09:18 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,23 @@ int	main(int ac, char *av[])
 {
 	t_deque	*deq_a;
 	t_deque	*deq_b;
-	int		input_num;
 
 	deq_a = (t_deque *)malloc(sizeof(t_deque));
+	deq_b = (t_deque *)malloc(sizeof(t_deque));
 	initalize(deq_a);
 	initalize(deq_b);
 	insert_arg(deq_a, ac, av);
-	input_num = deq_a->size;
+	// deq_print(deq_a);
+	// pab(deq_b, deq_a, 'b');
+	// deq_print(deq_b);
+	// pab(deq_b, deq_a, 'b');
+	// deq_print(deq_b);
+	// pab(deq_b, deq_a, 'b');
+	// deq_print(deq_b);
+	// pab(deq_b, deq_a, 'b');
+	// deq_print(deq_b);
+	// pab(deq_b, deq_a, 'b');
+	// deq_print(deq_b);
+	radix_sort(deq_a, deq_b);
 	exit(0);
 }

@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 13:54:41 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/04 15:24:53 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/04 20:50:45 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	pab(t_deque *d1, t_deque *d2, char a_b)
 
 void	rab(t_deque *deq, char a_b)
 {
-	if (deq->size == 0)
+	if (deq->size < 2)
 		return ;
 	push_back(deq, deq->data[deq->head]);
 	pop_front(deq);

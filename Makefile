@@ -1,5 +1,5 @@
-CFLAGS		=	-Wall -Wextra -Werror
-SRCS		=	ft_deque.c ft_deque_utils.c push_swap.c
+CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g
+SRCS		=	ft_deque.c ft_deque_utils.c push_swap.c radix_sort.c operations.c
 NAME		=	push_swap
 SUB_LIB		=	libft.a
 SUB_LIBDIR	=	./libft
