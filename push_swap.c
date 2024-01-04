@@ -6,13 +6,13 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 16:34:56 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/03 18:06:13 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/04 15:04:02 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	insert_arg(t_deque *deq, int ac, char **av)
+static void	insert_arg(t_deque *deq, int ac, char **av)
 {
 	char	**strs;
 	int		av_idx;
@@ -40,10 +40,14 @@ void	insert_arg(t_deque *deq, int ac, char **av)
 
 int	main(int ac, char *av[])
 {
-	t_deque	*deq;
+	t_deque	*deq_a;
+	t_deque	*deq_b;
+	int		input_num;
 
-	deq = (t_deque *)malloc(sizeof(t_deque));
-	initalize(deq);
-	insert_arg(deq, ac, av);
+	deq_a = (t_deque *)malloc(sizeof(t_deque));
+	initalize(deq_a);
+	initalize(deq_b);
+	insert_arg(deq_a, ac, av);
+	input_num = deq_a->size;
 	exit(0);
 }
