@@ -6,40 +6,12 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 14:48:02 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/04 21:34:43 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/05 15:03:01 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-// static int	check_sort(t_deque *deq, int input_num)
-// {
-// 	int	tmp_tail;
-// 	int	tmp_head;
-
-// 	if (input_num != deq->size)
-// 		return (0);
-// 	tmp_tail = deq->tail;
-// 	tmp_head = deq->head + 1;
-// 	while (tmp_tail >= tmp_head)
-// 	{
-// 		if (deq->data[tmp_tail] < deq->data[tmp_tail - 1])
-// 			return (0);
-// 		tmp_tail--;
-// 	}
-// 	if (tmp_tail < tmp_head)
-// 	{
-// 		while (deq->capacity - tmp_head > 0)
-// 		{
-// 			if (deq->data[tmp_head] < deq->data[tmp_head - 1])
-// 				return (0);
-// 			tmp_head++;
-// 		}
-// 		if (deq->data[tmp_head] > deq->data[0])
-// 			return (0);
-// 	}
-// 	return (1);
-// }
 void	deq_print(t_deque *deq)
 {
 	int	tmp_head;
@@ -66,7 +38,7 @@ static int	check_max_bit(t_deque *deq)
 	int	size;
 
 	max = 0;
-	bit = 1;
+	bit = 0;
 	tmp_head = deq->head;
 	size = deq->size;
 	while (size > 0)
@@ -86,29 +58,21 @@ static int	check_max_bit(t_deque *deq)
 	return (bit);
 }
 
-static void	bit_sort(t_deque *d1, t_deque *d2, int bit, char a_b, int first)
+static void	bit_sort(t_deque *da, t_deque *db, int bit)
 {
 	int	size;
 
-	size = d1->size;
+	size = da->size;
 	while (size > 0)
 	{
-		if ((d1->data[d1->head] >> bit) % 2 == 0 && a_b == 'a')
-		{
-			pab(d2, d1, a_b - 1);
-			if (first)
-				rab(d2, a_b - 1);
-		}
-		else if ((d1->data[d1->head] >> bit) % 2 == 1 && a_b == 'b')
-		{
-			pab(d2, d1, a_b - 1);
-			if (first)
-				rab(d2, a_b - 1);
-		}
+		if ((da->data[da->head] >> bit) % 2 == 0)
+			pab(db, da, 'b');
 		else
-			rab(d1, a_b);
+			rab(da, 'a');
 		size--;
 	}
+	while (db->size > 0)
+		pab(da, db, 'a');
 }
 
 void	radix_sort(t_deque *da, t_deque *db)
@@ -120,19 +84,6 @@ void	radix_sort(t_deque *da, t_deque *db)
 	input_num = da->size;
 	bit = 0;
 	max_bit = check_max_bit(da);
-	bit_sort(da, db, bit++, 'a', 0);
-	deq_print(db);
 	while (bit < max_bit)
-	{
-		bit_sort(da, db, bit, 'a', 1);
-		ft_printf("da : ");
-		deq_print(db);
-		bit_sort(db, da, bit, 'b', 1);
-		ft_printf("db : ");
-		deq_print(db);
-		bit++;
-	}
-	while (db->size > 0)
-		pab(da, db, 'a');
-	deq_print(da);
+		bit_sort(da, db, bit++);
 }

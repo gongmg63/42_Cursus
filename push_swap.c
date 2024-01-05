@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 16:34:56 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/04 21:09:18 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/05 16:56:06 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,24 @@ static void	insert_arg(t_deque *deq, int ac, char **av)
 
 int	main(int ac, char *av[])
 {
-	t_deque	*deq_a;
-	t_deque	*deq_b;
+	t_deque	*da;
+	t_deque	*db;
 
-	deq_a = (t_deque *)malloc(sizeof(t_deque));
-	deq_b = (t_deque *)malloc(sizeof(t_deque));
-	initalize(deq_a);
-	initalize(deq_b);
-	insert_arg(deq_a, ac, av);
-	// deq_print(deq_a);
-	// pab(deq_b, deq_a, 'b');
-	// deq_print(deq_b);
-	// pab(deq_b, deq_a, 'b');
-	// deq_print(deq_b);
-	// pab(deq_b, deq_a, 'b');
-	// deq_print(deq_b);
-	// pab(deq_b, deq_a, 'b');
-	// deq_print(deq_b);
-	// pab(deq_b, deq_a, 'b');
-	// deq_print(deq_b);
-	radix_sort(deq_a, deq_b);
+	da = (t_deque *)malloc(sizeof(t_deque));
+	db = (t_deque *)malloc(sizeof(t_deque));
+	initalize(da);
+	initalize(db);
+	insert_arg(da, ac, av);
+	normalization(da);
+	if (da->size == 2)
+		ele_two(da, 'a');
+	if (da->size == 3)
+		ele_three(da, 'a');
+	if (da->size == 4)
+		ele_four(da, db);
+	if (da->size == 5)
+		ele_five(da, db);
+	if (da->size > 5)
+		radix_sort(da, db);
 	exit(0);
 }
