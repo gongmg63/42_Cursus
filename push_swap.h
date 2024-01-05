@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 12:48:44 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/05 16:53:59 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/05 17:04:11 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	ele_two(t_deque *deq, char a_b);
 void	ele_three(t_deque *deq, char a_b);
 void	ele_four(t_deque *da, t_deque *db);
 void	ele_five(t_deque *da, t_deque *db);
-
+int		check_sort(t_deque *deq);
 
 void	deq_print(t_deque *deq);
 
