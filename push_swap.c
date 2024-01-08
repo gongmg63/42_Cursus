@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 16:34:56 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/05 20:23:54 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/08 16:42:33 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,25 +60,27 @@ static void	insert_arg(t_deque *deq, int ac, char **av)
 	}
 }
 
-int	check_sort(t_deque *deq)
+static void	free_deq(t_deque *deq)
 {
-	int	idx;
-	int	*data;
+	free(deq->data);
+	free(deq);
+}
 
-	if (deq->size < 2)
-		return (1);
-	data = copy_data(deq);
-	if (data == 0)
-		exit(1);
-	idx = 0;
-	while (idx < deq->size - 1)
+static void	sort_div(t_deque *da, t_deque *db)
+{
+	if (!check_sort(da))
 	{
-		if (data[idx] > data[idx + 1])
-			return (0);
-		idx++;
+		if (da->size == 2)
+			ele_two(da, 'a');
+		if (da->size == 3)
+			ele_three(da);
+		if (da->size == 4)
+			ele_four(da, db);
+		if (da->size == 5)
+			ele_five(da, db);
+		if (da->size > 5)
+			radix_sort(da, db);
 	}
-	free (data);
-	return (1);
 }
 
 int	main(int ac, char *av[])
@@ -87,23 +89,20 @@ int	main(int ac, char *av[])
 	t_deque	*db;
 
 	da = (t_deque *)malloc(sizeof(t_deque));
+	if (da == 0)
+		return (0);
 	db = (t_deque *)malloc(sizeof(t_deque));
+	if (db == 0)
+	{
+		free_deq(da);
+		return (0);
+	}
 	initalize(da);
 	initalize(db);
 	insert_arg(da, ac, av);
 	normalization(da);
-	if (check_sort(da))
-		exit(0);
-	if (da->size == 2)
-		ele_two(da, 'a');
-	if (da->size == 3)
-		ele_three(da, 'a');
-	if (da->size == 4)
-		ele_four(da, db);
-	if (da->size == 5)
-		ele_five(da, db);
-	if (da->size > 5)
-		radix_sort(da, db);
-	deq_print(da);
-	exit(0);
+	sort_div(da, db);
+	free_deq(da);
+	free_deq(db);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 15:02:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/05 20:39:43 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/08 16:47:42 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,13 @@ void	ele_two(t_deque *deq, char a_b)
 {
 	if (check_sort(deq))
 		return ;
-	sab(deq, a_b);
+	if (a_b == 'a')
+		sa(deq);
+	else
+		sb(deq);
 }
 
-void	ele_three(t_deque *deq, char a_b)
+void	ele_three(t_deque *deq)
 {
 	int	f;
 	int	s;
@@ -50,11 +53,13 @@ void	ele_three(t_deque *deq, char a_b)
 	f = deq->data[deq->head];
 	s = deq->data[deq->head + 1];
 	if ((f == 0 && s == 2) || (f == 1 && s == 0) || (f == 2 && s == 1))
-		sab(deq, a_b);
+	{
+		sa(deq);
+	}
 	if (deq->data[deq->head] == 1)
 		rra(deq);
 	else if (deq->data[deq->head] == 2)
-		rab(deq, 'a');
+		ra(deq);
 }
 
 void	ele_four(t_deque *da, t_deque *db)
@@ -62,11 +67,11 @@ void	ele_four(t_deque *da, t_deque *db)
 	if (check_sort(da))
 		return ;
 	while (da->data[da->head] != 3)
-		rab(da, 'a');
-	pab(db, da, 'b');
-	ele_three(da, 'a');
-	pab(da, db, 'a');
-	rab(da, 'a');
+		ra(da);
+	pb(da, db);
+	ele_three(da);
+	pa(da, db);
+	ra(da);
 }
 
 void	ele_five(t_deque *da, t_deque *db)
@@ -74,15 +79,15 @@ void	ele_five(t_deque *da, t_deque *db)
 	while (db->size != 2)
 	{
 		if (da->data[da->head] == 3 || da->data[da->head] == 4)
-			pab(db, da, 'b');
+			pb(da, db);
 		else
-			rab(da, 'a');
+			ra(da);
 	}
-	ele_three(da, 'a');
+	ele_three(da);
 	ele_two(db, 'b');
 	while (db->size > 0)
 	{
-		pab(da, db, 'a');
-		rab(da, 'a');
+		pa(da, db);
+		ra(da);
 	}
 }

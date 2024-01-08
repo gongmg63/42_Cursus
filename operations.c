@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 13:54:41 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/05 17:19:57 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/08 16:01:52 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,14 @@ void	sab(t_deque *deq, char a_b)
 		ft_printf("sb\n");
 }
 
-void	rra(t_deque *deq)
+void	rrab(t_deque *deq, char a_b)
 {
 	if (deq->size < 2)
 		return ;
 	push_front(deq, deq->data[deq->tail]);
 	pop_back(deq);
-	ft_printf("rra\n");
+	if (a_b == 'a')
+		ft_printf("rra\n");
+	else
+		ft_printf("rrb\n");
 }

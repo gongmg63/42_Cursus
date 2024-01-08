@@ -6,29 +6,11 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 14:48:02 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/05 15:03:01 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/08 16:50:05 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-void	deq_print(t_deque *deq)
-{
-	int	tmp_head;
-	int	size;
-
-	tmp_head = deq->head;
-	size = deq->size;
-	while (size > 0)
-	{
-		ft_printf("result : %d ", deq->data[tmp_head]);
-		tmp_head++;
-		size--;
-		if (tmp_head == deq->capacity)
-			tmp_head = 0;
-	}
-	ft_printf("\n");
-}
 
 static int	check_max_bit(t_deque *deq)
 {
@@ -66,13 +48,34 @@ static void	bit_sort(t_deque *da, t_deque *db, int bit)
 	while (size > 0)
 	{
 		if ((da->data[da->head] >> bit) % 2 == 0)
-			pab(db, da, 'b');
+			pb(da, db);
 		else
-			rab(da, 'a');
+			ra(da);
 		size--;
 	}
 	while (db->size > 0)
-		pab(da, db, 'a');
+		pa(da, db);
+}
+
+int	check_sort(t_deque *deq)
+{
+	int	idx;
+	int	*data;
+
+	if (deq->size < 2)
+		return (1);
+	data = copy_data(deq);
+	if (data == 0)
+		exit(1);
+	idx = 0;
+	while (idx < deq->size - 1)
+	{
+		if (data[idx] > data[idx + 1])
+			return (0);
+		idx++;
+	}
+	free (data);
+	return (1);
 }
 
 void	radix_sort(t_deque *da, t_deque *db)

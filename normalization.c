@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 14:38:10 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/05 15:29:54 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/08 15:04:44 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	normalization(t_deque *deq)
 		}
 		i++;
 	}
+	free(data);
 	deq->head = 0;
 	deq->tail = deq->size - 1;
 }

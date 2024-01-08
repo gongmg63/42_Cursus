@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:39:52 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/04 21:08:03 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/08 13:00:13 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ void	re_allocate(t_deque *deq, int capacity)
 	if (capacity == 0)
 		capacity = 1;
 	new_data = (int *)malloc(capacity * sizeof(int));
+	if (new_data == 0)
+		exit(1);
 	tmp_tail = deq->tail + 1;
 	tmp_head = deq->head + capacity / 2;
 	while (--tmp_tail >= 0)
