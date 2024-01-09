@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 16:24:29 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/03 16:43:59 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/09 13:48:17 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static char	*add_word(char *word, const char *s, char c)
 	return (word);
 }
 
-void	two_dimension_free(char **words, int idx)
+static void	two_dimension_free(char **words, int idx)
 {
 	while (idx >= 0)
 	{

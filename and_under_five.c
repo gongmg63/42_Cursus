@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 15:02:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/08 16:47:42 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/09 13:40:45 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,7 @@ void	ele_three(t_deque *deq)
 	f = deq->data[deq->head];
 	s = deq->data[deq->head + 1];
 	if ((f == 0 && s == 2) || (f == 1 && s == 0) || (f == 2 && s == 1))
-	{
 		sa(deq);
-	}
 	if (deq->data[deq->head] == 1)
 		rra(deq);
 	else if (deq->data[deq->head] == 2)

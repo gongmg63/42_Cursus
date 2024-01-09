@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 16:34:56 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/08 16:42:33 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/09 13:41:32 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,7 @@ static void	check_dup(t_deque *deq, int n)
 	while (size > 0)
 	{
 		if (deq->data[tmp_head] == n)
-		{
-			ft_printf("Error\n");
-			exit(1);
-		}
+			error_exit();
 		tmp_head++;
 		size--;
 		if (tmp_head == deq->capacity)
@@ -45,17 +42,14 @@ static void	insert_arg(t_deque *deq, int ac, char **av)
 		s_idx = 0;
 		strs = ft_split(av[av_idx], ' ');
 		if (strs == 0)
-		{
-			ft_printf("Error\n");
-			exit(1);
-		}
+			error_exit();
 		while (strs[s_idx] != 0)
 		{
 			push_back(deq, ft_atoi(strs[s_idx]));
 			check_dup(deq, deq->data[deq->tail]);
 			s_idx++;
 		}
-		two_dimension_free(strs, s_idx - 1);
+		two_d_free(strs, s_idx - 1);
 		av_idx++;
 	}
 }
@@ -90,13 +84,10 @@ int	main(int ac, char *av[])
 
 	da = (t_deque *)malloc(sizeof(t_deque));
 	if (da == 0)
-		return (0);
+		error_exit();
 	db = (t_deque *)malloc(sizeof(t_deque));
 	if (db == 0)
-	{
-		free_deq(da);
-		return (0);
-	}
+		error_exit();
 	initalize(da);
 	initalize(db);
 	insert_arg(da, ac, av);

@@ -6,11 +6,27 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 14:38:10 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/08 15:04:44 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/09 14:11:28 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+void	error_exit(void)
+{
+	write(2, "Error\n", 6);
+	exit(1);
+}
+
+void	two_d_free(char **words, int idx)
+{
+	while (idx >= 0)
+	{
+		free(words[idx]);
+		idx--;
+	}
+	free(words);
+}
 
 int	*copy_data(t_deque *deq)
 {
@@ -23,7 +39,7 @@ int	*copy_data(t_deque *deq)
 	tmp_head = deq->head;
 	data = (int *)malloc(sizeof(int) * deq->size);
 	if (data == 0)
-		exit(1);
+		error_exit();
 	i = 0;
 	while (size > 0)
 	{

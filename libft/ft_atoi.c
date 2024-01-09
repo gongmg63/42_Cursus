@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 17:17:23 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/09 13:14:06 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/09 14:15:18 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ft_atoi(const char *str)
 		}
 		if (!ft_isdigit(*str) || ((int)result != result))
 		{
-			write (1, "Error\n", 6);
+			write (2, "Error\n", 6);
 			exit(1);
 		}
 		str++;
