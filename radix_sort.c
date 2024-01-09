@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 14:48:02 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/08 16:50:05 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/09 17:11:07 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,10 @@ int	check_sort(t_deque *deq)
 	while (idx < deq->size - 1)
 	{
 		if (data[idx] > data[idx + 1])
+		{
+			free(data);
 			return (0);
+		}
 		idx++;
 	}
 	free (data);
@@ -80,13 +83,12 @@ int	check_sort(t_deque *deq)
 
 void	radix_sort(t_deque *da, t_deque *db)
 {
-	int	input_num;
 	int	bit;
 	int	max_bit;
 
-	input_num = da->size;
 	bit = 0;
 	max_bit = check_max_bit(da);
 	while (bit < max_bit)
 		bit_sort(da, db, bit++);
 }
+
