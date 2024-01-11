@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 16:34:56 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/09 17:10:58 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/11 20:29:35 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,9 @@ int	main(int ac, char *av[])
 	initalize(da);
 	initalize(db);
 	insert_arg(da, ac, av);
-	if (da->size == 0)
-		error_exit();
 	normalization(da);
 	sort_div(da, db);
 	free_deq(da);
 	free_deq(db);
 	return (0);
 }
-

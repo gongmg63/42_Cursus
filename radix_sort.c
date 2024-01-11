@@ -91,4 +91,3 @@ void	radix_sort(t_deque *da, t_deque *db)
 	while (bit < max_bit)
 		bit_sort(da, db, bit++);
 }
-
