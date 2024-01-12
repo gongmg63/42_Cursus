@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:24:10 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 19:33:03 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/12 21:00:36 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ typedef struct s_mlx
 	void	*win;
 }			t_mlx;
 
-t_stack	*check_map_route(char **map, t_stack *st);
+t_stack	*check_map_route(char **map, t_stack *st, t_stack *visit);
 t_point	pop(t_stack *st);
 t_point	find_start(char **map);
 t_point	check_h_w(char **map);
@@ -68,8 +68,8 @@ char	*ft_strndup(const char *s1, size_t n);
 int		find_node(t_stack *st, t_point p);
 int		check_element(char c);
 int		check_edge(char **map);
-void	check_map_element(char **map, int count[3]);
 void	check_map_size(char **map, void *mlx, void *win);
+void	check_map_element(char **map, int count[3]);
 void	push(t_stack *st, t_point p);
 void	initialize(t_stack *st);
 

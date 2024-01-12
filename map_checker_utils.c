@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 13:39:28 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 19:26:46 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/12 20:48:53 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,19 +111,19 @@ t_point	find_start(char **map)
 	int		idx;
 	int		jdx;
 
-	while (map[idx] != 0)
+	start = (t_point){0, 0};
+	idx = -1;
+	while (map[++idx] != 0)
 	{
-		while (map[idx][jdx] != 0)
+		jdx = -1;
+		while (map[idx][++jdx] != 0)
 		{
 			if (map[idx][jdx] == 'P')
 			{
-				start.x = jdx;
-				start.y = idx;
+				start = (t_point){idx, jdx};
 				return (start);
 			}
-			jdx++;
 		}
-		idx++;
 	}
 	return (start);
 }

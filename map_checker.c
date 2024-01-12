@@ -6,24 +6,22 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 21:19:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 18:47:30 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/12 20:54:17 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 #include "./mlx/mlx.h"
 
-t_stack	*check_map_route(char **map, t_stack *st)
+t_stack	*check_map_route(char **map, t_stack *st, t_stack *visit)
 {
 	t_point		present;
 	t_point		next;
-	t_stack		*visit;
 	int			idx;
 	const int	dxy[2][4] = {{1, 0, -1, 0}, {0, 1, 0, -1}};
 
 	present = find_start(map);
 	push(st, present);
-	initialize(visit);
 	push(visit, present);
 	while (st->size != 0)
 	{
