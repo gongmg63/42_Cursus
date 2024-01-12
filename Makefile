@@ -8,14 +8,14 @@ SUB_LIBDIR	=	./libft
 
 all : $(NAME)
 
-$(NAME): $(OBJ_SO)
-	$(CC) $(OBJ_SO) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+$(NAME) : $(OBJS_SO)
+	$(CC) $(OBJS_SO) -L/mlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
 	
 $(SUB_LIBDIR)/$(SUB_LIB) : $(SRCS_LIB)
 	make -C $(SUB_LIBDIR)
 
 %.o : %.c
-	$(CC)  $(CFLAGS) -Imlx -c $< -o $@
+	$(CC) $(CFLAGS) -I./mlx -c $< -o $@
 
 clean : 
 	make -C $(SUB_LIBDIR) clean

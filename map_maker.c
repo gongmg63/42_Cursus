@@ -6,34 +6,36 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:37:12 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 16:44:01 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/12 19:45:49 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 #include "./mlx/mlx.h"
 
-void	check_map_size(char **map, t_mlx *m)
+void	check_map_size(char **map, void *mlx, void *win)
 {
 	t_point	hw;
-	int		*width;
-	int		*height;
+	int		width;
+	int		height;
 	void	*img;
+	int		tmp;
 
-	m->mlx = mlx_init();
 	hw = check_h_w(map);
-	mlx_get_screen_size(m->mlx, width, height);
-	if (hw.x * 64 <= *width && hw.y * 64 <= *height)
-		m->win = mlx_new_window(m->mlx, hw.y * 64, hw.x * 64, "so_long");
+	if (hw.x <= 130 && hw.y <= 130)
+		win = mlx_new_window(mlx, hw.x * 64, hw.y * 64, "so_long");
 	else
 	{
-		write(2, "Error : Map Oversize\n", 18);
+		write(2, "Error : Map size is too big.\n", 18);
 		exit(1);
 	}
-	img = mlx_xpm_file_to_image(m->mlx, "./img/Tile.xpm", width, height);
+	img = mlx_xpm_file_to_image(mlx, "./img/Tile.xpm", &width, &height);
 	while (--hw.y >= 0)
-		while (--hw.x >= 0)
-			mlx_put_image_to_window(m->mlx, m->win, img, hw.x * 64, hw.y * 64);
+	{
+		tmp = -1;
+		while (++tmp < hw.x)
+			mlx_put_image_to_window(mlx, win, img, tmp * 64, hw.y * 64);
+	}
 }
 
 char	**read_map(char *file)
@@ -43,22 +45,20 @@ char	**read_map(char *file)
 	char	*line;
 
 	fd = open(file, O_RDONLY);
-	line = get_next_line(fd);
-	if (line == 0)
+	map = get_next_line(fd);
+	if (map == 0)
 		return (0);
+	line = get_next_line(fd);
 	while (line != 0)
 	{
 		map = ft_strjoin(map, line);
-		if (map == 0)
-			return (0);
-		map = ft_strjoin(map, " ");
 		if (map == 0)
 			return (0);
 		free(line);
 		line = get_next_line(fd);
 	}
 	free(line);
-	return (ft_split(map, ' '));
+	return (ft_split(map, '\n'));
 }
 
 // void	draw_map(char **map, t_mlx *mlx)

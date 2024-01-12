@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:24:10 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 16:43:45 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/12 19:33:03 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include "./libft/libft.h"
+
+#include <stdio.h>
 
 typedef struct s_read_info
 {
@@ -35,8 +37,8 @@ typedef struct s_point
 
 typedef struct s_node
 {
-	t_node	*next_node;
-	t_point	p;
+	struct s_node	*next_node;
+	t_point			p;
 }				t_node;
 
 typedef struct s_stack
@@ -58,16 +60,17 @@ t_point	check_h_w(char **map);
 t_point	find_start(char **map);
 size_t	check_nl(char *buf);
 size_t	ft_strlen(const char *s);
+char	**read_map(char *file);
 char	*get_next_line(int fd);
 char	*ft_strnjoin(char *s1, char const *s2, size_t n);
+int		check_map_valid(char **map, t_stack *visit, int count[3]);
 char	*ft_strndup(const char *s1, size_t n);
 int		find_node(t_stack *st, t_point p);
 int		check_element(char c);
 int		check_edge(char **map);
-int		*check_map_element(char **map);
-int		check_map_valid(char **map, t_stack *visit, int count[3]);
-void	initialize(t_stack *st);
+void	check_map_element(char **map, int count[3]);
+void	check_map_size(char **map, void *mlx, void *win);
 void	push(t_stack *st, t_point p);
-void	check_map_size(char **map, t_mlx *m);
+void	initialize(t_stack *st);
 
 #endif

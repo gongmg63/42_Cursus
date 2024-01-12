@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 21:19:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 14:20:07 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/12 18:47:30 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_stack	*check_map_route(char **map, t_stack *st)
 		{
 			next.x = present.x + dxy[0][idx];
 			next.y = present.y + dxy[1][idx];
-			if (map[next.x, next.y] == '1' || find_node(visit, next))
+			if (map[next.y][next.x] == '1' || find_node(visit, next))
 				continue ;
 			push(visit, next);
 			push(st, next);

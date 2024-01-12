@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 12:21:49 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 16:44:48 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/12 19:42:26 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,15 @@
 int	main(int ac, char *av[])
 {
 	char	**map;
-	t_mlx	*mlx;
+	void	*mlx;
+	void	*win;
 
-	if (ac != 2) //실행 파일 인자 부족
+	if (ac != 2)
 		exit(1);
+	mlx = mlx_init();
 	map = read_map(av[1]);
-	check_map_size(map, mlx);
-	return (0);
+	check_map_size(map, mlx, win);
+	mlx_loop(mlx);
 }
 
 	// void	*mlx;
