@@ -6,14 +6,14 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:37:12 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 19:45:49 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/14 13:06:36 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 #include "./mlx/mlx.h"
 
-void	check_map_size(char **map, void *mlx, void *win)
+void	check_map_size(char **map, t_mlx *m)
 {
 	t_point	hw;
 	int		width;
@@ -22,19 +22,20 @@ void	check_map_size(char **map, void *mlx, void *win)
 	int		tmp;
 
 	hw = check_h_w(map);
+	m->mlx = mlx_init();
 	if (hw.x <= 130 && hw.y <= 130)
-		win = mlx_new_window(mlx, hw.x * 64, hw.y * 64, "so_long");
+		m->win = mlx_new_window(m->mlx, hw.x * 64, hw.y * 64, "so_long");
 	else
 	{
 		write(2, "Error : Map size is too big.\n", 18);
 		exit(1);
 	}
-	img = mlx_xpm_file_to_image(mlx, "./img/Tile.xpm", &width, &height);
+	img = mlx_xpm_file_to_image(m->mlx, "./img/Tile.xpm", &width, &height);
 	while (--hw.y >= 0)
 	{
 		tmp = -1;
 		while (++tmp < hw.x)
-			mlx_put_image_to_window(mlx, win, img, tmp * 64, hw.y * 64);
+			mlx_put_image_to_window(m->mlx, m->win, img, tmp * 64, hw.y * 64);
 	}
 }
 

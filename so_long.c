@@ -6,27 +6,39 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 12:21:49 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 21:02:36 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/14 13:05:25 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./mlx/mlx.h"
 #include "so_long.h"
 
+// int	main(int ac, char *av[])
+// {
+// 	char	**map;
+// 	void	*mlx;
+// 	void	*win;
+
+// 	if (ac != 2)
+// 		exit(1);
+// 	mlx = mlx_init();
+// 	map = read_map(av[1]);
+// 	check_map_size(map, mlx, win);
+// 	mlx_loop(mlx);
+// }
+
 int	main(int ac, char *av[])
 {
 	char	**map;
-	void	*mlx;
-	void	*win;
+	t_mlx	*mlx;
 
 	if (ac != 2)
 		exit(1);
-	mlx = mlx_init();
+	mlx = (t_mlx *)malloc(sizeof(mlx));
 	map = read_map(av[1]);
-	check_map_size(map, mlx, win);
+	check_map_size(map, mlx);
 	mlx_loop(mlx);
 }
-
 	// void	*mlx;
 	// void	*win_ptr;
 	// void *img;

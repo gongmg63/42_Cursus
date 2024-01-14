@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:24:10 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 21:00:36 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/14 13:06:05 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*ft_strndup(const char *s1, size_t n);
 int		find_node(t_stack *st, t_point p);
 int		check_element(char c);
 int		check_edge(char **map);
-void	check_map_size(char **map, void *mlx, void *win);
+void	check_map_size(char **map, t_mlx *mlx);
 void	check_map_element(char **map, int count[3]);
 void	push(t_stack *st, t_point p);
 void	initialize(t_stack *st);
