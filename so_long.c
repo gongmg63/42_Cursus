@@ -6,67 +6,49 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 12:21:49 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/14 13:05:25 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/14 17:58:53 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./mlx/mlx.h"
 #include "so_long.h"
 
-// int	main(int ac, char *av[])
-// {
-// 	char	**map;
-// 	void	*mlx;
-// 	void	*win;
-
-// 	if (ac != 2)
-// 		exit(1);
-// 	mlx = mlx_init();
-// 	map = read_map(av[1]);
-// 	check_map_size(map, mlx, win);
-// 	mlx_loop(mlx);
-// }
+int	key_press(int keycode, t_mlx *mlx)
+{
+	if (keycode == KEY_W)
+		mlx->p.y--;
+		// move_w(mlx);
+	else if (keycode == KEY_A)
+		mlx->p.x--;
+	else if (keycode == KEY_S)
+		mlx->p.y--;
+	else if (keycode == KEY_D)
+		mlx->p.x++;
+	else if (keycode == KEY_ESC)
+		exit(0);
+	return (0);
+}
 
 int	main(int ac, char *av[])
 {
-	char	**map;
 	t_mlx	*mlx;
+	int		count;
 
 	if (ac != 2)
 		exit(1);
+	count = 0;
 	mlx = (t_mlx *)malloc(sizeof(mlx));
-	map = read_map(av[1]);
-	check_map_size(map, mlx);
+	if (mlx == 0)
+		exit(1);
+	mlx->map = read_map(av[1]);
+	mlx->collect = check_map(mlx->map);
+	mlx->p = find_start(mlx->map);
+	draw_map(mlx->map, mlx);
+	printf("%s \n", mlx->map[1]);
+	mlx_key_hook(mlx->win, key_press, mlx);
+	count++;
+	write(1, &count, 4);
+	write(1, "\n", 1);
 	mlx_loop(mlx);
+	exit(0);
 }
-	// void	*mlx;
-	// void	*win_ptr;
-	// void *img;
-	// void *img2;
-	// void *img3;
-	// void *img4;
-	// void *img5;
-	// void *img6;
-	// void *img7;
-	// int img_width;
-	// int img_height;
-
-	// mlx = mlx_init();
-	// win_ptr = mlx_new_window(mlx, 500, 500, "my_mlx");
-	// img = mlx_xpm_file_to_image(mlx, "./img/Stone.xpm", &img_width, &img_height);
-	// img2 = mlx_xpm_file_to_image(mlx, "./img/Bush.xpm", &img_width, &img_height);
-	// img3 = mlx_xpm_file_to_image(mlx, "./img/Exit_inactive.xpm", &img_width, &img_height);
-	// img4 = mlx_xpm_file_to_image(mlx, "./img/Exit_active.xpm", &img_width, &img_height);
-	// img5 = mlx_xpm_file_to_image(mlx, "./img/HappySheep.xpm", &img_width, &img_height);
-	// img6 = mlx_xpm_file_to_image(mlx, "./img/Meat.xpm", &img_width, &img_height);
-	// img7 = mlx_xpm_file_to_image(mlx, "./img/Tile.xpm", &img_width, &img_height);
-	// for (int i = 0; i < 500; i += 64)
-	// 	for (int j = 0; j < 500; j += 64)
-	// 		mlx_put_image_to_window(mlx, win_ptr, img7, i, j);
-	// mlx_put_image_to_window(mlx, win_ptr, img, 0, 0);
-	// mlx_put_image_to_window(mlx, win_ptr, img2, 64, 0);
-	// mlx_put_image_to_window(mlx, win_ptr, img3, 128, 0);
-	// mlx_put_image_to_window(mlx, win_ptr, img4, 192, 0);
-	// mlx_put_image_to_window(mlx, win_ptr, img5, 0, 64);
-	// mlx_put_image_to_window(mlx, win_ptr, img6, 64, 64);
-	// mlx_loop(mlx);

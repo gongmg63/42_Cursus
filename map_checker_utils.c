@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 13:39:28 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/12 20:48:53 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/14 15:44:33 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,73 +25,63 @@ int	check_element(char c)
 	return (0);
 }
 
+t_point	find_start(char **map)
+{
+	int		i;
+	int		j;
+
+	i = -1;
+	while (map[++i] != 0)
+	{
+		j = -1;
+		while (map[i][++j] != 0)
+		{
+			if (map[i][j] == 'P')
+				return ((t_point){i, j});
+		}
+	}
+	return ((t_point){0, 0});
+}
+
 int	check_edge(char **map)
 {
-	int	idx;
-	int	jdx;
+	int	i;
+	int	j;
 
-	idx = 0;
-	while (map[idx] != 0)
+	i = -1;
+	while (map[++i] != 0)
 	{
-		jdx = 0;
-		while (map[idx][jdx] != 0)
+		j = -1;
+		while (map[i][++j] != 0)
 		{
-			if ((idx == 0 || map + sizeof(char *) == 0) && map[idx][jdx] != 1)
+			if ((i == 0 || map[i + 1] == 0) && map[i][j] != '1')
 				return (0);
 			else
 			{
-				if ((jdx == 0 || map[idx][jdx + 1] == 0) && map[idx][jdx] != 1)
+				if ((j == 0 || map[i][j + 1] == 0) && map[i][j] != '1')
 					return (0);
 			}
-			jdx++;
 		}
-		idx++;
 	}
 	return (1);
-}
-
-void	check_map_element(char **map, int count[3])
-{
-	int		idx;
-
-	idx = 0;
-	ft_memset(count, 0, sizeof(int) * 3);
-	while (map[idx] != 0)
-	{
-		while (*map[idx] != 0)
-		{
-			if (check_element(*map[idx]) == 0)
-			{
-				ft_bzero(count, sizeof(int) * 3);
-				return ;
-			}
-			else
-				if (check_element(*map[idx]) < 4)
-					count[check_element(*map[idx] - 1)]++;
-			map[idx]++;
-		}
-		idx++;
-	}
-	if (count[0] != 1 && count[1] != 1 && count[2] < 1)
-		ft_bzero(count, sizeof(int) * 3);
 }
 
 t_point	check_h_w(char **map)
 {
 	t_point	hw;
-	int		idx;
-	int		jdx;
+	int		i;
+	int		j;
 	int		tmp;
 
-	idx = -1;
+	i = -1;
 	hw.x = 0;
-	while (map[++idx] != 0)
+	while (map[++i] != 0)
 	{
 		tmp = 0;
-		jdx = -1;
-		while (map[idx][++jdx] != 0)
+		j = -1;
+		while (map[i][++j] != 0)
 		{
-			if (idx == 0)
+			if (i == 0)
 				hw.x++;
 			tmp++;
 		}
@@ -101,29 +91,32 @@ t_point	check_h_w(char **map)
 			return ((t_point){0, 0});
 		}
 	}
-	hw.y = idx;
+	hw.y = i;
 	return (hw);
 }
 
-t_point	find_start(char **map)
+void	check_map_element(char **map, int count[3])
 {
-	t_point	start;
-	int		idx;
-	int		jdx;
+	int	i;
+	int	j;
 
-	start = (t_point){0, 0};
-	idx = -1;
-	while (map[++idx] != 0)
+	i = -1;
+	ft_memset(count, 0, sizeof(int) * 3);
+	while (map[++i] != 0)
 	{
-		jdx = -1;
-		while (map[idx][++jdx] != 0)
+		j = -1;
+		while (map[i][++j] != 0)
 		{
-			if (map[idx][jdx] == 'P')
+			if (check_element(map[i][j]) == 0)
 			{
-				start = (t_point){idx, jdx};
-				return (start);
+				ft_bzero(count, sizeof(int) * 3);
+				return ;
 			}
+			else
+				if (check_element(map[i][j]) < 4)
+					count[check_element(map[i][j]) - 1]++;
 		}
 	}
-	return (start);
+	if (count[0] != 1 && count[1] != 1 && count[2] < 1)
+		ft_bzero(count, sizeof(int) * 3);
 }

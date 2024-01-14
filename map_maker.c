@@ -6,14 +6,14 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:37:12 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/14 13:06:36 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/14 17:59:38 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 #include "./mlx/mlx.h"
 
-void	check_map_size(char **map, t_mlx *m)
+static void	check_map_size(char **map, t_mlx *m)
 {
 	t_point	hw;
 	int		width;
@@ -39,6 +39,22 @@ void	check_map_size(char **map, t_mlx *m)
 	}
 }
 
+static void	*check_img(char c, t_mlx *m)
+{
+	int	w;
+	int	h;
+
+	if (c == '1')
+		return (mlx_xpm_file_to_image(m->mlx, "./img/Bush.xpm", &w, &h));
+	if (c == 'C')
+		return (mlx_xpm_file_to_image(m->mlx, "./img/Meat.xpm", &w, &h));
+	if (c == 'E')
+		return (mlx_xpm_file_to_image(m->mlx, "./img/Exit_inact.xpm", &w, &h));
+	if (c == 'P')
+		return (mlx_xpm_file_to_image(m->mlx, "./img/HappySheep.xpm", &w, &h));
+	return (0);
+}
+
 char	**read_map(char *file)
 {
 	int		fd;
@@ -62,20 +78,22 @@ char	**read_map(char *file)
 	return (ft_split(map, '\n'));
 }
 
-// void	draw_map(char **map, t_mlx *mlx)
-// {
-// 	void	*img;
-// 	int		*img_height;
-// 	int		*img_width;
-// 	int		idx;
+void	draw_map(char **map, t_mlx *m)
+{
+	void	*img;
+	int		i;
+	int		j;
 
-// 	idx = 0;
-// 	check_map_size(map, mlx);
-// 	while (map[idx] != 0)
-// 	{
-// 		while (*map[idx] != 0)
-// 		{
-// 			if ()
-// 		}
-// 	}
-// }
+	i = -1;
+	check_map_size(map, m);
+	while (map[++i] != 0)
+	{
+		j = -1;
+		while (map[i][++j] != 0)
+		{
+			img = check_img(map[i][j], m);
+			if (img != 0)
+				mlx_put_image_to_window(m->mlx, m->win, img, j * 64, i * 64);
+		}
+	}
+}
