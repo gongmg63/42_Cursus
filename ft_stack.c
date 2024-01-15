@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 21:00:16 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/14 16:42:04 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/15 19:25:28 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	clear_st(t_stack *st)
 {
 	while (st->top != 0)
 		pop(st);
+	free(st);
 }
 
 int	find_node(t_stack *st, t_point p)

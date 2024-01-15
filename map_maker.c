@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:37:12 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/14 17:59:38 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/15 19:37:50 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static void	check_map_size(char **map, t_mlx *m)
 	int		tmp;
 
 	hw = check_h_w(map);
-	m->mlx = mlx_init();
 	if (hw.x <= 130 && hw.y <= 130)
 		m->win = mlx_new_window(m->mlx, hw.x * 64, hw.y * 64, "so_long");
 	else
@@ -59,8 +58,14 @@ char	**read_map(char *file)
 {
 	int		fd;
 	char	*map;
+	char	**ret;
 	char	*line;
 
+	if (ft_strncmp(file + 1, ".ber", ft_strlen(file + 1)) == 0)
+	{
+		write(2, "Error : Map name is wrong\n", 29);
+		exit(1);
+	}
 	fd = open(file, O_RDONLY);
 	map = get_next_line(fd);
 	if (map == 0)
@@ -71,11 +76,11 @@ char	**read_map(char *file)
 		map = ft_strjoin(map, line);
 		if (map == 0)
 			return (0);
-		free(line);
 		line = get_next_line(fd);
 	}
-	free(line);
-	return (ft_split(map, '\n'));
+	ret = ft_split(map, '\n');
+	free(map);
+	return (ret);
 }
 
 void	draw_map(char **map, t_mlx *m)

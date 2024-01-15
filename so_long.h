@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:24:10 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/14 17:55:54 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/15 14:14:57 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include "./libft/libft.h"
-
-#include <stdio.h>
+# include "./ft_printf/ft_printf.h"
 
 typedef struct s_read_info
 {
@@ -59,6 +58,7 @@ typedef struct s_mlx
 	t_point	p;
 	char	**map;
 	int		collect;
+	int		cnt;
 }			t_mlx;
 
 t_point	pop(t_stack *st);
@@ -81,5 +81,8 @@ void	push(t_stack *st, t_point p);
 void	initialize(t_stack *st);
 void	clear_st(t_stack *st);
 void	move_w(t_mlx *m);
+void	move_a(t_mlx *m);
+void	move_s(t_mlx *m);
+void	move_d(t_mlx *m);
 
 #endif
