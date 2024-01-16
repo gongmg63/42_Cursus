@@ -6,12 +6,11 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 21:19:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/14 17:51:39 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/16 21:36:10 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
-#include "./mlx/mlx.h"
 
 static void	check_map_route(char **map, t_stack *st, t_stack *visit)
 {

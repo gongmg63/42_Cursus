@@ -6,12 +6,11 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:37:12 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/15 19:37:50 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/16 21:56:12 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
-#include "./mlx/mlx.h"
 
 static void	check_map_size(char **map, t_mlx *m)
 {
@@ -54,6 +53,14 @@ static void	*check_img(char c, t_mlx *m)
 	return (0);
 }
 
+void	error_exit(char *s)
+{
+	write(2, "Error : ", 8);
+	write(2, s, ft_strlen(s));
+	write(2, "\n", 1);
+	exit(1);
+}
+
 char	**read_map(char *file)
 {
 	int		fd;
@@ -61,11 +68,8 @@ char	**read_map(char *file)
 	char	**ret;
 	char	*line;
 
-	if (ft_strncmp(file + 1, ".ber", ft_strlen(file + 1)) == 0)
-	{
-		write(2, "Error : Map name is wrong\n", 29);
-		exit(1);
-	}
+	if (ft_strncmp(file + ft_strlen(file) - 4, ".ber", 4) != 0)
+		error_exit("Map name is wrong");
 	fd = open(file, O_RDONLY);
 	map = get_next_line(fd);
 	if (map == 0)
@@ -73,6 +77,8 @@ char	**read_map(char *file)
 	line = get_next_line(fd);
 	while (line != 0)
 	{
+		if (ft_strncmp(line, "\n", 1) == 0)
+			error_exit("Broken Map");
 		map = ft_strjoin(map, line);
 		if (map == 0)
 			return (0);

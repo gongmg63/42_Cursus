@@ -1,4 +1,4 @@
-CC			=	cc
+CC			=	gcc
 CFLAGS		=	-Wall -Wextra -Werror
 SRCS_SO		=	move.c ft_stack.c get_next_line_utils.c get_next_line.c map_checker_utils.c map_checker.c map_maker.c so_long.c
 OBJS_SO		=	$(SRCS_SO:.c=.o)
@@ -9,17 +9,22 @@ SUB_LIB		=	libft.a
 SUB_LIBDIR	=	./libft
 SUB_PRI		=	libftprintf.a
 SUB_PRIDIR	=	./ft_printf
+MLX_LIBDIR	=	./mlx
+MLX_LIB		=	libmlx.a
 
 all : $(NAME)
 
-$(NAME) : $(OBJS_SO) $(SUB_LIBDIR)/$(SUB_LIB) $(SUB_PRIDIR)/$(SUB_PRI)
-	$(CC) $(CFLAGS) -Lmlx -lmlx -framework OpenGL -framework AppKit $(OBJS_SO) $(SUB_LIBDIR)/$(SUB_LIB) $(SUB_PRIDIR)/$(SUB_PRI) -o $(NAME)
+$(NAME) : $(OBJS_SO) $(SUB_LIBDIR)/$(SUB_LIB) $(SUB_PRIDIR)/$(SUB_PRI) $(MLX_LIBDIR)/$(MLX_LIB)
+	$(CC) $(CFLAGS) -framework OpenGL -framework AppKit $(OBJS_SO) $(MLX_LIBDIR)/$(MLX_LIB) $(SUB_LIBDIR)/$(SUB_LIB) $(SUB_PRIDIR)/$(SUB_PRI) -o $(NAME)
 	
 $(SUB_LIBDIR)/$(SUB_LIB) : $(SRCS_LIB)
 	make -C $(SUB_LIBDIR)
 
 $(SUB_PRIDIR)/$(SUB_PRI) : $(SRCS_PF)
 	make -C $(SUB_PRIDIR)
+
+$(MLX_LIBDIR)/$(MLX_LIB) : 
+	make -C $(MLX_LIBDIR)
 
 %.o : %.c
 	$(CC) $(CFLAGS) -I./mlx -c $< -o $@
@@ -33,7 +38,8 @@ fclean :
 	make clean
 	rm -rf $(NAME)
 	make -C $(SUB_LIBDIR) fclean
-	make -C $(SUB_PRIDIR) clean
+	make -C $(SUB_PRIDIR) fclean
+	make -C $(MLX_LIBDIR) clean
 
 re :
 	make fclean

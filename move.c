@@ -6,11 +6,10 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/14 17:20:09 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/15 13:19:54 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/16 21:36:02 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./mlx/mlx.h"
 #include "so_long.h"
 
 void	move_w(t_mlx *m)

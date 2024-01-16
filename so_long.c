@@ -6,11 +6,10 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 12:21:49 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/15 19:37:08 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/16 21:44:15 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./mlx/mlx.h"
 #include "so_long.h"
 
 static t_point	find_exit(char **map)
@@ -80,15 +79,10 @@ static int	exit_window(void)
 	return (0);
 }
 
-void	check(void)
-{
-	system("leaks so_long");
-}
 int	main(int ac, char *av[])
 {
 	t_mlx		*mlx;
 
-	atexit(check);
 	if (ac != 2)
 		exit(1);
 	mlx = (t_mlx *)malloc(sizeof(t_mlx));
@@ -103,5 +97,5 @@ int	main(int ac, char *av[])
 	mlx_hook(mlx->win, 2, 0, key_press, mlx);
 	mlx_hook(mlx->win, 17, 0, exit_window, 0);
 	mlx_loop(mlx);
-	exit(0);
+	return (0);
 }
