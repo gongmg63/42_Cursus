@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 13:39:28 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/14 15:44:33 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/17 14:17:42 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,6 @@ void	check_map_element(char **map, int count[3])
 					count[check_element(map[i][j]) - 1]++;
 		}
 	}
-	if (count[0] != 1 && count[1] != 1 && count[2] < 1)
+	if (count[0] != 1 || count[1] != 1 || count[2] < 1)
 		ft_bzero(count, sizeof(int) * 3);
 }

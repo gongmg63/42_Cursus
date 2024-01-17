@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 21:19:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/16 21:36:10 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/17 16:25:03 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,23 +59,17 @@ static void	call_valid_element(char **map)
 	int		count[3];
 
 	check_map_element(map, count);
+	if (count[0] == 0)
+		error_exit("Wrong Element");
 	st = (t_stack *)malloc(sizeof(t_stack));
 	visit = (t_stack *)malloc(sizeof(t_stack));
 	if (st == 0 || visit == 0)
-		exit(1);
+		error_exit("Malloc Fail");
 	initialize(st);
 	initialize(visit);
 	check_map_route(map, st, visit);
-	if (count[0] == 0)
-	{
-		write(2, "Error : Map's element is wrong.\n", 33);
-		exit(1);
-	}
-	else if (check_map_valid(map, visit, count) == 0)
-	{
-		write(2, "Error : Route isn't valid.\n", 28);
-		exit(1);
-	}
+	if (check_map_valid(map, visit, count) == 0)
+		error_exit("Invalid Route");
 	clear_st(st);
 	clear_st(visit);
 }
@@ -87,15 +81,9 @@ int	check_map(char **map)
 
 	hw = check_h_w(map);
 	if (check_edge(map) == 0)
-	{
-		write(2, "Error : Edge must be wall.\n", 28);
-		exit(1);
-	}
+		error_exit("Broken Map");
 	else if (hw.x == 0)
-	{
-		write(2, "Error : Map isn't rectangle.\n", 30);
-		exit(1);
-	}
+		error_exit("Broken Map");
 	call_valid_element(map);
 	check_map_element(map, count);
 	return (count[2]);

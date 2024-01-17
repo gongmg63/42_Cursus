@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 13:24:10 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/16 21:56:48 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/17 12:53:41 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int		check_element(char c);
 int		check_edge(char **map);
 int		check_map(char **map);
 void	check_map_element(char **map, int count[3]);
-void	draw_map(char **map, t_mlx *m);
+void	draw_map(t_mlx *m);
 void	push(t_stack *st, t_point p);
 void	initialize(t_stack *st);
 void	clear_st(t_stack *st);
@@ -85,12 +85,6 @@ void	move_w(t_mlx *m);
 void	move_a(t_mlx *m);
 void	move_s(t_mlx *m);
 void	move_d(t_mlx *m);
-
-
-
 void	error_exit(char *s);
-
-
-
 
 #endif

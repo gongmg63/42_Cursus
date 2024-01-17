@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/11 21:00:16 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/15 19:25:28 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/17 11:46:27 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	push(t_stack *st, t_point p)
 
 	node = (t_node *)malloc(sizeof(t_node));
 	if (node == 0)
-		exit(1);
+		error_exit("Malloc Fail");
 	node->p = (t_point){p.x, p.y};
 	node->next_node = NULL;
 	if (st->top == NULL)

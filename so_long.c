@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 12:21:49 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/16 21:44:15 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/17 15:26:21 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,16 +84,16 @@ int	main(int ac, char *av[])
 	t_mlx		*mlx;
 
 	if (ac != 2)
-		exit(1);
+		error_exit("Wrong argument");
 	mlx = (t_mlx *)malloc(sizeof(t_mlx));
 	if (mlx == 0)
-		exit(1);
+		error_exit("Malloc error");
 	mlx->cnt = 0;
 	mlx->mlx = mlx_init();
 	mlx->map = read_map(av[1]);
 	mlx->collect = check_map(mlx->map);
 	mlx->p = find_start(mlx->map);
-	draw_map(mlx->map, mlx);
+	draw_map(mlx);
 	mlx_hook(mlx->win, 2, 0, key_press, mlx);
 	mlx_hook(mlx->win, 17, 0, exit_window, 0);
 	mlx_loop(mlx);
