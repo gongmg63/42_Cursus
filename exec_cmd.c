@@ -6,44 +6,62 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:06:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/18 20:05:57 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/22 16:45:57 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	redir_infile_stdin(t_info *info)
-{
-	int	fd;
-
-	fd = open(info->infile, O_RDONLY);
-	if (fd < 0)
-		error_exit();
-	if (dup2(fd, 0) == -1)
-		error_exit();
-}
-
-void	redir_outfile_stdout(t_info *info)
-{
-	int	fd;
-
-	fd = open(info->outfile, O_WRONLY);
-	if (fd < 0)
-		error_exit();
-	if (dup2(fd, 1) == -1)
-		error_exit();
-}
-
 void	exec_first(t_info *info, char *cmd_path)
-{	
+{
 	int	fd;
 
-	fork();
+	if (pipe(info->fds) == -1)
+		error_exit();
+	info->pid = fork();
+	if (info->pid == -1)
+		error_exit();
 	fd = open(info->infile, O_RDONLY);
 	if (fd < 0)
 		error_exit();
-	if (dup2(fd, 0) == -1)
+	if (info->pid == 0)
+	{
+		if (close(info->fds[0]) == -1)
+			error_exit();
+		if (dup2(fd, 0) == -1 || dup2(info->fds[1], 1) == -1)
+			error_exit();
+		if (execve(cmd_path, info->cmd, 0) == -1)
+			error_exit();
+	}
+	else
+		if (waitpid(info->pid, NULL, WNOHANG) == -1)
+			error_exit();
+	if (close(fd) == -1)
 		error_exit();
-	if (execve(cmd_path, info->cmd, 0) == -1)
+}
+
+void	exec_last(t_info *info, char *cmd_path)
+{
+	int	fd;
+
+	info->pid = fork();
+	if (info->pid == -1)
+		error_exit();
+	fd = open(info->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+		error_exit();
+	if (info->pid == 0)
+	{
+		if (close(info->fds[1]) == -1)
+			error_exit();
+		if (dup2(fd, 1) == -1 || dup2(info->fds[0], 0))
+			error_exit();
+		if (execve(cmd_path, info->cmd, 0) == -1)
+			error_exit();
+	}
+	else
+		if (waitpid(info->pid, NULL, WNOHANG) == -1)
+			error_exit();
+	if (close(fd) == -1)
 		error_exit();
 }
