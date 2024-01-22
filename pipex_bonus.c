@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/17 17:47:55 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/22 18:34:59 by mkong            ###   ########.fr       */
+/*   Created: 2024/01/22 17:33:08 by mkong             #+#    #+#             */
+/*   Updated: 2024/01/22 18:53:02 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 static void	free_t_d(char **cmd)
 {
@@ -52,6 +52,8 @@ int	main(int ac, char *av[], char *envp[])
 			exec_first(info, cmd_path);
 		else if (i == ac - 2)
 			exec_last(info, cmd_path);
+		else
+			exec_mid(info, cmd_path);
 		free_t_d(info->cmd);
 		free(cmd_path);
 	}

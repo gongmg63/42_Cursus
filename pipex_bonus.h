@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/17 17:46:21 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/22 19:55:53 by mkong            ###   ########.fr       */
+/*   Created: 2024/01/22 17:39:58 by mkong             #+#    #+#             */
+/*   Updated: 2024/01/22 19:56:03 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 # include <unistd.h>
 # include <string.h>
 # include <stdlib.h>
@@ -37,5 +37,7 @@ char	*find_path(t_info *info);
 t_info	*info_initialize(int ac, char *av[], char *envp[]);
 void	exec_first(t_info *info, char *cmd_path);
 void	exec_last(t_info *info, char *cmd_path);
+void	exec_mid(t_info *info, char *cmd_path);
+void	check_fail(int n);
 
 #endif
