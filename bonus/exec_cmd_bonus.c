@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:06:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 18:50:01 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 19:09:39 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,3 @@ void	exec_last(t_info *info)
 		check_fail(waitpid(info->pid, NULL, WNOHANG));
 	check_fail(close(fd));
 }
-
