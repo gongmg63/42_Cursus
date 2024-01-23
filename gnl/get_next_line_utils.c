@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:52 by mkong             #+#    #+#             */
-/*   Updated: 2023/11/29 15:01:55 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 14:40:54 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ size_t	check_nl(char *buf)
 	return (0);
 }
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen_gnl(const char *s)
 {
 	size_t	length;
 
@@ -51,7 +51,7 @@ char	*ft_strnjoin(char *s1, char const *s2, size_t n)
 	idx = 0 - 1;
 	if (n == 0)
 		return (s1);
-	s1_len = ft_strlen(s1);
+	s1_len = ft_strlen_gnl(s1);
 	result = (char *)malloc(s1_len + n + 1);
 	if (result == 0)
 	{

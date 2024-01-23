@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:41:47 by mkong             #+#    #+#             */
-/*   Updated: 2023/12/04 19:20:00 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 14:40:23 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static char	*make_str(t_node_ *h, ssize_t *rbytes)
 	while (!check_nl(h->buf + h->idx) && (*rbytes > 0))
 	{
 		if (str == 0)
-			str = ft_strndup(h->buf + h->idx, ft_strlen(h->buf + h->idx));
+			str = ft_strndup(h->buf + h->idx, ft_strlen_gnl(h->buf + h->idx));
 		else
 			str = ft_strnjoin(str, h->buf, *rbytes);
 		if (str == 0)
