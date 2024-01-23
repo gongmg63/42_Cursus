@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:33:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 14:58:12 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 19:03:06 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ static void	free_info(t_info *info)
 	free(info->infile);
 	free(info->outfile);
 	free(info);
-	if (close(info->fds[0]) == -1 || close(info->fds[1]) == -1)
-		error_exit();
+	check_fail(close(info->fds[0]));
+	check_fail(close(info->fds[1]));
 }
 
 static char	**make_cmd(char *av)
@@ -57,31 +57,47 @@ static char	**make_cmd(char *av)
 	return (cmd);
 }
 
+static void	exec_select(int i, int ac, t_info *info)
+{
+	if (ft_strncmp(info->av[1], "here_doc", ft_strlen(info->av[1])) == 0
+		&& i == 3)
+	{
+		exec_first(info);
+		return ;
+	}
+	if (i == 2)
+		exec_first(info);
+	else if (i == ac - 2)
+		exec_last(info);
+	else
+		exec_mid(info);
+}
+
 int	main(int ac, char *av[], char *envp[])
 {
 	t_info	*info;
-	char	*cmd_path;
 	int		i;
 
 	if (ac < 5)
-		exit(1);
+		error_exit("Invalid argument count");
 	info = info_initialize(ac, av, envp);
 	i = 1;
+	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0)
+	{
+		i++;
+		here_doc(av[2]);
+	}
 	while (++i < ac - 1)
 	{
 		info->cmd = make_cmd(av[i]);
-		cmd_path = find_path(info);
-		if (info->cmd == 0 || cmd_path == 0)
-			error_exit();
-		if (i == 2)
-			exec_first(info, cmd_path, envp);
-		else if (i == ac - 2)
-			exec_last(info, cmd_path, envp);
-		else
-			exec_mid(info, cmd_path, envp);
+		info->cmd_path = find_path(info);
+		if (info->cmd == 0 || info->cmd_path == 0)
+			error_exit(0);
+		exec_select(i, ac, info);
 		free_t_d(info->cmd);
-		free(cmd_path);
+		free(info->cmd_path);
 	}
 	free_info(info);
+	check_fail(unlink("./.here_doc"));
 	return (0);
 }

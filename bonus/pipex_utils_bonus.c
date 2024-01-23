@@ -6,24 +6,27 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:37 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 11:59:42 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 16:37:37 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-void	error_exit(void)
+void	error_exit(char *s)
 {
-	write(2, "Error : ", 8);
-	write(2, strerror(errno), ft_strlen(strerror(errno)));
-	write(2, "\n", 1);
+	check_fail(write(2, "Error : ", 8));
+	if (s == 0)
+		check_fail(write(2, strerror(errno), ft_strlen(strerror(errno))));
+	else
+		check_fail(write(2, s, ft_strlen(s)));
+	check_fail(write(2, "\n", 1));
 	exit(errno);
 }
 
 void	check_fail(int n)
 {
 	if (n == -1)
-		error_exit();
+		error_exit(0);
 }
 
 char	**make_path(char *envp[])
@@ -66,7 +69,7 @@ char	*find_path(t_info *info)
 		}
 		free(check_cmd);
 	}
-	error_exit();
+	error_exit("command not found");
 	return (0);
 }
 
@@ -75,11 +78,13 @@ t_info	*info_initialize(int ac, char *av[], char *envp[])
 	t_info	*info;
 
 	info = (t_info *)malloc(sizeof(t_info));
+	info->av = av;
+	info->envp = envp;
 	info->path = make_path(envp);
 	info->infile = ft_strdup(av[1]);
 	info->outfile = ft_strdup(av[ac - 1]);
 	info->cmd = NULL;
 	if (info == 0 || info->infile == 0 || info->path == 0 || info->outfile == 0)
-		error_exit();
+		error_exit(0);
 	return (info);
 }

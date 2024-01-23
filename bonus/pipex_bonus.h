@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:58 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 14:58:42 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 16:45:09 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,31 @@
 # include <fcntl.h>
 # include <sys/errno.h>
 # include <sys/wait.h>
-# include "./libft/libft.h"
-# include "./gnl/get_next_line.h"
+# include "../libft/libft.h"
+# include "../gnl/get_next_line.h"
 # include <stdio.h>
 
 typedef struct s_info
 {
+	char	**envp;
+	char	**av;
 	char	**path;
 	char	**cmd;
 	char	*infile;
 	char	*outfile;
+	char	*cmd_path;
 	pid_t	pid;
 	int		fds[2];
 }				t_info;
 
-void	error_exit(void);
+void	error_exit(char *s);
 char	**make_path(char *envp[]);
 char	*find_path(t_info *info);
-t_info	*info_initialize(int ac, char *av[], char *envp[]);
-void	exec_first(t_info *info, char *cmd_path, char **envp);
-void	exec_last(t_info *info, char *cmd_path, char **envp);
-void	exec_mid(t_info *info, char *cmd_path, char **envp);
+t_info	*info_initialize(int ac, char *av[], char **envp);
+void	exec_first(t_info *info);
+void	exec_last(t_info *info);
+void	exec_mid(t_info *info);
+int		here_doc(char *delimeter);
 void	check_fail(int n);
 
 #endif
