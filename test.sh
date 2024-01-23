@@ -1,3 +1,4 @@
 #!/bin/sh
 
-printf "Hi"
+echo $VAR1
+echo $VAR2

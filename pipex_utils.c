@@ -6,18 +6,27 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:56:57 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/22 16:57:22 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 12:53:49 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	error_exit(void)
+void	error_exit(char *s)
 {
-	write(2, "Error!! : ", 10);
-	write(2, strerror(errno), ft_strlen(strerror(errno)));
+	write(2, "Error : ", 8);
+	if (s == 0)
+		write(2, strerror(errno), ft_strlen(strerror(errno)));
+	else
+		write(2, s, ft_strlen(s));
 	write(2, "\n", 1);
 	exit(errno);
+}
+
+void	check_fail(int n)
+{
+	if (n == -1)
+		error_exit(0);
 }
 
 char	**make_path(char *envp[])
@@ -60,7 +69,7 @@ char	*find_path(t_info *info)
 		}
 		free(check_cmd);
 	}
-	error_exit();
+	error_exit("command not found");
 	return (0);
 }
 
@@ -74,6 +83,6 @@ t_info	*info_initialize(int ac, char *av[], char *envp[])
 	info->outfile = ft_strdup(av[ac - 1]);
 	info->cmd = NULL;
 	if (info == 0 || info->infile == 0 || info->path == 0 || info->outfile == 0)
-		error_exit();
+		error_exit(0);
 	return (info);
 }

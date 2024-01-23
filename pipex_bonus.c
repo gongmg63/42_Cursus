@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:33:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/22 18:53:02 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 11:41:00 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,11 @@ int	main(int ac, char *av[], char *envp[])
 		if (info->cmd == 0 || cmd_path == 0)
 			error_exit();
 		if (i == 2)
-			exec_first(info, cmd_path);
+			exec_first(info, cmd_path, envp);
 		else if (i == ac - 2)
-			exec_last(info, cmd_path);
+			exec_last(info, cmd_path, envp);
 		else
-			exec_mid(info, cmd_path);
+			exec_mid(info, cmd_path, envp);
 		free_t_d(info->cmd);
 		free(cmd_path);
 	}

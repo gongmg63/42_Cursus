@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:37 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/22 19:35:05 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 11:59:42 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	error_exit(void)
 {
-	write(2, "Error!! : ", 10);
+	write(2, "Error : ", 8);
 	write(2, strerror(errno), ft_strlen(strerror(errno)));
 	write(2, "\n", 1);
 	exit(errno);

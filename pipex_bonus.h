@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:58 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/22 19:56:03 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 14:13:09 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ void	error_exit(void);
 char	**make_path(char *envp[]);
 char	*find_path(t_info *info);
 t_info	*info_initialize(int ac, char *av[], char *envp[]);
-void	exec_first(t_info *info, char *cmd_path);
-void	exec_last(t_info *info, char *cmd_path);
-void	exec_mid(t_info *info, char *cmd_path);
+void	exec_first(t_info *info, char *cmd_path, char **envp);
+void	exec_last(t_info *info, char *cmd_path, char **envp);
+void	exec_mid(t_info *info, char *cmd_path, char **envp);
 void	check_fail(int n);
 
 #endif

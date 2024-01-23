@@ -6,62 +6,49 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:06:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/22 16:45:57 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 12:03:37 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	exec_first(t_info *info, char *cmd_path)
+void	exec_first(t_info *info, char *cmd_path, char **envp)
 {
 	int	fd;
 
-	if (pipe(info->fds) == -1)
-		error_exit();
+	check_fail(pipe(info->fds));
 	info->pid = fork();
-	if (info->pid == -1)
-		error_exit();
+	check_fail(info->pid);
 	fd = open(info->infile, O_RDONLY);
-	if (fd < 0)
-		error_exit();
+	check_fail(fd);
 	if (info->pid == 0)
 	{
-		if (close(info->fds[0]) == -1)
-			error_exit();
-		if (dup2(fd, 0) == -1 || dup2(info->fds[1], 1) == -1)
-			error_exit();
-		if (execve(cmd_path, info->cmd, 0) == -1)
-			error_exit();
+		check_fail(close(info->fds[0]));
+		check_fail(dup2(fd, 0));
+		check_fail(dup2(info->fds[1], 1));
+		check_fail(execve(cmd_path, info->cmd, envp));
 	}
 	else
-		if (waitpid(info->pid, NULL, WNOHANG) == -1)
-			error_exit();
-	if (close(fd) == -1)
-		error_exit();
+		check_fail(waitpid(info->pid, NULL, WNOHANG));
+	check_fail(close(fd));
 }
 
-void	exec_last(t_info *info, char *cmd_path)
+void	exec_last(t_info *info, char *cmd_path, char **envp)
 {
 	int	fd;
 
 	info->pid = fork();
-	if (info->pid == -1)
-		error_exit();
+	check_fail(info->pid);
 	fd = open(info->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0)
-		error_exit();
+	check_fail(fd);
 	if (info->pid == 0)
 	{
-		if (close(info->fds[1]) == -1)
-			error_exit();
-		if (dup2(fd, 1) == -1 || dup2(info->fds[0], 0))
-			error_exit();
-		if (execve(cmd_path, info->cmd, 0) == -1)
-			error_exit();
+		check_fail(close(info->fds[1]));
+		check_fail(dup2(fd, 1));
+		check_fail(dup2(info->fds[0], 0));
+		check_fail(execve(cmd_path, info->cmd, envp));
 	}
 	else
-		if (waitpid(info->pid, NULL, WNOHANG) == -1)
-			error_exit();
-	if (close(fd) == -1)
-		error_exit();
+		check_fail(waitpid(info->pid, NULL, WNOHANG));
+	check_fail(close(fd));
 }
