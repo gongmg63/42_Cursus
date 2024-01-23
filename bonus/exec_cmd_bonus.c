@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:06:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 19:09:39 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/23 19:21:57 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ void	exec_first(t_info *info)
 	int	fd;
 
 	check_fail(pipe(info->fds));
-	info->pid = fork();
 	check_fail(info->pid);
 	if (ft_strncmp(info->av[1], "here_doc", ft_strlen(info->av[1])) == 0)
 		fd = open(".here_doc", O_RDONLY);
 	else
 		fd = open(info->infile, O_RDONLY);
 	check_fail(fd);
+	info->pid = fork();
 	if (info->pid == 0)
 	{
 		check_fail(close(info->fds[0]));
