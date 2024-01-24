@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:56:57 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 16:14:34 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 11:23:52 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,16 @@
 
 void	error_exit(char *s)
 {
-	write(2, "Error : ", 8);
+	check_fail(write(2, "Error : ", 8));
 	if (s == 0)
-		write(2, strerror(errno), ft_strlen(strerror(errno)));
+		check_fail(write(2, strerror(errno), ft_strlen(strerror(errno))));
 	else
-		write(2, s, ft_strlen(s));
-	write(2, "\n", 1);
-	exit(errno);
+		check_fail(write(2, s, ft_strlen(s)));
+	check_fail(write(2, "\n", 1));
+	if (errno != 0)
+		exit(errno);
+	else
+		exit(2);
 }
 
 void	check_fail(int n)

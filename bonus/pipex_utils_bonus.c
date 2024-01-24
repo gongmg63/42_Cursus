@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:37 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 16:37:37 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 11:16:04 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ void	error_exit(char *s)
 	else
 		check_fail(write(2, s, ft_strlen(s)));
 	check_fail(write(2, "\n", 1));
-	exit(errno);
+	if (errno != 0)
+		exit(errno);
+	else
+		exit(2);
 }
 
 void	check_fail(int n)
