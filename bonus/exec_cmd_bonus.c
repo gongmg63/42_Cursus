@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:06:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/24 11:37:59 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 12:35:17 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void	exec_first(t_info *info)
 	else
 		check_fail(waitpid(info->pid, NULL, WNOHANG));
 	check_fail(close(fd));
+	if (ft_strncmp(info->av[1], "here_doc", ft_strlen(info->av[1])) == 0)
+		check_fail(unlink("./.here_doc"));
 }
 
 void	exec_mid(t_info *info)

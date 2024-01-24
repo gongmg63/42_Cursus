@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:56:57 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/24 11:23:52 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 12:55:20 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	error_exit(char *s)
 	if (errno != 0)
 		exit(errno);
 	else
-		exit(2);
+		exit(1);
 }
 
 void	check_fail(int n)
@@ -83,6 +83,8 @@ t_info	*info_initialize(int ac, char *av[], char *envp[])
 	info = (t_info *)malloc(sizeof(t_info));
 	info->path = make_path(envp);
 	info->infile = ft_strdup(av[1]);
+	if (access(info->infile, F_OK) != 0)
+		error_exit(0);
 	info->outfile = ft_strdup(av[ac - 1]);
 	info->cmd = NULL;
 	if (info == 0 || info->infile == 0 || info->path == 0 || info->outfile == 0)

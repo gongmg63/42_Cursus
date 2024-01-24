@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:33:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 19:03:06 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 12:31:50 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,5 @@ int	main(int ac, char *av[], char *envp[])
 		free(info->cmd_path);
 	}
 	free_info(info);
-	check_fail(unlink("./.here_doc"));
 	return (0);
 }
