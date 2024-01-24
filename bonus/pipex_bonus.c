@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:33:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/24 12:31:50 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 19:26:54 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static void	free_info(t_info *info)
 	free_t_d(info->path);
 	free(info->infile);
 	free(info->outfile);
-	free(info);
 	check_fail(close(info->fds[0]));
 	check_fail(close(info->fds[1]));
+	free(info);
 }
 
 static char	**make_cmd(char *av)
@@ -98,5 +98,6 @@ int	main(int ac, char *av[], char *envp[])
 		free(info->cmd_path);
 	}
 	free_info(info);
+	check_fail(waitpid(-1, NULL, 0));
 	return (0);
 }
