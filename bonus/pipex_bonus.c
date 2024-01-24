@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:33:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/24 19:26:54 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 21:01:01 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,8 @@ int	main(int ac, char *av[], char *envp[])
 		error_exit("Invalid argument count");
 	info = info_initialize(ac, av, envp);
 	i = 1;
-	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0)
-	{
-		i++;
-		here_doc(av[2]);
-	}
+	if (ft_strncmp(av[i], "here_doc", ft_strlen(av[i])) == 0)
+		here_doc(av[++i]);
 	while (++i < ac - 1)
 	{
 		info->cmd = make_cmd(av[i]);
@@ -98,6 +95,7 @@ int	main(int ac, char *av[], char *envp[])
 		free(info->cmd_path);
 	}
 	free_info(info);
-	check_fail(waitpid(-1, NULL, 0));
+	while ((info->child)-- > 0)
+		check_fail(wait(NULL));
 	return (0);
 }

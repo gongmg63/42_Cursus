@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 17:47:55 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/24 19:27:12 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 20:32:06 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static char	**make_cmd(char *av)
 int	main(int ac, char *av[], char *envp[])
 {
 	t_info	*info;
-	char	*cmd_path;
 	int		i;
 
 	if (ac != 5)
@@ -70,17 +69,18 @@ int	main(int ac, char *av[], char *envp[])
 	while (++i < ac - 1)
 	{
 		info->cmd = make_cmd(av[i]);
-		cmd_path = find_path(info);
-		if (info->cmd == 0 || cmd_path == 0)
+		info->cmd_path = find_path(info);
+		if (info->cmd == 0 || info->cmd_path == 0)
 			error_exit(0);
 		if (i == 2)
-			exec_first(info, cmd_path, envp);
+			exec_first(info);
 		else if (i == ac - 2)
-			exec_last(info, cmd_path, envp);
+			exec_last(info);
 		free_t_d(info->cmd);
-		free(cmd_path);
+		free(info->cmd_path);
 	}
 	free_info(info);
-	check_fail(waitpid(-1, NULL, 0));
+	while ((info->child)-- > 0)
+		check_fail(wait(NULL));
 	return (0);
 }

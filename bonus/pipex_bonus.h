@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:58 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 16:45:09 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 20:11:52 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct s_info
 	char	*cmd_path;
 	pid_t	pid;
 	int		fds[2];
+	int		child;
 }				t_info;
 
 void	error_exit(char *s);

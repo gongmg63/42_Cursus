@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:37 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/24 15:37:08 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 20:12:17 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ t_info	*info_initialize(int ac, char *av[], char *envp[])
 	t_info	*info;
 
 	info = (t_info *)malloc(sizeof(t_info));
+	info->child = 0;
 	info->av = av;
 	info->envp = envp;
 	info->path = make_path(envp);

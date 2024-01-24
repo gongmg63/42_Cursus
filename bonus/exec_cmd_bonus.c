@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:06:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/24 12:35:17 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/24 21:02:49 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	exec_first(t_info *info)
 	else
 		fd = open(info->infile, O_RDONLY);
 	check_fail(fd);
+	info->child++;
 	info->pid = fork();
 	if (info->pid == 0)
 	{
@@ -31,8 +32,6 @@ void	exec_first(t_info *info)
 		check_fail(dup2(info->fds[1], 1));
 		check_fail(execve(info->cmd_path, info->cmd, info->envp));
 	}
-	else
-		check_fail(waitpid(info->pid, NULL, WNOHANG));
 	check_fail(close(fd));
 	if (ft_strncmp(info->av[1], "here_doc", ft_strlen(info->av[1])) == 0)
 		check_fail(unlink("./.here_doc"));
@@ -43,6 +42,7 @@ void	exec_mid(t_info *info)
 	int	fds[2];
 
 	check_fail(pipe(fds));
+	info->child++;
 	info->pid = fork();
 	check_fail(info->pid);
 	if (info->pid == 0)
@@ -54,8 +54,6 @@ void	exec_mid(t_info *info)
 		check_fail(close(fds[1]));
 		check_fail(execve(info->cmd_path, info->cmd, info->envp));
 	}
-	else
-		check_fail(waitpid(info->pid, NULL, WNOHANG));
 	check_fail(close(info->fds[0]));
 	check_fail(close(info->fds[1]));
 	ft_memcpy(info->fds, fds, sizeof(fds));
@@ -69,6 +67,7 @@ void	exec_last(t_info *info)
 		fd = open(info->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
 		fd = open(info->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	info->child++;
 	info->pid = fork();
 	check_fail(info->pid);
 	check_fail(fd);
@@ -79,7 +78,5 @@ void	exec_last(t_info *info)
 		check_fail(dup2(info->fds[0], 0));
 		check_fail(execve(info->cmd_path, info->cmd, info->envp));
 	}
-	else
-		check_fail(waitpid(info->pid, NULL, WNOHANG));
 	check_fail(close(fd));
 }
