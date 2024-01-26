@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:37 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/24 20:12:17 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/26 14:27:14 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,14 @@ void	error_exit(char *s)
 	if (s == 0)
 		check_fail(write(2, strerror(errno), ft_strlen(strerror(errno))));
 	else
+	{
 		check_fail(write(2, s, ft_strlen(s)));
+		if (ft_strncmp(s, "command not found", 17) == 0)
+		{
+			check_fail(write(2, "\n", 1));
+			exit(127);
+		}
+	}
 	check_fail(write(2, "\n", 1));
 	if (errno != 0)
 		exit(errno);
@@ -72,8 +79,8 @@ char	*find_path(t_info *info)
 		}
 		free(check_cmd);
 	}
-	error_exit("command not found");
-	return (0);
+	check_cmd = ft_strndup("CnF", 3);
+	return (check_cmd);
 }
 
 t_info	*info_initialize(int ac, char *av[], char *envp[])

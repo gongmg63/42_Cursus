@@ -1,5 +1,5 @@
 CC			=	cc
-CFLAGS		=	-g -Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra -Werror
 SUB_LIBDIR	=	./libft
 SUB_LIB		=	libft.a
 SUB_GNLDIR	=	./gnl

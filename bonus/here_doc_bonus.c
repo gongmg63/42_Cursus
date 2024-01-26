@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 15:29:44 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/23 17:00:19 by mkong            ###   ########.fr       */
+/*   Updated: 2024/01/26 13:48:37 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,20 @@ int	here_doc(char *delimeter)
 
 	fd = open(".here_doc", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	check_fail(fd);
-	check_fail(write(1, "here_doc>", 9));
-	s = get_next_line(0);
-	if (s == 0)
-		error_exit(0);
-	while (ft_strncmp(s, delimeter, ft_strlen(delimeter)) != 0)
+	while (1)
 	{
 		check_fail(write(1, "here_doc>", 9));
+		s = get_next_line(0);
+		if (ft_strncmp(s, delimeter, ft_strlen(s) - 1) == 0
+			&& ft_strncmp(s, delimeter, ft_strlen(delimeter)) == 0)
+		{
+			free(s);
+			return (fd);
+		}
 		check_fail(write(fd, s, ft_strlen(s)));
 		free(s);
-		s = get_next_line(0);
 		if (s == 0)
 			error_exit(0);
 	}
-	free(s);
 	return (fd);
 }
