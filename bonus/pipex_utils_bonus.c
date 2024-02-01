@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:39:37 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/26 14:27:14 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/01 18:52:50 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ t_info	*info_initialize(int ac, char *av[], char *envp[])
 	info->path = make_path(envp);
 	info->infile = ft_strdup(av[1]);
 	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) != 0
+		&& ft_strncmp(av[1], "here_doc", 8) != 0
 		&& access(info->infile, F_OK) != 0)
 		error_exit(0);
 	info->outfile = ft_strdup(av[ac - 1]);

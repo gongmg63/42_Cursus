@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:06:47 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/26 14:25:57 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/01 19:27:28 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ void	exec_first(t_info *info)
 		check_fail(close(info->fds[1]));
 		check_fail(execve(info->cmd_path, info->cmd, info->envp));
 	}
-	if (ft_strncmp(info->av[1], "here_doc", ft_strlen(info->av[1])) == 0)
-		check_fail(unlink("./.here_doc"));
 }
 
 void	exec_mid(t_info *info)
@@ -92,4 +90,6 @@ void	exec_last(t_info *info)
 	}
 	check_fail(close(info->fds[0]));
 	check_fail(close(info->fds[1]));
+	if (ft_strncmp(info->av[1], "here_doc", ft_strlen(info->av[1])) == 0)
+		check_fail(unlink("./.here_doc"));
 }

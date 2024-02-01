@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:33:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/01/26 12:53:09 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/01 19:27:29 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ static char	**make_cmd(char *av)
 static void	exec_select(int i, int ac, t_info *info)
 {
 	if (ft_strncmp(info->av[1], "here_doc", ft_strlen(info->av[1])) == 0
+		&& ft_strncmp(info->av[1], "here_doc", 8) == 0
 		&& i == 3)
 	{
 		exec_first(info);
@@ -80,7 +81,8 @@ int	main(int ac, char *av[], char *envp[])
 		error_exit("Invalid argument count");
 	info = info_initialize(ac, av, envp);
 	i = 1;
-	if (ft_strncmp(av[i], "here_doc", ft_strlen(av[i])) == 0)
+	if (ft_strncmp(av[i], "here_doc", ft_strlen(av[i])) == 0
+		&& ft_strncmp(av[1], "here_doc", 8) == 0)
 		here_doc(av[++i]);
 	while (++i < ac - 1)
 	{
