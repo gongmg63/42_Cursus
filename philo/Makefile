@@ -1,6 +1,6 @@
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror
-SRCS		=	philo.c ft_atoi.c thread.c
+CFLAGS		=	-g -Wall -Wextra -Werror
+SRCS		=	philo.c ft_atoi.c thread.c philo_behavior.c
 OBJS		=	$(SRCS:.c=.o)
 NAME		=	philo
 

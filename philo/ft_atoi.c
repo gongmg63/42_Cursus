@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 14:42:20 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/01 14:49:23 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/02 16:47:04 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	ft_isdigit(int c)
 	return (0);
 }
 
-int	ft_atoi(const char *str, t_philo *p)
+int	ft_atoi(const char *str, t_info *p)
 {
 	long long		result;
 	int				sign;
