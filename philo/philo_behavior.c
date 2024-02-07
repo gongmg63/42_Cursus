@@ -6,80 +6,94 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 20:55:58 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/05 21:26:19 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/07 20:31:24 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	get_time(t_time st_tv)
+void	pickup_fork(t_philo *ph)
 {
-	t_time	p_tv;
-	int		p_ms;
-
-	gettimeofday(&p_tv, NULL);
-	p_ms = p_tv.tv_sec * 1000 + p_tv.tv_usec / 1000;
-	p_ms -= st_tv.tv_sec * 1000 + st_tv.tv_usec / 1000;
-	return (p_ms);
-}
-
-void	pickup_fork_eat(t_philo *ph)
-{
-	if (check_die(ph))
-		return ;
 	pthread_mutex_lock(ph->mutex);
-	if (ph->state[1] == 1
-		&& !ph->phs[(ph->id + 1) % ph->philos]->state[0]
-		&& !ph->phs[(ph->id + ph->philos - 1) % ph->philos]->state[0])
+	if (check_die(ph))
+	{
+		pthread_mutex_unlock(ph->mutex);
+		return ;
+	}
+	if (ph->fork[(ph->id + 1) % ph->philos] == 0 && ph->fork[ph->id] == 0)
 	{
 		printf("%d ms %d has taken a fork\n", get_time(*ph->st_tv), ph->id);
 		printf("%d ms %d has taken a fork\n", get_time(*ph->st_tv), ph->id);
-		gettimeofday(ph->last_eat, NULL);
-		printf("%d ms %d is eating\n", get_time(*ph->st_tv), ph->id);
-		if (ph->eat_num > 0)
-			ph->eat_num--;
-		memset(ph->state, 0, sizeof(ph->state));
+		ph->fork[(ph->id + 1) % ph->philos] = 1;
+		ph->fork[ph->id] = 1;
 		ph->state[0] = 1;
-		while (get_time(*ph->last_eat) < ph->eat)
-			usleep(ph->eat * 100);
-		gettimeofday(ph->last_eat, NULL);
 	}
 	pthread_mutex_unlock(ph->mutex);
 }
 
-void	think(t_philo *ph)
+void	eating(t_philo *ph)
 {
-	printf("%d ms %d is thinking\n", get_time(*ph->st_tv), ph->id);
-	memset(ph->state, 0, sizeof(ph->state));
-	ph->state[1] = 1;
-	return ;
+	t_time	eat_tv;
+
+	if (ph->state[0] == 0)
+		return ;
+	gettimeofday(&eat_tv, NULL);
+	printf("%d ms %d is eating\n", get_time(*ph->st_tv), ph->id);
+	while (get_time(eat_tv) < ph->eat)
+	{
+		if (check_die(ph))
+			return ;
+		usleep(50);
+		if (check_die(ph))
+			return ;
+	}
+	gettimeofday(&ph->last_eat, NULL);
+	if (ph->eat_num > 0)
+		ph->eat_num--;
 }
 
-void	sleep(t_philo *ph)
+void	sleeping(t_philo *ph)
 {
 	t_time	sleep_tv;
 
+	if (check_die(ph) || ph->state[0] != 2)
+		return ;
 	gettimeofday(&sleep_tv, NULL);
 	printf("%d ms %d is sleeping\n", get_time(*ph->st_tv), ph->id);
 	memset(ph->state, 0, sizeof(ph->state));
-	ph->state[2] = 1;
 	while (get_time(sleep_tv) < ph->sleep)
 	{
 		if (check_die(ph))
 			return ;
-		usleep(ph->sleep * 100);
+		usleep(50);
 		if (check_die(ph))
 			return ;
 	}
 	return ;
 }
 
-int	check_die(t_philo *ph)
+void	putdown_fork(t_philo *ph)
 {
-	if (get_time(*ph->last_eat) > ph->die)
+	if (ph->state[0] == 0)
+		return ;
+	pthread_mutex_lock(ph->mutex);
+	memset(ph->state, 0, sizeof(ph->state));
+	ph->fork[ph->id] = 0;
+	ph->fork[(ph->id + 1) % ph->philos] = 0;
+	ph->state[0] = 2;
+	pthread_mutex_unlock(ph->mutex);
+}
+
+void	thinking(t_philo *ph)
+{
+	if (check_die(ph))
+		return ;
+	if (!ph->state[0] && !ph->state[1] && !ph->state[2])
 	{
-		printf("%d ms %d is died\n", get_time(*ph->st_tv), ph->id);
-		*ph->exist_die = 1;
+		usleep(50);
+		printf("%d ms %d is thinking\n", get_time(*ph->st_tv), ph->id);
+		memset(ph->state, 0, sizeof(ph->state));
+		ph->state[1] = 1;
 	}
-	return (*ph->exist_die);
+	return ;
 }

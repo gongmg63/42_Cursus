@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 20:33:02 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/05 21:30:45 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/07 20:17:08 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@ static void	set_info(t_info *info, int ac, char *av[])
 	info->die = ft_atoi(av[2], info);
 	info->eat = ft_atoi(av[3], info);
 	info->sleep = ft_atoi(av[4], info);
+	info->fork = (int *)malloc(sizeof(int) * info->philos);
+	if (info->fork == 0)
+		info->error = 1;
+	memset(info->fork, 0, sizeof(int) * info->philos);
 	if (ac == 6)
 		info->eat_num = ft_atoi(av[5], info);
 	else
@@ -30,12 +34,12 @@ static t_philo	*set_philo_info(t_info *info, int id, int *exist_die)
 	t_philo	*ph;
 
 	ph = (t_philo *)malloc(sizeof(t_philo));
-	ph->st_tv = (t_time *)malloc(sizeof(t_time));
-	ph->last_eat = (t_time *)malloc(sizeof(t_time));
-	if (ph == 0 || ph->st_tv == 0 || ph->last_eat == 0)
+	ph->fork = (int *)malloc(sizeof(int) * info->philos);
+	if (ph == 0 || ph->fork)
 		info->error = 1;
 	memset(ph->state, 0, sizeof(ph->state));
-	ph->state[1] = 1;
+	ph->fork = info->fork;
+	ph->state[0] = 0;
 	ph->id = id;
 	ph->die = info->die;
 	ph->eat = info->eat;
@@ -69,7 +73,7 @@ int	main(int ac, char *av[])
 {
 	t_info	*info;
 	t_philo	**phs;
-	int		*exist_die;
+	int		exist_die;
 
 	if (!(ac == 5 || ac == 6))
 		return (1);
@@ -77,8 +81,8 @@ int	main(int ac, char *av[])
 	if (info == 0)
 		return (1);
 	set_info(info, ac, av);
-	*exist_die = 0;
-	phs = set_philos(info, exist_die);
+	exist_die = 0;
+	phs = set_philos(info, &exist_die);
 	simulation(phs, info);
 	return (0);
 }
