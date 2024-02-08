@@ -1,6 +1,6 @@
 CC			=	cc
 CFLAGS		=	-g -Wall -Wextra -Werror -pthread -fsanitize=thread
-SRCS		=	philo.c ft_atoi.c thread.c philo_behavior.c
+SRCS		=	philo.c philo_behavior.c ft_atoi.c thread.c thread_utils.c
 OBJS		=	$(SRCS:.c=.o)
 NAME		=	philo
 

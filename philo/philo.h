@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:07:08 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/07 20:17:08 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/08 19:44:43 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct timeval	t_time;
 
 typedef struct s_info
 {
-	t_time	st_tv;
+	t_time	*st_tv;
 	int		*fork;
 	int		philos;
 	int		die;
@@ -42,7 +42,8 @@ typedef struct s_philo
 	t_time			last_eat;
 	int				*fork;
 	int				*exist_die;
-	int				state[3];
+	int				*last_in;
+	int				state;
 	int				id;
 	int				die;
 	int				eat;
@@ -61,5 +62,6 @@ int		get_time(t_time st_tv);
 void	pickup_fork(t_philo *ph);
 void	eating(t_philo *ph);
 void	putdown_fork(t_philo *ph);
+int		last_in(t_philo *ph);
 
 #endif
