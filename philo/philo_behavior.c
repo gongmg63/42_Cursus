@@ -6,45 +6,17 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 20:55:58 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/08 20:42:55 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/13 16:40:44 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	check_even(t_philo *ph)
-{
-	int	i;
-
-	i = -1;
-	while (++i < ph->philos)
-	{
-		if (get_time(ph->phs[i]->last_eat) == get_time(*ph->phs[i]->st_tv))
-			i++;
-		else
-			return (0);
-	}
-	return (1);
-}
-
 void	pickup_fork(t_philo *ph)
 {
-	if (ph->id % 2 == 1)
-	{
-		if (check_even(ph))
-		{
-			printf("%d\n", ph->id);
-			usleep(500);
-		}
-	}
 	pthread_mutex_lock(ph->mutex);
-	if (check_die(ph)
-		|| (ph->id + 1) % ph->philos == ph->id)
-	{
-		pthread_mutex_unlock(ph->mutex);
-		return ;
-	}
-	if (ph->fork[(ph->id + 1) % ph->philos] == 0 && ph->fork[ph->id] == 0)
+	if (!check_die(ph)
+		&& ph->fork[(ph->id + 1) % ph->philos] == 0 && ph->fork[ph->id] == 0)
 	{
 		printf("%d ms %d has taken a fork\n", get_time(*ph->st_tv), ph->id);
 		printf("%d ms %d has taken a fork\n", get_time(*ph->st_tv), ph->id);

@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:50:05 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/08 19:53:46 by mkong            ###   ########.fr       */
+/*   Updated: 2024/02/13 18:34:02 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@ int	last_in(t_philo *ph)
 	pthread_mutex_lock(ph->mutex);
 	if (ph->id == ph->philos - 1)
 	{
-		gettimeofday(ph->st_tv, NULL);
 		*ph->last_in = 1;
+		// gettimeofday(ph->st_tv, NULL);
 	}
 	if (*ph->last_in == 1)
 	{
-		ph->last_eat = *ph->st_tv;
+		// ph->last_eat = *ph->st_tv;
 		pthread_mutex_unlock(ph->mutex);
 		return (1);
 	}
