@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:50:41 by jgoo              #+#    #+#             */
-/*   Updated: 2024/03/14 13:33:02 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/18 11:24:24 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,15 @@ void	tokenize_parent(char *str, t_token *head, t_token_category category);
 int		check_word(char c);
 int		check_quote_cnt(char *str, char c);
 void	tokenize_word_branch(char *str, t_token *head, int *idx);
-char	*tokenize_quote(char *str, char c);
+char	*tokenize_quote(char *str, char c, char o_c);
+int		tokenize_other_quote(char *str, char other_c, int *len);
 
 // tokenize_utils3.c
 void	tokenize_word(char *ret, char *q_str, t_token *head, int *idx);
 void	tokenize_error(char *str, t_token *head, int *idx, int len);
 void	update_parent_token(t_token *head);
 int		check_meta_char(char c);
+char	och(char c);
 
 // tokenize_utils4.c
 void	tokenize_meta_char(char *str, t_token *head, \

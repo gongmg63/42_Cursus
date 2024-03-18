@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:52:44 by jgoo              #+#    #+#             */
-/*   Updated: 2024/03/14 13:33:16 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/18 11:23:58 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,12 @@ void	update_parent_token(t_token *head)
 		update_lparent_error(head, r_cnt, l_cnt);
 	else if (l_cnt < r_cnt)
 		update_rparent_error(head, r_cnt - l_cnt);
+}
+
+char	och(char c)
+{
+	if (c == '\'')
+		return ('\"');
+	else
+		return ('\'');
 }
