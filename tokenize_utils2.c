@@ -62,7 +62,7 @@ void	tokenize_word_branch(char *str, t_token *head, int *idx)
 			}
 			else
 			{
-				quote_str = tokenize_quote(str + len, str[len]);
+				quote_str = tokenize_quote(str + len, str[len], och(str[len]));
 				break ;
 			}
 		}
@@ -72,7 +72,7 @@ void	tokenize_word_branch(char *str, t_token *head, int *idx)
 	tokenize_word(ret, quote_str, head, idx);
 }
 
-char	*tokenize_quote(char *str, char c)
+char	*tokenize_quote(char *str, char c, char other_c)
 {
 	char	*content;
 	int		len;
@@ -84,10 +84,38 @@ char	*tokenize_quote(char *str, char c)
 	{
 		if (str[len] == c)
 			in_quote = !in_quote;
-		else if (!in_quote && check_meta_char(str[len]))
-			break ;
+		else if (!in_quote)
+		{
+			if (check_meta_char(str[len]))
+				break ;
+			if (str[len] == other_c && !tokenize_other_quote(str + len, other_c, &len))
+				break ;
+		}
 		len++;
 	}
 	null_guard(content = ft_substr(str, 0, len));
 	return (content);
+}
+
+int	tokenize_other_quote(char *str, char other_c, int *len)
+{
+	int	i;
+	int	in_quote;
+
+	i = -1;
+	in_quote = 0;
+	while (str[++i])
+	{
+		if (str[i] == other_c)
+			in_quote = !in_quote;
+		else if (!in_quote && check_meta_char(str[i]))
+			break ;
+	}
+	if (in_quote)
+		return (0);
+	else
+	{
+		*len += i;
+		return (1);
+	}
 }
