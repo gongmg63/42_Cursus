@@ -78,3 +78,11 @@ void	update_parent_token(t_token *head)
 	else if (l_cnt < r_cnt)
 		update_rparent_error(head, r_cnt - l_cnt);
 }
+
+char	och(char c)
+{
+	if (c == '\'')
+		return ('\"');
+	else
+		return ('\'');
+}

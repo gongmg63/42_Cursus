@@ -57,13 +57,15 @@ void	tokenize_parent(char *str, t_token *head, t_token_category category);
 int		check_word(char c);
 int		check_quote_cnt(char *str, char c);
 void	tokenize_word_branch(char *str, t_token *head, int *idx);
-char	*tokenize_quote(char *str, char c);
+char	*tokenize_quote(char *str, char c, char o_c);
+int		tokenize_other_quote(char *str, char other_c, int *len);
 
 // tokenize_utils3.c
 void	tokenize_word(char *ret, char *q_str, t_token *head, int *idx);
 void	tokenize_error(char *str, t_token *head, int *idx, int len);
 void	update_parent_token(t_token *head);
 int		check_meta_char(char c);
+char	och(char c);
 
 // tokenize_utils4.c
 void	tokenize_meta_char(char *str, t_token *head, \
