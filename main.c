@@ -49,7 +49,6 @@ int	main(int argc, char *argv[], char *envp[])
 	t_node		*root;
 	t_dict		*dic;
 
-	// necessary??
 	(void)argc;
 	(void)argv;
 	dic = init_dict();
