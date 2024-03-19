@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:44:35 by mkong             #+#    #+#             */
-/*   Updated: 2024/03/14 19:36:54 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/19 14:53:52 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static void	exec_here_doc(char *tmp_name, char *delimeter, t_dict *dic)
 		if (s == NULL)
 			heredoc_sigterm_handler();
 		check_deli(after_deli, s, fd);
-		if (!ft_strchr(delimeter, '\'') || !ft_strchr(delimeter, '\''))
+		if (!ft_strchr(delimeter, '\'') || !ft_strchr(delimeter, '\"'))
 			s = change_env(dic, s, 0);
 		ft_putendl_fd(s, fd);
 		free(s);
