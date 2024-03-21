@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 20:55:58 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/13 16:40:44 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/20 15:14:05 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	eating(t_philo *ph)
 {
 	t_time	eat_tv;
 
+	usleep(50);
 	if (ph->state != 1 || ph->eat_num == 0)
 		return ;
 	gettimeofday(&eat_tv, NULL);
@@ -63,6 +64,7 @@ void	sleeping(t_philo *ph)
 {
 	t_time	sleep_tv;
 
+	usleep(50);
 	if (check_die(ph) || ph->state != 2)
 		return ;
 	gettimeofday(&sleep_tv, NULL);
@@ -81,6 +83,7 @@ void	sleeping(t_philo *ph)
 
 void	thinking(t_philo *ph)
 {
+	usleep(50);
 	if (check_die(ph))
 		return ;
 	if (ph->state == 0)

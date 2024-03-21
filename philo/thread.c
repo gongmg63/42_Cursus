@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 20:23:05 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/13 18:39:45 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/20 15:14:20 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,6 @@ void	*st_simul(void *philo)
 	t_philo	*ph;
 
 	ph = (t_philo *)philo;
-	while (1)
-		if (last_in(ph))
-			break ;
 	set_time(ph);
 	if (ph->id % 2 == 1)
 		usleep(ph->die / 4 * 1000);
@@ -48,7 +45,6 @@ void	*st_simul(void *philo)
 
 void	set_ph(t_philo *p, t_info *i, pthread_mutex_t *m, pthread_mutex_t *md)
 {
-	// p->last_eat = *i->st_tv;
 	(void)i;
 	p->mutex = m;
 	p->mutex_die = md;

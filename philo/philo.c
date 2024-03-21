@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 20:33:02 by mkong             #+#    #+#             */
-/*   Updated: 2024/02/13 18:32:54 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/20 15:14:02 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static t_philo	*set_philo_info(t_info *info, int id, int *exist_die, int *l_i)
 	t_philo	*ph;
 
 	ph = (t_philo *)malloc(sizeof(t_philo));
-	// ph->st_tv = info->st_tv;
 	ph->st_tv = (t_time *)malloc(sizeof(t_time));
 	if (ph == 0 || ph->st_tv == 0)
 		info->error = 1;

@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 14:10:27 by mkong             #+#    #+#             */
-/*   Updated: 2024/03/20 21:03:42 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/21 11:20:34 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,6 @@ void	ph_thinking(t_philo *ph);
 void	take_fork(t_philo *ph);
 void	ph_eating(t_philo *ph);
 void	free_info(t_info *info);
+void	free_phs(t_philo **phs);
 
 #endif

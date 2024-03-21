@@ -1,10 +1,12 @@
 CC			=	cc
-CFLAGS		=	-g -Wall -Wextra -Werror #-pthread -fsanitize=thread
-SRCS		=	philo.c philo_behavior.c ft_atoi.c thread.c thread_utils.c
+CFLAGS		=	-Wall -Wextra -Werror #-g -pthread -fsanitize=thread
+SRCS		=	philo_bonus.c behavior_bonus.c ft_atoi_bonus.c process_bonus.c fork_bonus.c
 OBJS		=	$(SRCS:.c=.o)
 NAME		=	philo
 
 all : $(NAME)
+
+bonus : all
 
 $(NAME) : $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
@@ -23,4 +25,4 @@ re :
 	make fclean
 	make all
 
-.PHONY : all clean fclean re
+.PHONY : all clean fclean re bonus
