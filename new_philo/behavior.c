@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 19:23:32 by mkong             #+#    #+#             */
-/*   Updated: 2024/03/20 20:46:50 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/22 18:44:31 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ph_eating(t_philo *ph)
 		return ;
 	pthread_mutex_lock(ph->print_mutex);
 	if (!check_die(ph))
-		printf("%d %d is eating\n", get_time(*ph->st_tv), ph->id);
+		printf("%d %d is eating\n", get_time(*ph->st_tv), ph->id + 1);
 	pthread_mutex_unlock(ph->print_mutex);
 	gettimeofday(&eat_tv, NULL);
 	while (get_time(eat_tv) < ph->eat)
@@ -54,7 +54,7 @@ void	ph_sleeping(t_philo *ph)
 		return ;
 	pthread_mutex_lock(ph->print_mutex);
 	if (!check_die(ph))
-		printf("%d %d is sleeping\n", get_time(*ph->st_tv), ph->id);
+		printf("%d %d is sleeping\n", get_time(*ph->st_tv), ph->id + 1);
 	pthread_mutex_unlock(ph->print_mutex);
 	gettimeofday(&sleep_tv, NULL);
 	while (get_time(sleep_tv) < ph->sleep)
@@ -73,7 +73,7 @@ void	ph_thinking(t_philo *ph)
 	pthread_mutex_lock(ph->print_mutex);
 	if (!check_die(ph))
 	{
-		printf("%d %d is thinking\n", get_time(*ph->st_tv), ph->id);
+		printf("%d %d is thinking\n", get_time(*ph->st_tv), ph->id + 1);
 		ph->state = thinking;
 	}
 	pthread_mutex_unlock(ph->print_mutex);

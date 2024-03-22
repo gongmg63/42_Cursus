@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 16:18:53 by mkong             #+#    #+#             */
-/*   Updated: 2024/03/21 20:08:21 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/22 15:22:26 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ int	get_time(t_time st_tv)
 
 void	child_philo(t_philo *ph)
 {
-	if (ph->id % 2 == 1)
-		usleep(4000);
 	while (1)
 	{
 		take_fork(ph);
@@ -36,26 +34,41 @@ void	child_philo(t_philo *ph)
 	}
 }
 
-void	parent_process(pid_t *pid, t_philo *ph)
+int	count_finish(int *cnt_finish, int size)
+{
+	int	i;
+	int	cnt;
+
+	i = -1;
+	cnt = 0;
+	while (++i < size)
+		cnt += cnt_finish[i];
+	return (cnt);
+}
+
+void	parent_process(pid_t *pid, int *cnt_finish, t_philo *ph)
 {
 	int	status;
 	int	i;
-	int	die;
+	int	finish;
 
-	die = 0;
-	while (!die)
+	finish = 0;
+	while (!finish)
 	{
 		i = -1;
 		while (++i < ph->philos)
 		{
-			waitpid(pid[i], &status, 0);
-			if (status == 1)
+			if (waitpid(pid[i], &status, WNOHANG) == -1)
+				cnt_finish[i] = 1;
+			if (WEXITSTATUS(status) == 1)
 			{
 				i = -1;
 				while (++i < ph->philos)
 					kill(pid[i], SIGKILL);
-				die = 1;
+				finish = 1;
 			}
+			if (count_finish(cnt_finish, ph->philos) == ph->philos)
+				finish = 1;
 		}
 	}
 }
@@ -71,12 +84,15 @@ void	free_philo(t_philo *ph)
 void	simulation(t_philo *philo)
 {
 	pid_t	*pid;
+	int		*cnt_finish;
 	int		i;
 
 	pid = (pid_t *)malloc(sizeof(pid) * philo->philos);
-	if (pid == NULL)
+	cnt_finish = (int *)malloc(sizeof(int) * philo->philos);
+	if (pid == NULL || cnt_finish == NULL)
 		exit(1);
 	i = -1;
+	memset(cnt_finish, 0, sizeof(int) * philo->philos);
 	gettimeofday(&philo->st_tv, NULL);
 	philo->last_eat = philo->st_tv;
 	while (++i < philo->philos)
@@ -88,7 +104,8 @@ void	simulation(t_philo *philo)
 			child_philo(philo);
 		}
 	}
-	parent_process(pid, philo);
+	parent_process(pid, cnt_finish, philo);
 	free_philo(philo);
 	free(pid);
+	free(cnt_finish);
 }

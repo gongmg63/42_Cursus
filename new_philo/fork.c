@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 14:54:33 by mkong             #+#    #+#             */
-/*   Updated: 2024/03/20 20:55:37 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/22 18:44:06 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	take_left_fork(t_philo *ph)
 	{
 		pthread_mutex_lock(ph->print_mutex);
 		if (!check_die(ph))
-			printf("%d %d has taken a fork\n", get_time(*ph->st_tv), ph->id);
+			printf("%d %d has taken a fork\n", get_time(*ph->st_tv), ph->id + 1);
 		pthread_mutex_unlock(ph->print_mutex);
 		ph->fork[ph->id] = 1;
 		if (ph->state == take_a_fork)
@@ -51,7 +51,7 @@ void	take_right_fork(t_philo *ph)
 	{
 		pthread_mutex_lock(ph->print_mutex);
 		if (!check_die(ph))
-			printf("%d %d has taken a fork\n", get_time(*ph->st_tv), ph->id);
+			printf("%d %d has taken a fork\n", get_time(*ph->st_tv), ph->id + 1);
 		pthread_mutex_unlock(ph->print_mutex);
 		ph->fork[(ph->id + 1) % ph->philos] = 1;
 		if (ph->state == take_a_fork)
@@ -84,7 +84,7 @@ int	check_die(t_philo *ph)
 	}
 	if (get_time(ph->last_eat) > ph->die)
 	{
-		printf("%d %d is died\n", get_time(*ph->st_tv), ph->id);
+		printf("%d %d is died\n", get_time(*ph->st_tv), ph->id + 1);
 		*ph->exist_die = 1;
 		pthread_mutex_unlock(ph->die_mutex);
 		return (1);

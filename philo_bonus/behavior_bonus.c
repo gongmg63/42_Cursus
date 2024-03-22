@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 18:26:43 by mkong             #+#    #+#             */
-/*   Updated: 2024/03/21 19:49:05 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/22 15:02:39 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ void	ph_eating(t_philo *ph)
 	gettimeofday(&ph->last_eat, NULL);
 	putdown_fork(ph);
 	if (ph->eat_num > 0)
-		if (--ph->eat_num == 0)
-			exit(0);
+		ph->eat_num--;
+	if (ph->eat_num == 0)
+		exit(0);
 }
 
 void	ph_sleeping(t_philo *ph)
