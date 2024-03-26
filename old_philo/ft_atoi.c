@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 14:42:20 by mkong             #+#    #+#             */
-/*   Updated: 2024/03/21 12:45:25 by mkong            ###   ########.fr       */
+/*   Updated: 2024/03/20 13:21:58 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	ft_atoi(const char *str, t_info *p)
 	if (*str == '-' || *str == '+')
 		if (*str++ == '-')
 			sign = -1;
-	if (*str == 0 || sign == -1)
+	if (*str == 0)
 		p->error = 1;
 	while (*str != 0)
 	{
