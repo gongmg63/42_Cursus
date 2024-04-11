@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:12:39 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/09 20:41:35 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/11 18:55:32 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,36 @@ typedef struct	s_img
 	int		img_height;
 }	t_img;
 
+typedef	struct s_dda
+{
+	int		hit;
+	int		step_x;
+	int		step_y;
+	int		side;
+	int		map_x;
+	int		map_y;
+	double	sidedist_x;
+	double	sidedist_y;
+	double	deltadist_x;
+	double	deltadist_y;
+}	t_dda;
+
 typedef struct s_info
 {
+	t_img	img;
+	t_data	data;
 	void	*mlx;
 	void	*win;
 	char	**map;
-	t_img	img;
-	t_data	data;
-	double	pos_X;
-	double	pos_Y;
+	double	pos_x; //플레이어의 현재 위치
+	double	pos_y;
+	double	dir_x; //방향벡터 - 내가 어디를 보고 있는지, 항상 크기는 1로 고정
+	double	dir_y;
+	double	raydir_x;
+	double	raydir_y;
+	double	plane_x; //카메라평면의 끝점 - 방향벡터 + 위치벡터 + 플레인벡터 / 방향벡터 + 위치벡터 - 플레인벡터
+	double	plane_y;
+	double	camera_x; //
 	double	move_speed;
 }	t_info;
 
