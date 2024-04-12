@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:12:18 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/12 15:32:48 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/12 19:03:14 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,12 @@ int	main(int argc, char *argv[])
 	info.data.img = mlx_new_image(info.mlx, WIDTH, HEIGHT);
 	info.data.addr = mlx_get_data_addr(info.data.img, &info.data.bits_per_pixel, \
 							&info.data.line_length, &info.data.endian);
-	draw_map(info);
+	// draw_map(info);
 	draw_user(&info, -1, -1);
-	info.plane_x = (info.dir_y) * 0.66;
-	info.plane_y = (info.dir_x) * 0.66;
+	calc_ray(&info);
+	mlx_put_image_to_window(info.mlx, info.win, info.data.img, 0, 0);
+	info.plane_x = (info.dir_y * -1) * 0.66;
+	info.plane_y = (info.dir_x * -1) * 0.66;
 	mlx_hook(info.win, X_EVENT_KEY_EXIT, 0, exit_window, 0);
 	mlx_hook(info.win, X_EVENT_KEY_PRESS, 0, key_press, &info);
 	mlx_put_image_to_window(info.mlx, info.win, info.data.img, 0, 0);
