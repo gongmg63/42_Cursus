@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:12:39 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/11 18:55:32 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/12 18:10:29 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,10 @@ typedef	struct s_dda
 	double	sidedist_y;
 	double	deltadist_x;
 	double	deltadist_y;
+	double	perp_wall_dist;
+	int		line_height;
+	int		draw_start;
+	int		draw_end;
 }	t_dda;
 
 typedef struct s_info
@@ -81,7 +85,7 @@ typedef struct s_info
 	t_data	data;
 	void	*mlx;
 	void	*win;
-	char	**map;
+	char	(*map)[10];
 	double	pos_x; //플레이어의 현재 위치
 	double	pos_y;
 	double	dir_x; //방향벡터 - 내가 어디를 보고 있는지, 항상 크기는 1로 고정
@@ -90,34 +94,25 @@ typedef struct s_info
 	double	raydir_y;
 	double	plane_x; //카메라평면의 끝점 - 방향벡터 + 위치벡터 + 플레인벡터 / 방향벡터 + 위치벡터 - 플레인벡터
 	double	plane_y;
-	double	camera_x; //
+	double	camera_x;
 	double	move_speed;
 }	t_info;
 
-// #define texWidth 64
-// #define texHeight 64
-// #define mapWidth 24
-// #define mapHeight 24
-// #define width 640
-// #define height 480
+//darw.c
+void    my_mlx_pixel_put(t_data *data, int x, int y, int color);
+void	draw_grid(t_info info, int size);
+void	draw_rectangle(t_info info, int x, int y, int size, int color);
+void	draw_map(t_info info);
+void	draw_user(t_info *info, int x, int y);
+void	draw_verline(t_info info, int draw_start, int draw_end, int y, int color);
 
-// typedef struct	s_info
-// {
-// 	double posX;
-// 	double posY;
-// 	double dirX;
-// 	double dirY;
-// 	double planeX;
-// 	double planeY;
-// 	void	*mlx;
-// 	void	*win;
-// 	t_img	img;
-// 	int		buf[height][width];
-// 	int		**texture;
-// 	double	moveSpeed;
-// 	double	rotSpeed;
-// 	int		re_buf;
+//event.c
+int	exit_window(void);
+int	check_move(int keycode, t_info *info);
+int	key_press(int keycode, t_info *info);
 
-// }				t_info;
+//calc_ray.c
+void	calc_ray(t_info *info);
+
 
 #endif
