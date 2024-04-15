@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:10:31 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/12 18:20:34 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/15 13:28:52 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,9 @@ void	draw_user(t_info *info, int x, int y)
 		{
 			if (info->map[i][j] == 'N' || info->map[i][j] == 'E' || info->map[i][j] == 'W' || info->map[i][j] == 'S')
 			{
-				draw_rectangle(*info, j * 100 + 45, i * 100 + 45, 10, 0x0000FF);
-				info->pos_x = j + 0.45;
-				info->pos_y = i + 0.45;
+				// draw_rectangle(*info, j * 100 + 45, i * 100 + 45, 10, 0x0000FF);
+				info->pos_x = j + 0.5;
+				info->pos_y = i + 0.5;
 				if (info->map[i][j] == 'N')
 				{
 					info->dir_x = 0;

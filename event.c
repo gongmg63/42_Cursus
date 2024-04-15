@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:12:55 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/12 18:59:44 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/15 14:56:22 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	exit_window(void)
 
 int	check_move(int keycode, t_info *info)
 {
-	// printf("x : %f, y : %f \n", info->pos_x, info->pos_y);
+	printf("x : %f, y : %f \n", info->pos_x, info->pos_y);
 	if (info->map[(int)info->pos_y][(int)info->pos_x] == '1')
 	{
 		if (keycode == KEY_W)
@@ -39,13 +39,25 @@ int	check_move(int keycode, t_info *info)
 int	key_press(int keycode, t_info *info)
 {
 	if (keycode == KEY_W)
-		info->pos_y -= info->move_speed;
-	else if (keycode == KEY_A)
-		info->pos_x -= info->move_speed;
+	{
+		info->pos_y += info->dir_y * info->move_speed;
+		info->pos_x += info->dir_x * info->move_speed;
+	}
 	else if (keycode == KEY_S)
-		info->pos_y += info->move_speed;
+	{
+		info->pos_y -= info->dir_y * info->move_speed;
+		info->pos_x -= info->dir_x * info->move_speed;
+	}
+	else if (keycode == KEY_A)
+	{
+		info->pos_y -= info->dir_x * info->move_speed;
+		info->pos_x -= info->dir_y * info->move_speed;
+	}
 	else if (keycode == KEY_D)
-		info->pos_x += info->move_speed;
+	{
+		info->pos_y += info->dir_x * info->move_speed;
+		info->pos_x += info->dir_y * info->move_speed;
+	}
 	else if (keycode == KEY_ESC)
 		exit(0);
 	if (!check_move(keycode, info))
