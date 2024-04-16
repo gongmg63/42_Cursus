@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:12:18 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/16 17:14:22 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/16 17:29:59 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,31 +71,33 @@ void	find_start_point(t_info *info)
 	}
 }
 
-void	image_set(t_info *info, int *texture, char *path, t_img *img)
+void	image_set(t_info *info, int *texture, char *path, t_data *data)
 {
 	int	i;
 	int	j;
+	int	img_width;
+	int	img_height;
 
-	img->img = mlx_xpm_file_to_image(info->mlx, path, &img->img_width, &img->img_height);
-	img->data = (int *)mlx_get_data_addr(img->img, &img->bpp, &img->size_l, &img->endian);
+	data->img = mlx_xpm_file_to_image(info->mlx, path, &img_width, &img_height);
+	data->addr = mlx_get_data_addr(data->img, &data->bits_per_pixel, &data->line_length, &data->endian);
 	i = -1;
-	while (++i < img->img_height)
+	while (++i < img_height)
 	{
 		j = -1;
-		while (++j < img->img_width)
-			texture[img->img_width * i + j] = img->data[img->img_width * i + j];
+		while (++j < img_width)
+			texture[img_width * i + j] = data->addr[img_width * i + j];
 	}
-	mlx_destroy_image(info->mlx, img->img);
+	mlx_destroy_image(info->mlx, data->img);
 }
 
 void	texture_set(t_info *info)
 {
-	t_img	img;
+	t_data	data;
 
-	image_set(info, info->texture[0], "textures/bluestone.xpm", &img);
-	image_set(info, info->texture[1], "textures/bluestone.xpm", &img);
-	image_set(info, info->texture[2], "textures/bluestone.xpm", &img);
-	image_set(info, info->texture[3], "textures/bluestone.xpm", &img);
+	image_set(info, info->texture[0], "textures/bluestone.xpm", &data);
+	image_set(info, info->texture[1], "textures/bluestone.xpm", &data);
+	image_set(info, info->texture[2], "textures/bluestone.xpm", &data);
+	image_set(info, info->texture[3], "textures/bluestone.xpm", &data);
 }
 
 void	set_info(t_info *info)
