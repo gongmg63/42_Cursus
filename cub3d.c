@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:12:18 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/15 20:56:47 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/16 17:14:22 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,10 +92,10 @@ void	texture_set(t_info *info)
 {
 	t_img	img;
 
-	image_set_util(info, info->texture[0], "textures/bluestone.xpm", &img);
-	image_set_util(info, info->texture[1], "textures/bluestone.xpm", &img);
-	image_set_util(info, info->texture[2], "textures/bluestone.xpm", &img);
-	image_set_util(info, info->texture[3], "textures/bluestone.xpm", &img);
+	image_set(info, info->texture[0], "textures/bluestone.xpm", &img);
+	image_set(info, info->texture[1], "textures/bluestone.xpm", &img);
+	image_set(info, info->texture[2], "textures/bluestone.xpm", &img);
+	image_set(info, info->texture[3], "textures/bluestone.xpm", &img);
 }
 
 void	set_info(t_info *info)
