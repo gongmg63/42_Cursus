@@ -6,13 +6,13 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:19:44 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/15 13:30:12 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/15 16:46:01 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	calc_ray(t_info *info)
+void	 calc_ray(t_info *info)
 {
 	t_dda	dda;
 	int		i;
@@ -62,11 +62,8 @@ void	calc_ray(t_info *info)
 				dda.map_y += dda.step_y;
 				dda.side = 1;
 			}
-			if (info->map[dda.map_y][dda.map_x] == '1')
-			{
+			if (info->map[dda.map_x][dda.map_y] == '1')
 				dda.hit = 1;
-				// printf("hit x : %d , hit y : %d, map[x][y] : %c \n", dda.map_x, dda.map_y, info->map[dda.map_y][dda.map_x]);
-			}
 		}
 		if (dda.side == 0)
 			dda.perp_wall_dist = (dda.map_x - info->pos_x + (1 - dda.step_x) / 2) / info->raydir_x;
@@ -79,7 +76,10 @@ void	calc_ray(t_info *info)
 		dda.draw_end = dda.line_height / 2 + HEIGHT / 2;
 		if (dda.draw_end < 0)
 			dda.draw_end = HEIGHT - 1;
-		draw_verline(*info, dda.draw_start, dda.draw_end, i, 0xFFFF00);
+		if (dda.side == 0)
+			draw_verline(*info, dda.draw_start, dda.draw_end, i, 0xFF0000);
+		else
+			draw_verline(*info, dda.draw_start, dda.draw_end, i, 0xFFFF00);
 		i += 1;
 	}
 }

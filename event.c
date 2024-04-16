@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:12:55 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/15 14:56:22 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/15 19:38:47 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,56 +18,83 @@ int	exit_window(void)
 	return (0);
 }
 
-int	check_move(int keycode, t_info *info)
+void	rotate_press(int keycode, t_info *info)
 {
-	printf("x : %f, y : %f \n", info->pos_x, info->pos_y);
-	if (info->map[(int)info->pos_y][(int)info->pos_x] == '1')
+	double	dir_x;
+	double	plane_x;
+	double	rotate_speed;
+
+	dir_x = info->dir_x;
+	plane_x = info->plane_x;
+	if (keycode == KEY_AR_L)
+		rotate_speed = info->rotate_speed;
+	else
+		rotate_speed = -info->rotate_speed;
+	info->dir_x = dir_x * cos(rotate_speed) - info->dir_y * sin(rotate_speed);
+	info->dir_y = dir_x * sin(rotate_speed) + info->dir_y * cos(rotate_speed);
+	info->plane_x = plane_x * cos(rotate_speed) - info->plane_y * sin(rotate_speed);
+	info->plane_y = plane_x * sin(rotate_speed) + info->plane_y * cos(rotate_speed);
+}
+
+void	set_pos(double *pos_x, double *pos_y, int keycode, t_info *info)
+{
+	if (keycode == KEY_W)
 	{
-		if (keycode == KEY_W)
-			info->pos_y += info->move_speed;
-		else if (keycode == KEY_A)
-			info->pos_x += info->move_speed;
-		else if (keycode == KEY_S)
-			info->pos_y -= info->move_speed;
-		else if (keycode == KEY_D)
-			info->pos_x -= info->move_speed;
-		return (0);
+		*pos_y += info->dir_y * info->move_speed;
+		*pos_x += info->dir_x * info->move_speed;
 	}
-	return (1);
+	else if (keycode == KEY_S)
+	{
+		*pos_y -= info->dir_y * info->move_speed;
+		*pos_x -= info->dir_x * info->move_speed;
+	}
+	else if (keycode == KEY_A)
+	{
+		*pos_y += info->dir_x * info->move_speed;
+		*pos_x -= info->dir_y * info->move_speed;
+	}
+	else if (keycode == KEY_D)
+	{
+		*pos_y -= info->dir_x * info->move_speed;
+		*pos_x += info->dir_y * info->move_speed;
+	}
+}
+
+void	move_position(int keycode, t_info *info)
+{
+	double	pos_x;
+	double	pos_y;
+
+
+	pos_x = info->pos_x;
+	pos_y = info->pos_y;
+	set_pos(&pos_x, &pos_y, keycode, info);
+	printf("x : %f, y : %f map : %c\n", pos_y, pos_x, info->map[(int)pos_x][(int)pos_y]);
+	if (info->map[(int)(pos_x)][(int)(pos_y + 0.2)] == '1' \
+		|| info->map[(int)(pos_x)][(int)(pos_y - 0.2)] == '1'\
+		|| info->map[(int)(pos_x + 0.2)][(int)(pos_y)] == '1'\
+		|| info->map[(int)(pos_x - 0.2)][(int)(pos_y)] == '1'\
+		|| info->map[(int)(pos_x - 0.2)][(int)(pos_y - 0.2)] == '1'\
+		|| info->map[(int)(pos_x - 0.2)][(int)(pos_y + 0.2)] == '1'\
+		|| info->map[(int)(pos_x + 0.2)][(int)(pos_y - 0.2)] == '1'\
+		|| info->map[(int)(pos_x + 0.2)][(int)(pos_y + 0.2)] == '1')
+		return ;
+	info->pos_x = pos_x;
+	info->pos_y = pos_y;
 }
 
 int	key_press(int keycode, t_info *info)
 {
-	if (keycode == KEY_W)
-	{
-		info->pos_y += info->dir_y * info->move_speed;
-		info->pos_x += info->dir_x * info->move_speed;
-	}
-	else if (keycode == KEY_S)
-	{
-		info->pos_y -= info->dir_y * info->move_speed;
-		info->pos_x -= info->dir_x * info->move_speed;
-	}
-	else if (keycode == KEY_A)
-	{
-		info->pos_y -= info->dir_x * info->move_speed;
-		info->pos_x -= info->dir_y * info->move_speed;
-	}
-	else if (keycode == KEY_D)
-	{
-		info->pos_y += info->dir_x * info->move_speed;
-		info->pos_x += info->dir_y * info->move_speed;
-	}
+	if (keycode == KEY_W || keycode == KEY_S || keycode == KEY_A || keycode == KEY_D)
+		move_position(keycode, info);
+	else if (keycode == KEY_AR_L || keycode == KEY_AR_R)
+		rotate_press(keycode, info);
 	else if (keycode == KEY_ESC)
 		exit(0);
-	if (!check_move(keycode, info))
-		return (0);
 	mlx_destroy_image(info->mlx, info->data.img);
 	info->data.img = mlx_new_image(info->mlx, WIDTH, HEIGHT);
 	info->data.addr = mlx_get_data_addr(info->data.img, &info->data.bits_per_pixel, \
 							&info->data.line_length, &info->data.endian);
-	// draw_map(*info);
-	// draw_user(info, info->pos_x, info->pos_y);
 	calc_ray(info);
 	mlx_put_image_to_window(info->mlx, info->win, info->data.img, 0, 0);
 	return (0);

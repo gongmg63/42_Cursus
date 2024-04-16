@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:12:39 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/12 18:10:29 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/15 20:54:21 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # define X_EVENT_KEY_EXIT	17
 # define WIDTH				1000
 # define HEIGHT				1000
+# define texture_width		64
+# define texture_height		64
 
 typedef enum e_map_component
 {
@@ -86,30 +88,30 @@ typedef struct s_info
 	void	*mlx;
 	void	*win;
 	char	(*map)[10];
+	int		**texture;
 	double	pos_x; //플레이어의 현재 위치
 	double	pos_y;
 	double	dir_x; //방향벡터 - 내가 어디를 보고 있는지, 항상 크기는 1로 고정
 	double	dir_y;
-	double	raydir_x;
+	double	raydir_x; //레이저의 방향벡터
 	double	raydir_y;
 	double	plane_x; //카메라평면의 끝점 - 방향벡터 + 위치벡터 + 플레인벡터 / 방향벡터 + 위치벡터 - 플레인벡터
 	double	plane_y;
-	double	camera_x;
+	double	camera_x; //카메라 평면 - 실제 계산에 쓰기위해 화면을 축소? 시킨것
 	double	move_speed;
+	double	rotate_speed;
 }	t_info;
 
 //darw.c
 void    my_mlx_pixel_put(t_data *data, int x, int y, int color);
-void	draw_grid(t_info info, int size);
-void	draw_rectangle(t_info info, int x, int y, int size, int color);
-void	draw_map(t_info info);
-void	draw_user(t_info *info, int x, int y);
 void	draw_verline(t_info info, int draw_start, int draw_end, int y, int color);
 
 //event.c
-int	exit_window(void);
-int	check_move(int keycode, t_info *info);
-int	key_press(int keycode, t_info *info);
+int		exit_window(void);
+int		key_press(int keycode, t_info *info);
+void	rotate_press(int keycode, t_info *info);
+void	set_pos(double *pos_x, double *pos_y, int keycode, t_info *info);
+void	move_position(int keycode, t_info *info);
 
 //calc_ray.c
 void	calc_ray(t_info *info);
