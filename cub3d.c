@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:12:18 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/16 17:29:59 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/16 21:01:45 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	image_set(t_info *info, int *texture, char *path, t_data *data)
 	int	img_height;
 
 	data->img = mlx_xpm_file_to_image(info->mlx, path, &img_width, &img_height);
-	data->addr = mlx_get_data_addr(data->img, &data->bits_per_pixel, &data->line_length, &data->endian);
+	data->addr = (int *)mlx_get_data_addr(data->img, &data->bits_per_pixel, &data->line_length, &data->endian);
 	i = -1;
 	while (++i < img_height)
 	{
@@ -94,10 +94,10 @@ void	texture_set(t_info *info)
 {
 	t_data	data;
 
-	image_set(info, info->texture[0], "textures/bluestone.xpm", &data);
-	image_set(info, info->texture[1], "textures/bluestone.xpm", &data);
-	image_set(info, info->texture[2], "textures/bluestone.xpm", &data);
-	image_set(info, info->texture[3], "textures/bluestone.xpm", &data);
+	image_set(info, info->texture[0], "./textures/bluestone.xpm", &data);
+	image_set(info, info->texture[1], "./textures/colorstone.xpm", &data);
+	image_set(info, info->texture[2], "./textures/eagle.xpm", &data);
+	image_set(info, info->texture[3], "./textures/greystone.xpm", &data);
 }
 
 void	set_info(t_info *info)
@@ -105,6 +105,13 @@ void	set_info(t_info *info)
 	int	i;
 
 	i = -1;
+	for (int i = 0; i < HEIGHT; ++i)
+	{
+		for (int j = 0; j < WIDTH; ++j)
+		{
+			info->buf[i][j] = 0;
+		}
+	}
 	info->mlx = mlx_init();
 	info->win =  mlx_new_window(info->mlx, WIDTH, HEIGHT, "cub3D");
 	info->texture = (int **)malloc(sizeof(int *) * 4);
@@ -112,17 +119,23 @@ void	set_info(t_info *info)
 		exit(1);
 	while (++i < 4)
 	{
-		info->texture[i] = (int *)malloc(sizeof(int) * texture_width * texture_height);
+		info->texture[i] = malloc(sizeof(int) * TEXTURE_WIDTH * TEXTURE_HEIGHT);
 		if (info->texture[i] == NULL)
 			exit(1);
 	}
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < TEXTURE_HEIGHT * TEXTURE_WIDTH; ++j)
+			info->texture[i][j] = 0;
+	}
+	texture_set(info);
 	info->map = map;
 	info->data.img = mlx_new_image(info->mlx, WIDTH, HEIGHT);
-	info->data.addr = mlx_get_data_addr(info->data.img, &info->data.bits_per_pixel, \
+	info->data.addr = (int *)mlx_get_data_addr(info->data.img, &info->data.bits_per_pixel, \
 							&info->data.line_length, &info->data.endian);
 	find_start_point(info);
 	set_dir_vec(info);
-	texture_set(info);
+	info->re_buf = 0;
 	info->plane_x = (info->dir_y * -1) * 0.66;
 	info->plane_y = (info->dir_x * -1) * 0.66;
 	info->rotate_speed = 0.02;

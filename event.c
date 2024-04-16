@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:12:55 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/16 17:27:22 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/16 20:45:45 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ void	move_position(int keycode, t_info *info)
 	pos_x = info->pos_x;
 	pos_y = info->pos_y;
 	set_pos(&pos_x, &pos_y, keycode, info);
-	printf("x : %f, y : %f map : %c\n", pos_y, pos_x, info->map[(int)pos_x][(int)pos_y]);
 	if (info->map[(int)(pos_x)][(int)(pos_y + 0.2)] == '1' \
 		|| info->map[(int)(pos_x)][(int)(pos_y - 0.2)] == '1'\
 		|| info->map[(int)(pos_x + 0.2)][(int)(pos_y)] == '1'\

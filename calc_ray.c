@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:19:44 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/15 16:46:01 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/16 21:17:05 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,18 @@ void	 calc_ray(t_info *info)
 	int		i;
 
 	i = 0;
+	if (info->re_buf == 1)
+	{
+		for (int k = 0; k < HEIGHT; ++k)
+		{
+			for (int j = 0; j < WIDTH; ++j)
+			{
+				info->buf[i][j] = 0;
+
+			}
+		}
+	}
+	printf("x : %f, y : %f map : %c\n", info->pos_y, info->pos_x, info->map[(int)info->pos_x][(int)info->pos_y]);
 	while (i < WIDTH)
 	{
 		info->camera_x = 2 * i / (double)WIDTH - 1;
@@ -76,10 +88,34 @@ void	 calc_ray(t_info *info)
 		dda.draw_end = dda.line_height / 2 + HEIGHT / 2;
 		if (dda.draw_end < 0)
 			dda.draw_end = HEIGHT - 1;
+		//texture
+		dda.tex_num = dda.side * 2;
+		if (dda.side == 0 && info->raydir_x < 0)
+			dda.tex_num++;
+		else if (dda.side == 1 && info->raydir_y < 0)
+			dda.tex_num++;
 		if (dda.side == 0)
-			draw_verline(*info, dda.draw_start, dda.draw_end, i, 0xFF0000);
+			dda.wall_x = info->pos_y + dda.perp_wall_dist * info->raydir_y;
 		else
-			draw_verline(*info, dda.draw_start, dda.draw_end, i, 0xFFFF00);
-		i += 1;
+			dda.wall_x = info->pos_x + dda.perp_wall_dist * info->raydir_x;
+		dda.wall_x -= floor(dda.wall_x);
+		dda.tex_x = (int)(dda.wall_x * (double)TEXTURE_WIDTH);
+		if ((dda.side == 0 && info->raydir_x > 0) || (dda.side == 1 && info->raydir_y < 0))
+			dda.tex_x = TEXTURE_WIDTH - dda.tex_x - 1;
+		dda.step = 1.0 * TEXTURE_HEIGHT / dda.line_height;
+		dda.tex_pos = (dda.draw_start - HEIGHT / 2 + dda.line_height / 2) * dda.step;
+		// if (dda.side == 0)
+		// 	draw_verline(*info, dda.draw_start, dda.draw_end, i, 0xFF0000);
+		// else
+		// 	draw_verline(*info, dda.draw_start, dda.draw_end, i, 0xFFFF00);
+		for (int k = dda.draw_start; k < dda.draw_end; ++k)
+		{
+			dda.tex_y = (int)dda.tex_pos & (TEXTURE_HEIGHT - 1);
+			dda.tex_pos += dda.step;
+			dda.color = info->texture[dda.tex_num][TEXTURE_HEIGHT * dda.tex_y + dda.tex_x];
+			my_mlx_pixel_put(&info->data, i, k, dda.color);
+			info->re_buf = 1;
+		}
+		i++;
 	}
 }

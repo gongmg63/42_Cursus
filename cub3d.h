@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:12:39 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/16 17:27:28 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/16 21:01:14 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@
 # define X_EVENT_KEY_EXIT	17
 # define WIDTH				1000
 # define HEIGHT				1000
-# define texture_width		64
-# define texture_height		64
+# define TEXTURE_WIDTH		64
+# define TEXTURE_HEIGHT		64
 
 typedef enum e_map_component
 {
@@ -46,22 +46,11 @@ typedef enum e_map_component
 
 typedef struct s_data {
   void	*img;
-  char	*addr;
+  int	*addr;
   int	bits_per_pixel;
   int	line_length;
   int	endian;
 }    t_data;
-
-typedef struct	s_img
-{
-	void	*img;
-	int		*data;
-	int		size_l;
-	int		bpp;
-	int		endian;
-	int		img_width;
-	int		img_height;
-}	t_img;
 
 typedef	struct s_dda
 {
@@ -79,15 +68,22 @@ typedef	struct s_dda
 	int		line_height;
 	int		draw_start;
 	int		draw_end;
+	int		tex_num;
+	double	wall_x;
+	int		tex_x;
+	double	step;
+	double	tex_pos;
+	int		tex_y;
+	int		color;
 }	t_dda;
 
 typedef struct s_info
 {
-	t_img	img;
 	t_data	data;
 	void	*mlx;
 	void	*win;
 	char	(*map)[10];
+	int		buf[HEIGHT][WIDTH];
 	int		**texture;
 	double	pos_x; //플레이어의 현재 위치
 	double	pos_y;
@@ -100,6 +96,7 @@ typedef struct s_info
 	double	camera_x; //카메라 평면 - 실제 계산에 쓰기위해 화면을 축소? 시킨것
 	double	move_speed;
 	double	rotate_speed;
+	int		re_buf;
 }	t_info;
 
 //darw.c
