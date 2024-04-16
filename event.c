@@ -6,7 +6,7 @@
 /*   By: mkong <mkong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:12:55 by mkong             #+#    #+#             */
-/*   Updated: 2024/04/16 20:45:45 by mkong            ###   ########.fr       */
+/*   Updated: 2024/04/16 21:22:30 by mkong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int	key_press(int keycode, t_info *info)
 		exit(0);
 	mlx_destroy_image(info->mlx, info->data.img);
 	info->data.img = mlx_new_image(info->mlx, WIDTH, HEIGHT);
-	info->data.addr = mlx_get_data_addr(info->data.img, &info->data.bits_per_pixel, \
+	info->data.addr = (int *)mlx_get_data_addr(info->data.img, &info->data.bits_per_pixel, \
 							&info->data.line_length, &info->data.endian);
 	calc_ray(info);
 	mlx_put_image_to_window(info->mlx, info->win, info->data.img, 0, 0);
