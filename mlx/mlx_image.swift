@@ -10,8 +10,8 @@ public class MlxImg
 
     public var texture_sizeline: Int
     public var texture_data: UnsafeMutablePointer<UInt32>
-    public var texture_width: Int
-    public var texture_height: Int
+    public var TEXTURE_WIDTH: Int
+    public var TEXTURE_HEIGHT: Int
 
     public var onGPU = 0
 
@@ -22,14 +22,14 @@ public class MlxImg
 
      public init(d device:MTLDevice, w width:Int, h height:Int, t target:Int)
      {
-	 texture_width = width
-    	 texture_height = height
+	 TEXTURE_WIDTH = width
+    	 TEXTURE_HEIGHT = height
     	 texture_sizeline = width * 4
     	 texture_sizeline = 256 * (texture_sizeline / 256 + (texture_sizeline%256 >= 1 ? 1 : 0) )
 
          let textureDesc = MTLTextureDescriptor()
-    	 textureDesc.width = texture_width
-    	 textureDesc.height = texture_height
+    	 textureDesc.width = TEXTURE_WIDTH
+    	 textureDesc.height = TEXTURE_HEIGHT
 	 textureDesc.usage = .shaderRead
 	 if (target == 1)
 	  {

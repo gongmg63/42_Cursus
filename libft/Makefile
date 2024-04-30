@@ -11,31 +11,31 @@ all : LAST_ALL $(NAME)
 bonus : LAST_BONUS
 
 $(NAME) : $(OBJS_MANDATORY)
-	make LAST_ALL
-	ar -rc $(NAME) $(OBJS_MANDATORY) $(HEADER)
+	@make LAST_ALL
+	@ar -rc $(NAME) $(OBJS_MANDATORY) $(HEADER)
 
 LAST_ALL : $(OBJS_MANDATORY)
-	rm -f LAST_BONUS
-	touch $@
+	@rm -f LAST_BONUS
+	@touch $@
 
 LAST_BONUS : $(OBJS_MANDATORY) $(OBJS_BONUS)
-	rm -f LAST_ALL
-	ar -rc $(NAME) $(OBJS_MANDATORY) $(OBJS_BONUS) $(HEADER)
-	touch $@
+	@rm -f LAST_ALL
+	@ar -rc $(NAME) $(OBJS_MANDATORY) $(OBJS_BONUS) $(HEADER)
+	@touch $@
 
 clean : 
-	rm -f $(OBJS_MANDATORY) $(OBJS_BONUS)
+	@rm -f $(OBJS_MANDATORY) $(OBJS_BONUS)
 
 fclean : 
-	make clean
-	rm -f $(NAME)
-	rm -f LAST_ALL LAST_BONUS
+	@make clean
+	@rm -f $(NAME)
+	@rm -f LAST_ALL LAST_BONUS
 
 re : 
-	make fclean 
-	make all
+	@make fclean 
+	@make all
 
 %.o : %.c $(HEADER)
-	cc $(CFLAGS) -c $< -o $@
+	@cc $(CFLAGS) -c $< -o $@
 
 .PHONY : all clean fclean re bonus

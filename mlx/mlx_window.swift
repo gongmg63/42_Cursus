@@ -273,7 +273,7 @@ public class MlxWin
     /// drawable_image = MlxImg(d: device, w:Int(CGFloat(vrect.size.width)*winE.screen!.backingScaleFactor), h:Int(CGFloat(vrect.size.height)*winE.screen!.backingScaleFactor), t:1)
     drawable_image = MlxImg(d: device, w:Int(vrect.size.width), h:Int(vrect.size.height), t:1)
     pixel_image = MlxImg(d: device, w:Int(vrect.size.width), h:Int(vrect.size.height))
-    for i in 0...(pixel_image.texture_height*pixel_image.texture_sizeline/4-1)
+    for i in 0...(pixel_image.TEXTURE_HEIGHT*pixel_image.texture_sizeline/4-1)
       { pixel_image.texture_data[i] = UInt32(0xFF000000) }
     pixel_count = 0
 
@@ -404,7 +404,7 @@ public class MlxWin
 	     if (GPUbatch > 0) { waitForGPU() }
 	     else { flushImages() }
 	  }
-	  for i in 0...pixel_image.texture_height*pixel_image.texture_sizeline/4-1
+	  for i in 0...pixel_image.TEXTURE_HEIGHT*pixel_image.texture_sizeline/4-1
 	    { pixel_image.texture_data[i] = UInt32(0xFF000000) }
 	}
 	let t = (x&(Int32(vrect.size.width-1)-x))&(y&(Int32(vrect.size.height-1)-y))
@@ -418,8 +418,8 @@ public class MlxWin
   public func putImage(image img:MlxImg, x posx:Int32, y posy:Int32)
   {
 	flushPixels()
-	putImageScale(image:img, sx:0, sy:0, sw:Int32(img.texture_width), sh:Int32(img.texture_height), 
-			   dx:posx, dy:posy, dw:Int32(img.texture_width), dh:Int32(img.texture_height),
+	putImageScale(image:img, sx:0, sy:0, sw:Int32(img.TEXTURE_WIDTH), sh:Int32(img.TEXTURE_HEIGHT), 
+			   dx:posx, dy:posy, dw:Int32(img.TEXTURE_WIDTH), dh:Int32(img.TEXTURE_HEIGHT),
 			   c:UInt32(0xFFFFFFFF))
   }
 
@@ -430,8 +430,8 @@ public class MlxWin
 	{
 		waitForGPU()    /// to be able to write again in uniforms
 	}
-	texture_list[texture_list_count].uniform_data[0] = Float(img.texture_width)
-	texture_list[texture_list_count].uniform_data[1] = Float(img.texture_height)
+	texture_list[texture_list_count].uniform_data[0] = Float(img.TEXTURE_WIDTH)
+	texture_list[texture_list_count].uniform_data[1] = Float(img.TEXTURE_HEIGHT)
 	texture_list[texture_list_count].uniform_data[2] = Float(src_x)
 	texture_list[texture_list_count].uniform_data[3] = Float(src_y)
 	texture_list[texture_list_count].uniform_data[4] = Float(src_w)
