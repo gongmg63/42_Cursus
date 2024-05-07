@@ -2,7 +2,7 @@ CXX		=	c++
 FLAGS	=	-Wall -Wextra -Werror -std=c++98
 SRCS	=	main.cpp Harl.cpp
 OBJS	=	$(SRCS:.cpp=.o)
-NAME	=	ex05
+NAME	=	ex06
 
 all : $(NAME)
 

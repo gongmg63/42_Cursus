@@ -2,10 +2,10 @@
 
 Harl::Harl(void)
 {
-	this->level_map["DEBUG"] = 0;
-	this->level_map["INFO"] = 1;
-	this->level_map["WARNING"] = 2;
-	this->level_map["ERROR"] = 3;
+	this->level_str[0] = "DEBUG";
+	this->level_str[1] = "INFO";
+	this->level_str[2] = "WARNING";
+	this->level_str[3] = "ERROR";
 }
 
 void	Harl::debug(void)
@@ -30,16 +30,34 @@ void	Harl::error(void)
 
 void	Harl::complain(std::string level)
 {
+	int	level_idx = -1;
+
 	void (Harl::*harl[4])(void) = {
 		&Harl::debug,
 		&Harl::info,
 		&Harl::warning,
 		&Harl::error
 	};
-	if (level_map.find(level) == level_map.end())
+	for (int i = 0; i < 4; ++i)
 	{
-		std::cout << "Level Error" << std::endl;
-		return ;
+		if (this->level_str[i] == level)
+			level_idx = i;
 	}
-	(this->*harl[level_map[level]])();
+	switch (level_idx)
+	{
+	case 0:
+		(this->*harl[0])();
+		break;
+	case 1:
+		(this->*harl[1])();
+		break;
+	case 2:
+		(this->*harl[2])();
+		break;
+	case 3:
+		(this->*harl[3])();
+		break;
+	default:
+		std::cout << "NO LEVEL" << std::endl;
+	}
 }
