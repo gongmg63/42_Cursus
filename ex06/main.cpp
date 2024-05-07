@@ -1,13 +1,14 @@
 #include "Harl.hpp"
 
-int main(void)
+int main(int ac, char *av[])
 {
 	Harl	harl;
 
-	// harl.complain("DEBUG");
-	// harl.complain("INFO");
-	harl.complain("WARNING");
-	// harl.complain("ERROR");
-	// harl.complain("else");
+	if (ac != 2)
+	{
+		std::cout << "Enter [ DEBUG ] [ INFO ] [ WARNING ] [ ERROR ] only" << std::endl;
+		return (0);
+	}
+	harl.complain(std::string(av[1]));
 	return (0);
 }
