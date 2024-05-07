@@ -32,7 +32,7 @@ int main(int ac, char *av[])
 		return (1); 
 	}
 	readfile.open(av[1]);
-	writefile.open(std::string(av[1]) + ".replace");
+	writefile.open((std::string(av[1]) + ".replace").c_str());
 	while (!readfile.eof())
 	{
 		getline(readfile, line);
