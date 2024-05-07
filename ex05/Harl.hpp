@@ -7,11 +7,13 @@
 class Harl
 {
 private:
+	std::map<std::string, int> level_map;
 	void	debug(void);
 	void	info(void);
 	void	warning(void);
 	void	error(void);
 public:
+	Harl	(void);
 	void	complain(std::string level);
 };
 

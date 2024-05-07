@@ -1,5 +1,13 @@
 #include "Harl.hpp"
 
+Harl::Harl(void)
+{
+	this->level_map["DEBUG"] = 0;
+	this->level_map["INFO"] = 1;
+	this->level_map["WARNING"] = 2;
+	this->level_map["ERROR"] = 3;
+}
+
 void	Harl::debug(void)
 {
 	std::cout << "I love having extra bacon for my 7XL-double-cheese-triple-pickle-specialketchup burger. I really do!" << std::endl;
@@ -22,22 +30,16 @@ void	Harl::error(void)
 
 void	Harl::complain(std::string level)
 {
-	std::map<std::string, int>	map;
-
 	void (Harl::*harl[4])(void) = {
 		&Harl::debug,
 		&Harl::info,
 		&Harl::warning,
 		&Harl::error
 	};
-	map["DEBUG"] = 0;
-	map["INFO"] = 1;
-	map["WARNING"] = 2;
-	map["ERROR"] = 3;
-	if (map.find(level) == map.end())
+	if (level_map.find(level) == level_map.end())
 	{
 		std::cout << "Level Error" << std::endl;
 		return ;
 	}
-	(this->*harl[map[level]])();
+	(this->*harl[level_map[level]])();
 }
