@@ -1,7 +1,6 @@
 #ifndef __ZOMBIE_HPP__
 #define __ZOMBIE_HPP__
 #include <iostream>
-#include <string>
 
 class Zombie
 {

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <string>
 
 std::string replace_str(std::string line, std::string s1, std::string s2)
 {
@@ -16,7 +15,6 @@ std::string replace_str(std::string line, std::string s1, std::string s2)
 		line = tmp + line;
 		pos = line.find(s1, pos + s1.size());
 	}
-	line += "\n";
 	return (line);
 }
 
@@ -32,11 +30,30 @@ int main(int ac, char *av[])
 		return (1); 
 	}
 	readfile.open(av[1]);
+	if (!readfile.is_open())
+	{
+		std::cout << "Can't open readfile.." << std::endl;
+		return (1);
+	}
 	writefile.open((std::string(av[1]) + ".replace").c_str());
+	if (!writefile.is_open())
+	{
+		readfile.close();
+		std::cout << "Can't open writefile.." << std::endl;
+		return (1);
+	}
 	while (!readfile.eof())
 	{
-		getline(readfile, line);
+		if (getline(readfile, line).fail() && !readfile.eof())
+		{
+			std::cout << "Can't getline..." << std::endl;
+			readfile.close();
+			writefile.close();
+			return (1);
+		}
 		line = replace_str(line, av[2], av[3]);
+		if (!readfile.eof())
+			line += "\n";
 		writefile.write(line.c_str(), line.size());
 	}
 	readfile.close();

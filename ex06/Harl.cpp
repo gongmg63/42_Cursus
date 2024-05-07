@@ -56,8 +56,6 @@ void	Harl::complain(std::string level)
 	}
 	switch (level_idx)
 	{
-	case -1:
-		std::cout << "[ Probably complaining about insignificant problems ]" << std::endl;
 	case 0:
 		(this->*harl[0])();
 	case 1:
@@ -66,5 +64,8 @@ void	Harl::complain(std::string level)
 		(this->*harl[2])();
 	case 3:
 		(this->*harl[3])();
+		break;
+	case -1:
+		std::cout << "[ Probably complaining about insignificant problems ]" << std::endl;
 	}
 }

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 
 int	main(void)
 {
@@ -10,6 +9,7 @@ int	main(void)
 	std::cout << "string address : " << &str << std::endl;	
 	std::cout << "stringPTR address : " << stringPTR << std::endl;	
 	std::cout << "stringREF address : " << &stringREF << std::endl;
+	
 
 	std::cout << "string value : " << str << std::endl;
 	std::cout << "stringPTR value : " << *stringPTR << std::endl;
