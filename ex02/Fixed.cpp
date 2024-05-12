@@ -167,7 +167,7 @@ int	Fixed::toInt() const
 	return (tmp / fractional_bit);
 }
 
-const Fixed&	Fixed::min(Fixed& first, Fixed& second)
+Fixed&	Fixed::min(Fixed& first, Fixed& second)
 {
 	if (first.num > second.num)
 		return (second);
@@ -181,7 +181,7 @@ const Fixed&	Fixed::min(const Fixed& first, const Fixed& second)
 	return (first);
 }
 
-const Fixed&	Fixed::max(Fixed& first, Fixed& second)
+Fixed&	Fixed::max(Fixed& first, Fixed& second)
 {
 	if (first.num < second.num)
 		return (second);
