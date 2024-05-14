@@ -61,5 +61,12 @@ void	FragTrap::attack(const std::string& target)
 
 void	FragTrap::highFivesGuys()
 {
+	if (this->hit_point == 0 || this->energy_point == 0)
+	{
+		std::cout << "Not enough energy.." << std::endl;
+		std::cout << "hit points : " << this->hit_point << " energy points : " \
+					<< this->energy_point << std::endl;
+		return ;
+	}
 	std::cout << "FragTrap HighFivesGuys." << std::endl;
 }

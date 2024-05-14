@@ -61,5 +61,12 @@ void	ScavTrap::attack(const std::string& target)
 
 void	ScavTrap::guardGate()
 {
+	if (this->hit_point == 0 || this->energy_point == 0)
+	{
+		std::cout << "Not enough energy.." << std::endl;
+		std::cout << "hit points : " << this->hit_point << " energy points : " \
+					<< this->energy_point << std::endl;
+		return ;
+	}
 	std::cout << "ScavTrap is now in Gate keeper mode." << std::endl;
 }
