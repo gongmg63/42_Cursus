@@ -10,6 +10,7 @@ ScavTrap::ScavTrap ()
 }
 
 ScavTrap::ScavTrap (const ScavTrap& copy)
+	:ClapTrap()
 {
 	std::cout << "ScavTrap copy constructor called" << std::endl;
 	*this = copy;
