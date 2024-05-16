@@ -41,7 +41,6 @@ std::string const &	Character::getName() const
 
 void	Character::equip(AMateria* m)
 {
-	std::cout << "Try to equip " << m->getType() << std::endl;
 	for (int i = 0; i < 4; ++i)
 	{
 		if (this->m[i] == NULL)
@@ -50,7 +49,6 @@ void	Character::equip(AMateria* m)
 			return ;
 		}
 	}
-	std::cout << "Materias is full.." << std::endl;
 }
 
 void	Character::unequip(int idx)
