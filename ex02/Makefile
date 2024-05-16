@@ -1,8 +1,8 @@
 CXX		=	c++
 FLAGS	=	-Wall -Wextra -Werror -std=c++98
-SRCS	=	main.cpp 
+SRCS	=	main.cpp Animal.cpp Brain.cpp Cat.cpp Dog.cpp
 OBJS	=	$(SRCS:.cpp=.o)
-HEADER	=	
+HEADER	=	Animal.hpp Brain.hpp Cat.hpp Dog.hpp
 NAME	=	ex02
 
 all : $(NAME)
