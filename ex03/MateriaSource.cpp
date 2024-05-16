@@ -18,7 +18,14 @@ MateriaSource&	MateriaSource::operator=(const MateriaSource& copy)
 	return (*this);
 }
 
-MateriaSource::~MateriaSource() {}
+MateriaSource::~MateriaSource() 
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		if (this->ms[i])
+			delete ms[i];
+	}
+}
 
 void	MateriaSource::learnMateria(AMateria* ms)
 {

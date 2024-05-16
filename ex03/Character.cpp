@@ -65,4 +65,6 @@ void	Character::use(int idx, ICharacter& target)
 		return ;
 	if (this->m[idx])
 		this->m[idx]->use(target);
+	else
+		std::cout << "No Materias in " << idx << std::endl;
 }
