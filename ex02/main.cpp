@@ -3,14 +3,14 @@
 #include "Cat.hpp"
 #include "Brain.hpp"
 
-// void	ck()
-// {
-// 	system("leaks ex01");
-// }
+void	ck()
+{
+	system("leaks ex02");
+}
 
 int main()
 {
-	// atexit(ck);
+	atexit(ck);
 	const Animal* j = new Dog();
 	const Animal* i = new Cat();
 
@@ -18,19 +18,17 @@ int main()
 	delete i;
 
 	Dog* dog = new Dog();
-	// Dog* dog_copy = new Dog(*dog);
-	Dog* dog_copy = new Dog();
-	*dog_copy = *dog;
+	Dog* dog_copy = new Dog(*dog);
 	Cat* cat = new Cat();
-	// Cat* cat_copy = new Cat(*cat);
-	Cat* cat_copy = new Cat();
-	*cat_copy = *cat;
+	Cat* cat_copy = new Cat(*cat);
+
 	std::cout << "Dog copy : " << dog->getDogIdea() << " " << dog_copy->getDogIdea() << std::endl;
 	std::cout << "Cat copy : " << cat->getCatIdea() << " " << cat_copy->getCatIdea() << std::endl;
 	dog->setDogIdea("Wolf");
 	cat->setCatIdea("Tiger");
 	std::cout << "Set Dog : " << dog->getDogIdea() << " " << dog_copy->getDogIdea() << std::endl;
 	std::cout << "Set Cat : " << cat->getCatIdea() << " " << cat_copy->getCatIdea() << std::endl;
+
 	delete dog;
 	delete cat;
 	delete dog_copy;

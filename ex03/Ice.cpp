@@ -19,7 +19,10 @@ Ice::~Ice() {}
 
 AMateria*	Ice::clone() const
 {
-	return (new Ice());
+	AMateria*	tmp = new Ice();
+	
+	tmp->setType(this->type);
+	return (tmp);
 }
 
 void	Ice::use(ICharacter& target)
@@ -27,5 +30,5 @@ void	Ice::use(ICharacter& target)
 	if (this->type == "ice")
 		std::cout << "* shoots an ice bolt at " << target.getName() << " *" << std::endl;
 	else
-		std::cout << "You cast Ice, but type isn't Ice.." << std::endl;
+		std::cout << "You cast ice, but type is " << this->type << std::endl;
 }

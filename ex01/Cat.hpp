@@ -11,9 +11,9 @@ public:
 	Cat		();
 	Cat		(const Cat& copy);
 	Cat&	operator=(const Cat& copy);
-	virtual ~Cat	();
+	~Cat	();
 
-	virtual void makeSound() const;
-	std::string		getCatIdea() const;
-	void			setCatIdea(const std::string& ideas);
+	void 		makeSound() const;
+	std::string	getCatIdea() const;
+	void		setCatIdea(const std::string& ideas);
 };

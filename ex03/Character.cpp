@@ -4,7 +4,7 @@
 Character::Character() 
 {
 	for (int i = 0; i < 4; ++i)
-		m[i] = NULL;
+		this->m[i] = NULL;
 }
 
 Character::Character(const Character& copy)
@@ -16,17 +16,37 @@ Character& Character::operator=(const Character& copy)
 {
 	this->name = copy.name;
 	for (int i = 0; i < 4; ++i)
-		this->m[i] = copy.m[i];
+	{
+		if (this->m[i] != NULL)
+		{
+			delete this->m[i];
+			this->m[i] = NULL;
+		}
+	}
+	for (int i = 0; i < 4; ++i)
+	{
+		if (copy.m[i] != NULL)
+			this->m[i] = copy.m[i]->clone();
+	}
 	return (*this);
 }
 
-Character::~Character() {}
+Character::~Character() 
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		if (this->m[i] != NULL)
+		{
+			delete this->m[i];
+		}
+	}
+}
 
 Character::Character(const std::string& name)
 {
 	this->name = name;
 	for (int i = 0; i < 4; ++i)
-		m[i] = NULL;
+		this->m[i] = NULL;
 }
 
 void	Character::setName(const std::string& name)
@@ -49,14 +69,19 @@ void	Character::equip(AMateria* m)
 			return ;
 		}
 	}
+	std::cout << "Can't equip. Character Materias is full."  << std::endl;
 }
 
 void	Character::unequip(int idx)
 {
 	if (idx < 0 || idx > 3)
 		return ;
-	std::cout << "Unequip " << idx << " : " << this->m[idx]->getType() << std::endl;
-	this->m[idx] = NULL;
+	if (!this->m[idx])
+		std::cout << "Can't unequip. No Materias in " << idx << std::endl;
+	else
+	{
+		this->m[idx] = NULL;
+	}
 }
 
 void	Character::use(int idx, ICharacter& target)
@@ -66,5 +91,5 @@ void	Character::use(int idx, ICharacter& target)
 	if (this->m[idx])
 		this->m[idx]->use(target);
 	else
-		std::cout << "No Materias in " << idx << std::endl;
+		std::cout << "Can't use. No Materias in " << idx << std::endl;
 }

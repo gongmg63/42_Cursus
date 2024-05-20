@@ -28,8 +28,7 @@ std::string	const & AMateria::getType() const
 
 void	AMateria::use(ICharacter& target)
 {
-	(void)target;
-	std::cout << "You use just Materia..set type" << std::endl;
+	std::cout << "You use just Materia to " << target.getName() << " : " << this->type << std::endl;
 }
 
 void	AMateria::setType(const std::string& type)

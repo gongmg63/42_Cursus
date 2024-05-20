@@ -19,7 +19,10 @@ Cure::~Cure() {}
 
 AMateria*	Cure::clone() const
 {
-	return (new Cure());
+	AMateria*	tmp = new Cure();
+	
+	tmp->setType(this->type);
+	return (tmp);
 }
 
 void	Cure::use(ICharacter& target)
@@ -27,5 +30,5 @@ void	Cure::use(ICharacter& target)
 	if (this->type == "cure")
 		std::cout << "* heals " << target.getName() << "'s wounds *" << std::endl;
 	else
-		std::cout << "You cast cure, but type isn't cure.." << std::endl;
+		std::cout << "You cast cure, but type is " << this->type << std::endl;
 }

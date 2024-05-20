@@ -37,14 +37,16 @@ void	MateriaSource::learnMateria(AMateria* ms)
 			return ;
 		}
 	}
+	std::cout << "Can't learn materia. It's full" << std::endl;
 }
 
 AMateria*	MateriaSource::createMateria(std::string const & type)
 {
 	for (int i = 0; i < 4; ++i)
 	{
-		if (this->ms[i] != NULL && this->ms[i]->getType() == type)
+		if (this->ms[i] && this->ms[i]->getType() == type)
 			return (this->ms[i]->clone());
 	}
+	std::cout << "Can't create materia. There's no " << type << std::endl;
 	return (0);
 }
