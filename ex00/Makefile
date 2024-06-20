@@ -1,8 +1,9 @@
 CXX		=	c++
 FLAGS	=	-Wall -Wextra -Werror -std=c++98 # -g3 -fsanitize=address
-SRCS	=	
+SRCS	=	main.cpp \
+			Bureaucrat.cpp
 OBJS	=	$(SRCS:.cpp=.o)
-HEADER	=	
+HEADER	=	Bureaucrat.hpp
 NAME	=	ex00
 
 all : $(NAME)
