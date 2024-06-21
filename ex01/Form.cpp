@@ -35,7 +35,7 @@ bool	Form::getSign() const
 void	Form::beSigned(const Bureaucrat& b)
 {
 	if (_sign_grade < b.getGrade())
-		throw (GradeTooLowException());
+		throw (Bureaucrat::GradeTooLowException());
 	b.signForm(*this);
 	_sign = true;
 }
