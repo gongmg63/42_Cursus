@@ -21,7 +21,7 @@ int main()
 
     try {
         Bureaucrat b3("Charlie", 150);
-        std::cout << b3.getName() << " created with grade " << b3.getGrade() << "\n";
+        std::cout << b3 << "\n";
 		b3.decrementGrade();
     }
 	catch (const std::exception& e) 
@@ -31,8 +31,19 @@ int main()
 
     try {
         Bureaucrat b4("Jhon", 1);
-        std::cout << b4.getName() << " created with grade " << b4.getGrade() << "\n";
+        std::cout << b4 << "\n";
 		b4.incrementGrade();
+    }
+	catch (const std::exception& e) 
+	{
+        std::cout << "Exception: " << e.what() << "\n";
+    }
+
+    try {
+        Bureaucrat b5("James", 1);
+        std::cout << b5 << "\n";
+		b5.decrementGrade();
+        std::cout << b5 << "\n";
     }
 	catch (const std::exception& e) 
 	{

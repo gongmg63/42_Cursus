@@ -3,6 +3,8 @@
 #include <iostream>
 #include <exception>
 
+class Form;
+
 class Bureaucrat
 {
 public:
@@ -14,13 +16,14 @@ public:
 
 	void	incrementGrade();
 	void	decrementGrade();
+	void	signForm(const Form& form) const;
 
 	class GradeTooHighException : public std::exception
 	{
 	public:
 		const char*	what() const throw() 
 		{
-			return ("Grade too high\n");
+			return ("Bureaucrat Grade too high\n");
 		}
 	};
 	class GradeTooLowException : public std::exception
@@ -28,7 +31,7 @@ public:
 	public:
 		const char*	what() const throw()
 		{
-			return ("Grade too low\n");
+			return ("Bureaucrat Grade too low\n");
 		}
 	};
 private:
