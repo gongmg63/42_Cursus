@@ -1,10 +1,13 @@
 CXX		=	c++
 FLAGS	=	-Wall -Wextra -Werror -std=c++98 # -g3 -fsanitize=address
 SRCS	=	main.cpp \
-			ScalarConverter.cpp
+			Base.cpp
 OBJS	=	$(SRCS:.cpp=.o)
-HEADER	=	ScalarConverter.hpp
-NAME	=	convert
+HEADER	=	Base.hpp \
+			A.hpp \
+			B.hpp \
+			C.hpp
+NAME	=	ex02
 
 all : $(NAME)
 
