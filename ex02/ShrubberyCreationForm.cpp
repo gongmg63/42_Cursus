@@ -12,7 +12,7 @@ ShrubberyCreationForm::~ShrubberyCreationForm() {}
 void	ShrubberyCreationForm::execute(const Bureaucrat& b) const
 {
 	checkExecute(b);
-	std::ofstream ofs(_target + "_shrubbery");
+	std::ofstream ofs((_target + "_shrubbery").c_str());
 
 	if (!ofs)
 		throw (FileOpenFail());
