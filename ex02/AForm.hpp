@@ -9,6 +9,7 @@ class AForm
 {
 public:
 	AForm	(const std::string& name, int sign_grade, int execute_grade);
+	AForm	(const AForm& copy);
 	virtual ~AForm	();
 
 	const std::string&	getName() const;
@@ -53,7 +54,6 @@ private:
 	
 	//forbidden constructor, operator
 	AForm	();
-	AForm	(const AForm& copy);
 	AForm	(const std::string& name);
 	AForm	(const std::string& name, const int sign_grade);
 	const AForm&	operator=(const AForm& copy);

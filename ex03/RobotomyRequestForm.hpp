@@ -7,6 +7,7 @@ class RobotomyRequestForm : public AForm
 {
 public:
 	RobotomyRequestForm	(const std::string& target);
+	RobotomyRequestForm	(const RobotomyRequestForm& copy);
 	~RobotomyRequestForm	();
 
 	void	execute(const Bureaucrat& b) const;
@@ -24,6 +25,5 @@ private:
 
 	//forbidden constructor, operator
 	RobotomyRequestForm	();
-	RobotomyRequestForm	(const RobotomyRequestForm& copy);
 	const RobotomyRequestForm& operator=(const RobotomyRequestForm& copy);
 };

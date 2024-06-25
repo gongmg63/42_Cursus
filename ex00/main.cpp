@@ -44,6 +44,8 @@ int main()
         std::cout << b5 << "\n";
 		b5.decrementGrade();
         std::cout << b5 << "\n";
+        b5.incrementGrade();
+        std::cout << b5 << "\n";
     }
 	catch (const std::exception& e) 
 	{

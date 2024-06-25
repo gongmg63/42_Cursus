@@ -9,6 +9,7 @@ class Bureaucrat
 {
 public:
 	Bureaucrat	(const std::string& name, int grade);	
+	Bureaucrat	(const Bureaucrat& copy);
 	~Bureaucrat	();
 
 	const std::string&	getName() const;
@@ -38,9 +39,9 @@ private:
 	const std::string	_name;
 	int					_grade;
 
+	//fobidden constructor, operator
 	Bureaucrat	();
 	Bureaucrat	(const std::string& name);
-	Bureaucrat	(const Bureaucrat& copy);
 	const Bureaucrat& operator=(const Bureaucrat& copy);
 };
 

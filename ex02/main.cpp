@@ -30,7 +30,7 @@ int main()
 	try 
 	{
         ShrubberyCreationForm sb3("tree");
-        Bureaucrat b3("b3", 137);
+        Bureaucrat b3("b_tree", 137);
         sb3.beSigned(b3);
         sb3.execute(b3);
         std::cout << "\n";

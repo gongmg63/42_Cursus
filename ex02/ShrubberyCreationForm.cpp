@@ -4,6 +4,9 @@
 ShrubberyCreationForm::ShrubberyCreationForm(const std::string& target)
 	: AForm("ShrubberyCreationForm", 145, 137), _target(target) {}
 
+ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm& copy)
+	: AForm(copy.getName(), copy.getSignGrade(), copy.getExecuteGrade()), _target(copy._target) {}
+
 ShrubberyCreationForm::~ShrubberyCreationForm() {}
 
 void	ShrubberyCreationForm::execute(const Bureaucrat& b) const

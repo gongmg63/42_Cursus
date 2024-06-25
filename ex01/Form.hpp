@@ -9,6 +9,7 @@ class Form
 {
 public:
 	Form	(const std::string& name, int sign_grade, int execute_grade);
+	Form	(const Form& copy);
 	~Form	();
 
 	const std::string&	getName() const;
@@ -43,7 +44,6 @@ private:
 	
 	//forbidden constructor, operator
 	Form	();
-	Form	(const Form& copy);
 	Form	(const std::string& name);
 	Form	(const std::string& name, const int sign_grade);
 	const Form&	operator=(const Form& copy);

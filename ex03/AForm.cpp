@@ -10,6 +10,9 @@ AForm::AForm(const std::string& name, int sign_grade, int execute_grade)
 		throw (GradeTooLowException());
 }
 
+AForm::AForm(const AForm& copy)
+	: _name(copy._name), _sign_grade(copy._sign_grade), _execute_grade(copy._execute_grade), _sign(copy._sign) {}
+
 AForm::~AForm() {}
 
 const std::string& AForm::getName() const
@@ -35,7 +38,7 @@ bool	AForm::getSign() const
 void	AForm::beSigned(const Bureaucrat& b)
 {
 	if (_sign_grade < b.getGrade())
-		throw (Bureaucrat::GradeTooLowException());
+		throw (AForm::GradeTooLowException());
 	b.signForm(*this);
 	_sign = true;
 }
@@ -45,7 +48,7 @@ void	AForm::checkExecute(const Bureaucrat& b) const
 	if (!_sign)
 		throw (FormNotSignedException());
 	if (_execute_grade < b.getGrade())
-		throw (Bureaucrat::GradeTooLowException());
+		throw (AForm::GradeTooLowException());
 }
 
 std::ostream& operator<<(std::ostream& os, const AForm& Aform)

@@ -7,6 +7,7 @@ class ShrubberyCreationForm : public AForm
 {
 public:
 	ShrubberyCreationForm	(const std::string& target);
+	ShrubberyCreationForm	(const ShrubberyCreationForm& copy);
 	~ShrubberyCreationForm	();
 
 	void	execute(const Bureaucrat& b) const;
@@ -24,6 +25,5 @@ private:
 
 	//forbidden constructor, operator
 	ShrubberyCreationForm	();
-	ShrubberyCreationForm	(const ShrubberyCreationForm& copy);
 	const ShrubberyCreationForm& operator=(const ShrubberyCreationForm& copy);
 };

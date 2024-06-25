@@ -6,6 +6,7 @@ class PresidentialPardonForm : public AForm
 {
 public:
 	PresidentialPardonForm	(const std::string& target);
+	PresidentialPardonForm	(const PresidentialPardonForm& copy);
 	~PresidentialPardonForm	();
 
 	void	execute(const Bureaucrat& b) const;
@@ -23,6 +24,5 @@ private:
 	
 	//forbidden constructor, operator
 	PresidentialPardonForm	();
-	PresidentialPardonForm	(const PresidentialPardonForm& copy);
 	const PresidentialPardonForm& operator=(const PresidentialPardonForm& copy);
 };

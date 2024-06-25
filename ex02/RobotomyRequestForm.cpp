@@ -7,6 +7,12 @@ RobotomyRequestForm::RobotomyRequestForm(const std::string& target)
 	std::srand(std::time(NULL));
 }
 
+RobotomyRequestForm::RobotomyRequestForm(const RobotomyRequestForm& copy)
+	: AForm(copy.getName(), copy.getSignGrade(), copy.getExecuteGrade()), _target(copy._target) 
+{
+	std::srand(std::time(NULL));
+}
+
 RobotomyRequestForm::~RobotomyRequestForm() {}
 
 void	RobotomyRequestForm::execute(const Bureaucrat& b) const

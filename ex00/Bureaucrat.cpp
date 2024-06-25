@@ -9,6 +9,9 @@ Bureaucrat::Bureaucrat(const std::string& name, int grade)
 		throw GradeTooHighException();
 }
 
+Bureaucrat::Bureaucrat(const Bureaucrat& copy)
+	:_name(copy._name), _grade(copy._grade) {}
+
 Bureaucrat::~Bureaucrat() {}
 
 const std::string&	Bureaucrat::getName() const

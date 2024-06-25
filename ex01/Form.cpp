@@ -10,6 +10,9 @@ Form::Form(const std::string& name, int sign_grade, int execute_grade)
 		throw (GradeTooLowException());
 }
 
+Form::Form(const Form& copy)
+	: _name(copy._name), _sign_grade(copy._sign_grade), _execute_grade(copy._execute_grade), _sign(copy._sign) {}
+
 Form::~Form() {}
 
 const std::string& Form::getName() const
@@ -35,7 +38,7 @@ bool	Form::getSign() const
 void	Form::beSigned(const Bureaucrat& b)
 {
 	if (_sign_grade < b.getGrade())
-		throw (Bureaucrat::GradeTooLowException());
+		throw (Form::GradeTooLowException());
 	b.signForm(*this);
 	_sign = true;
 }
