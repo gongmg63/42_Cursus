@@ -10,7 +10,7 @@ int main()
 	{
         ShrubberyCreationForm sb1("tree");
         Bureaucrat b1("b1", 146);
-        sb1.beSigned(b1);
+        b1.signForm(sb1);
     } 
 	catch (const std::exception& e) {
         std::cout << "Exception: " << e.what() << "\n";
@@ -20,8 +20,8 @@ int main()
 	{
         ShrubberyCreationForm sb2("tree");
         Bureaucrat b2("b2", 145);
-        sb2.beSigned(b2);
-        sb2.execute(b2);
+        b2.signForm(sb2);
+        b2.executeForm(sb2);
     } 
 	catch (const std::exception& e) {
         std::cout << "Exception: " << e.what() << "\n";
@@ -30,9 +30,9 @@ int main()
 	try 
 	{
         ShrubberyCreationForm sb3("tree");
-        Bureaucrat b3("b_tree", 137);
-        sb3.beSigned(b3);
-        sb3.execute(b3);
+        Bureaucrat b_tree("b_tree", 137);
+        b_tree.signForm(sb3);
+        b_tree.executeForm(sb3);
         std::cout << "\n";
     } 
 	catch (const std::exception& e) {
@@ -43,9 +43,9 @@ int main()
 	{
         RobotomyRequestForm rb("robot");
         Bureaucrat b_robot("b_robot", 45);
-        rb.beSigned(b_robot);
-        rb.execute(b_robot);
-        rb.execute(b_robot);
+        b_robot.signForm(rb);
+        b_robot.executeForm(rb);
+        b_robot.executeForm(rb);
         std::cout << "\n";
     } 
 	catch (const std::exception& e) {
@@ -56,8 +56,8 @@ int main()
 	{
         PresidentialPardonForm pp("hihi");
         Bureaucrat b_pp("b_pp", 5);
-        pp.beSigned(b_pp);
-        pp.execute(b_pp);
+        b_pp.signForm(pp);
+        b_pp.executeForm(pp);
     } 
 	catch (const std::exception& e) {
         std::cout << "Exception: " << e.what() << "\n";

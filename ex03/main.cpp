@@ -14,20 +14,20 @@ int main()
         Bureaucrat b("hihi", 1);
 
         rrf = someRandomIntern.makeForm("shrubbery creation", "John");
-        rrf->beSigned(b);
-        rrf->execute(b);
+        b.signForm(*rrf);
+        b.executeForm(*rrf);
         std::cout << "\n";
         delete rrf;
 
         rrf = someRandomIntern.makeForm("robotomy request", "Bender");
-        rrf->beSigned(b);
-        rrf->execute(b);
+        b.signForm(*rrf);
+        b.executeForm(*rrf);
         std::cout << "\n";
         delete rrf;
         
         rrf = someRandomIntern.makeForm("presidential pardon", "Jenny");
-        rrf->beSigned(b);
-        rrf->execute(b);
+        b.signForm(*rrf);
+        b.executeForm(*rrf);
         std::cout << "\n";
         delete rrf;
 

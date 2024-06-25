@@ -15,15 +15,12 @@ public:
 	class FileOpenFail : public std::exception
 	{
 	public:
-		const char*	what() const throw() 
-		{
-			return ("File open fail\n");
-		}
+		const char*	what() const throw() ;
 	};
 private:
 	std::string _target;
 
 	//forbidden constructor, operator
 	ShrubberyCreationForm	();
-	const ShrubberyCreationForm& operator=(const ShrubberyCreationForm& copy);
+	ShrubberyCreationForm& operator=(const ShrubberyCreationForm& copy);
 };

@@ -19,22 +19,16 @@ public:
 
 	void	beSigned(const Bureaucrat& b);
 
-	//nested class
 	class GradeTooHighException : public std::exception
 	{
 	public:
-		const char*	what() const throw() 
-		{
-			return ("Form Grade too high\n");
-		}
+		const char*	what() const throw();
 	};
+
 	class GradeTooLowException : public std::exception
 	{
 	public:
-		const char*	what() const throw()
-		{
-			return ("Form Grade too low\n");
-		}
+		const char*	what() const throw();
 	};
 private:
 	const std::string	_name;
@@ -44,9 +38,7 @@ private:
 	
 	//forbidden constructor, operator
 	Form	();
-	Form	(const std::string& name);
-	Form	(const std::string& name, const int sign_grade);
-	const Form&	operator=(const Form& copy);
+	Form&	operator=(const Form& copy);
 };
 
 std::ostream& operator<<(std::ostream& os, const Form& form);

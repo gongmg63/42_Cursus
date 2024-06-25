@@ -3,15 +3,14 @@
 #include "RobotomyRequestForm.hpp"
 #include "PresidentialPardonForm.hpp"
 
-Intern::Intern()
-{
-	_form_list[0] = "shrubbery creation";
-	_form_list[1] = "robotomy request";
-	_form_list[2] = "presidential pardon";
-    _create_form[0] = &Intern::createShrubbery;
-    _create_form[1] = &Intern::createRobotomy;
-    _create_form[2] = &Intern::createPardon;
-}
+std::string Intern::_form_list[3] = {"shrubbery creation", "robotomy request", "presidential pardon"};
+AForm* (Intern::*Intern::_create_form[3])(const std::string& target) = {
+    &Intern::createShrubbery,
+    &Intern::createRobotomy,
+    &Intern::createPardon
+};
+
+Intern::Intern() {}
 
 Intern::Intern(const Intern& copy)
 {
@@ -56,4 +55,9 @@ AForm*	Intern::makeForm(const std::string& form, const std::string& target)
 		}
 	}
 	throw (NoFormException());
+}
+
+const char*	Intern::NoFormException::what() const throw()
+{
+	return ("Doesn't exist that form\n");
 }

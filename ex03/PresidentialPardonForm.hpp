@@ -10,19 +10,10 @@ public:
 	~PresidentialPardonForm	();
 
 	void	execute(const Bureaucrat& b) const;
-
-	class FileOpenFail : public std::exception
-	{
-	public:
-		const char*	what() const throw() 
-		{
-			return ("File open fail\n");
-		}
-	};
 private:
 	std::string _target;
 	
 	//forbidden constructor, operator
 	PresidentialPardonForm	();
-	const PresidentialPardonForm& operator=(const PresidentialPardonForm& copy);
+	PresidentialPardonForm& operator=(const PresidentialPardonForm& copy);
 };

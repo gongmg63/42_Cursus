@@ -36,9 +36,9 @@ int main()
         Bureaucrat b2("b2", 2);
         std::cout << f4 << "\n";
         std::cout << b2 << "\n";
-        f4.beSigned(b2);
+        b2.signForm(f4);
         std::cout << f4 << "\n";
-        f4.beSigned(b2);
+        b2.signForm(f4);
     }
 	catch (const std::exception& e) 
 	{

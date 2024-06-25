@@ -19,18 +19,13 @@ public:
 	class GradeTooHighException : public std::exception
 	{
 	public:
-		const char*	what() const throw() 
-		{
-			return ("Grade too high\n");
-		}
+		const char*	what() const throw();
 	};
+
 	class GradeTooLowException : public std::exception
 	{
 	public:
-		const char*	what() const throw()
-		{
-			return ("Grade too low\n");
-		}
+		const char*	what() const throw();
 	};
 private:
 	const std::string	_name;
@@ -38,8 +33,7 @@ private:
 
 	//fobidden constructor, operator
 	Bureaucrat	();
-	Bureaucrat	(const std::string& name);
-	const Bureaucrat& operator=(const Bureaucrat& copy);
+	Bureaucrat& operator=(const Bureaucrat& copy);
 };
 
 std::ostream& operator<<(std::ostream& os, const Bureaucrat& b);

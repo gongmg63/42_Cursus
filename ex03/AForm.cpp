@@ -1,6 +1,15 @@
 #include "AForm.hpp"
 #include "Bureaucrat.hpp"
 
+AForm::AForm() 
+	: _sign_grade(1), _execute_grade(1) {}
+
+AForm&	AForm::operator=(const AForm& copy)
+{
+	(void)copy;
+	return (*this);
+}
+
 AForm::AForm(const std::string& name, int sign_grade, int execute_grade)
 	: _name(name), _sign_grade(sign_grade), _execute_grade(execute_grade), _sign(false)
 {
@@ -38,9 +47,14 @@ bool	AForm::getSign() const
 void	AForm::beSigned(const Bureaucrat& b)
 {
 	if (_sign_grade < b.getGrade())
-		throw (AForm::GradeTooLowException());
-	b.signForm(*this);
+		throw (GradeTooLowException());
+	if (_sign)
+	{
+		std::cout  << b.getName() << " couldn't sign " << _name << " because " << _name << " aleady signed.\n";
+		return ;
+	}
 	_sign = true;
+	std::cout << b.getName() << " signed " << _name << "\n";
 }
 
 void	AForm::checkExecute(const Bureaucrat& b) const
@@ -48,7 +62,22 @@ void	AForm::checkExecute(const Bureaucrat& b) const
 	if (!_sign)
 		throw (FormNotSignedException());
 	if (_execute_grade < b.getGrade())
-		throw (AForm::GradeTooLowException());
+		throw (GradeTooLowException());
+}
+
+const char*	AForm::GradeTooHighException::what() const throw()
+{
+	return ("Form Grade too high\n");
+}
+
+const char*	AForm::GradeTooLowException::what() const throw()
+{
+	return ("Form Grade too low\n");
+}
+
+const char* AForm::FormNotSignedException::what() const throw()
+{
+	return ("Form isn't signed\n");
 }
 
 std::ostream& operator<<(std::ostream& os, const AForm& Aform)
