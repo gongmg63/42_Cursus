@@ -5,8 +5,6 @@
 #include <sstream>
 #include <iomanip>
 #include <cerrno>
-#include <cmath>
-#include <limits>
 
 enum Type
 {

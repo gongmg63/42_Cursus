@@ -68,14 +68,8 @@ void	intPrint(Checker check)
 		std::cout << "int : impossible\n";
 	else
 		std::cout << "int : " << i << "\n";
-	if (static_cast<int>(f) != i)
-		std::cout << "float : impossible\n";
-	else
-		std::cout << "float : " << f << ".0f\n";
-	if (static_cast<int>(d) != i)
-		std::cout << "double : impossible\n";
-	else
-		std::cout << "double : " << d << ".0\n";
+	std::cout << "float : " << f << ".0f\n";
+	std::cout << "double : " << d << ".0\n";
 }
 
 void	floatPrint(Checker check)
