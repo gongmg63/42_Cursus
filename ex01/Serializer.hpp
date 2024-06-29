@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstring>
 
-typedef unsigned long unitptr_t;
+typedef unsigned long uintptr_t;
 
 struct Data
 {
@@ -16,7 +16,7 @@ class Serializer
 {
 public:
 	static uintptr_t	serialize(Data* ptr);
-	static Data*		deserialize(unitptr_t raw);
+	static Data*		deserialize(uintptr_t raw);
 private:
 	//forbidden constructor, operator
 	Serializer ();
