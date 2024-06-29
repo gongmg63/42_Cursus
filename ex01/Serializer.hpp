@@ -15,14 +15,12 @@ struct Data
 class Serializer
 {
 public:
-	~Serializer ();
-	
 	static uintptr_t	serialize(Data* ptr);
 	static Data*		deserialize(unitptr_t raw);
 private:
-
 	//forbidden constructor, operator
 	Serializer ();
 	Serializer (const Serializer& copy);
+	~Serializer ();
 	const Serializer operator=(const Serializer& copy);
 };

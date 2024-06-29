@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iomanip>
 #include <cerrno>
+#include <cmath>
+#include <limits>
 
 enum Type
 {
@@ -27,13 +29,11 @@ struct	Checker
 class ScalarConverter
 {
 public:
-	~ScalarConverter ();
-
 	static void convert(const std::string& str);
 private:
-
 	//forbidden constructor, operator
 	ScalarConverter	();
+	~ScalarConverter ();
 	ScalarConverter	(const ScalarConverter& copy);
 	const ScalarConverter&	operator=(const ScalarConverter& copy);
 };
@@ -43,4 +43,4 @@ void	charPrint(Checker check);
 void	intPrint(Checker check);
 void	floatPrint(Checker check);
 void	doublePrint(Checker check);
-void	nonePrint(Checker check);
+void	nonePrint();
