@@ -16,7 +16,8 @@ template<typename T>
 Array<T>::Array(const Array& copy)
 	: _size(copy._size), _array(_size > 0 ? new T[_size] : NULL)
 {
-	std::memcpy(_array, copy._array, _size * sizeof(T));
+	for (std::size_t i = 0; i < _size; ++i)
+		_array[i] = copy._array[i];
 }
 
 template<typename T>
