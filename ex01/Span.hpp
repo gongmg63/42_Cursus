@@ -1,8 +1,10 @@
-#pragma once
+#ifndef __SPAN_HPP__
+#define __SPAN_HPP__
 
 #include <iostream>
+#include <algorithm>
 #include <exception>
-#include <set>
+#include <vector>
 
 class Span
 {
@@ -13,22 +15,14 @@ public:
 	~Span();
 
 	void	addNumber(int n);
+	void	addNumbers(std::vector<int>::iterator first, std::vector<int>::iterator last);
 	int		shortestSpan() const;
 	int		longestSpan() const;
 
-	class FullSpanException : public std::exception
-	{
-	public:
-		const char*	what() const throw();
-	};
-
-	class NotEnoughElementException : public std::exception
-	{
-	public:
-		const char* what() const throw();
-	};
+	unsigned int	size() const;
 private:
-	unsigned int	_size;
-	unsigned int	_real_size;
-	std::set<int>	_set;
+	std::vector<int>	_vec;
+	unsigned int		_size;
 };
+
+#endif

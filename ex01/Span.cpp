@@ -1,19 +1,15 @@
 #include "Span.hpp"
 
 Span::Span(unsigned int n)
-	: _size(n), _real_size(0) {}
+	: _size(n) {}
 
 Span::Span(const Span& copy)
-	: _size(copy._size), _real_size(copy._real_size)
-{
-	_set = copy._set;
-}
+	:  _vec(copy._vec), _size(copy._size) {}
 
 Span& 	Span::operator=(const Span& copy)
 {
 	_size = copy._size;
-	_real_size = copy._real_size;
-	_set = copy._set;
+	_vec = copy._vec;
 	return *this;
 }
 
@@ -21,41 +17,41 @@ Span::~Span() {}
 
 void	Span::addNumber(int n)
 {
-	if (_real_size == _size)
-		throw FullSpanException();
-	++_real_size;
-	_set.insert(n);
+	if (_vec.size() == _size)
+		throw std::runtime_error("Can't add more value..");
+	_vec.push_back(n);
+	std::sort(_vec.begin(), _vec.end());
+}
+
+void	Span::addNumbers(std::vector<int>::iterator first, std::vector<int>::iterator last)
+{
+	_vec.insert(_vec.end(), first, last);
+	if (_size < _vec.size())
+		throw std::runtime_error("Can't add all value..");
 }
 
 int	Span::shortestSpan() const
 {
 	int	shortest_span = -1;
 
-	if (_real_size < 2)
-		throw NotEnoughElementException();
-	for (std::set<int>::iterator it = _set.begin(); it != --_set.end(); ++it)
+	if (_vec.size() < 2)
+		throw std::runtime_error("Not enough elements..");
+	for (unsigned int i = 0; i < _vec.size() - 1; ++i)
 	{
-		std::set<int>::iterator next_it = it;
-		++next_it;
-		if (*next_it - *it < shortest_span || shortest_span == -1)
-			shortest_span = *next_it - *it;
+		if (_vec[i + 1] - _vec[i] < shortest_span || shortest_span == -1)
+			shortest_span = _vec[i + 1] - _vec[i];
 	}
 	return shortest_span;
 }
 
 int	Span::longestSpan() const
 {
-	if (_real_size < 2)
-		throw NotEnoughElementException();
-	return *(--_set.end()) - *_set.begin();
+	if (_vec.size() < 2)
+		throw std::runtime_error("Not enough elements..");
+	return _vec[_vec.size() - 1] - _vec[0];
 }
 
-const char*	Span::FullSpanException::what() const throw()
+unsigned int	Span::size() const
 {
-	return "Can't add more number..\n";
-}
-
-const char* Span::NotEnoughElementException::what() const throw()
-{
-	return "Not enough elements..\n";
+	return _size;
 }
