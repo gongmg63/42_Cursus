@@ -14,8 +14,7 @@ int main()
 	
 	try
 	{
-		int num = easyfind(vec, 3);
-		std::cout << "Num : " << num << "\n\n";
+		std::cout << "Num : " << *easyfind(vec, 3) << "\n\n";
 	}
 	catch (const std::exception& e)
 	{
@@ -24,8 +23,7 @@ int main()
 
 	try
 	{
-		int num = easyfind(vec, 6);
-		std::cout << "Num : " << num << "\n";
+		std::cout << "Num : " << *easyfind(vec, 6) << "\n";
 	}
 	catch (const std::exception& e)
 	{

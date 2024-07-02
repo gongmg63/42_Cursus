@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <exception>
 #include <vector>
+#include <cmath>
 
 class Span
 {

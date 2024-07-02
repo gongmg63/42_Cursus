@@ -4,12 +4,12 @@
 #include <stack>
 #include <string>
 
-template<typename T>
-class MutantStack : public std::stack<T>
+template<typename T, typename Container = std::deque<T> >
+class MutantStack : public std::stack<T, Container>
 {
 public:
-    typedef typename std::stack<T>::container_type::iterator iterator;
-	typedef typename std::stack<T>::container_type::reverse_iterator reverse_iterator;
+    typedef typename Container::iterator iterator;
+	typedef typename Container::reverse_iterator reverse_iterator;
 
 	MutantStack();
 	MutantStack(const MutantStack& copy);

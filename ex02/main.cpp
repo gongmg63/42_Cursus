@@ -73,11 +73,20 @@ int main()
 	MutantStack<int> mstack;
 	test_container_push(mstack);
 	std::stack<int> s(mstack);
+	*mstack.rbegin() = -1;
+	std::cout << "\ns_top : " << s.top() << ", mstack_top : " << mstack.top() << "\n";
+	std::stack<int> s2 = mstack;
+	*mstack.rbegin() = -2;
+	std::cout << "s2_top : " << s2.top() << ", mstack_top : " << mstack.top() << "\n";
 
 	std::cout << "\n\nList Test\n";
 	std::list<int> list;
 	test_container_push_back(list);
 	std::list<int> l(list);
-	std::cout << "\n\n";
+	*list.rbegin() = -1;
+	std::cout << "\nl_back : " << l.back() << ", list_back : " << list.back() << "\n";
+	std::list<int> l2 = list;
+	*list.rbegin() = -2;
+	std::cout << "l2_back : " << l.back() << ", list_back : " << list.back() << "\n";
 	return 0;
 }

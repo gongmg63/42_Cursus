@@ -25,9 +25,10 @@ void	Span::addNumber(int n)
 
 void	Span::addNumbers(std::vector<int>::iterator first, std::vector<int>::iterator last)
 {
-	_vec.insert(_vec.end(), first, last);
-	if (_size < _vec.size())
+	if (_size <  _vec.size() + std::distance(first, last))
 		throw std::runtime_error("Can't add all value..");
+	_vec.insert(_vec.end(), first, last);
+	std::sort(_vec.begin(), _vec.end());
 }
 
 int	Span::shortestSpan() const
@@ -38,8 +39,8 @@ int	Span::shortestSpan() const
 		throw std::runtime_error("Not enough elements..");
 	for (unsigned int i = 0; i < _vec.size() - 1; ++i)
 	{
-		if (_vec[i + 1] - _vec[i] < shortest_span || shortest_span == -1)
-			shortest_span = _vec[i + 1] - _vec[i];
+		if (std::abs(_vec[i] - _vec[i + 1]) < shortest_span || shortest_span == -1)
+			shortest_span = std::abs(_vec[i] - _vec[i + 1]);
 	}
 	return shortest_span;
 }
