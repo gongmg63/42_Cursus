@@ -87,6 +87,6 @@ int main()
 	std::cout << "\nl_back : " << l.back() << ", list_back : " << list.back() << "\n";
 	std::list<int> l2 = list;
 	*list.rbegin() = -2;
-	std::cout << "l2_back : " << l.back() << ", list_back : " << list.back() << "\n";
+	std::cout << "l2_back : " << l2.back() << ", list_back : " << list.back() << "\n";
 	return 0;
 }
