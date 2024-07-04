@@ -78,6 +78,8 @@ int main()
 	std::stack<int> s2 = mstack;
 	*mstack.rbegin() = -2;
 	std::cout << "s2_top : " << s2.top() << ", mstack_top : " << mstack.top() << "\n";
+	const MutantStack<int> cmst(mstack);
+	std::cout << "const mstack begin : " << *cmst.begin() << "\n";
 
 	std::cout << "\n\nList Test\n";
 	std::list<int> list;
@@ -88,5 +90,7 @@ int main()
 	std::list<int> l2 = list;
 	*list.rbegin() = -2;
 	std::cout << "l2_back : " << l2.back() << ", list_back : " << list.back() << "\n";
+	const std::list<int> cl(list);
+	std::cout << "const list begin : " << *cl.begin() << "\n";
 	return 0;
 }

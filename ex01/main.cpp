@@ -12,6 +12,12 @@ int main()
 	std::cout << sp.shortestSpan() << std::endl;
 	std::cout << sp.longestSpan() << std::endl;
 
+	std::cout << "\nconst SP test\n";
+	const Span csp(sp);
+	// csp.addNumber(6);
+	std::cout << csp.shortestSpan() << std::endl;
+	std::cout << csp.longestSpan() << std::endl;
+
 	std::cout << "\nSP2 test\n";
 	Span sp2(10000);
 	for (int i = 0; i < 10000; ++i)

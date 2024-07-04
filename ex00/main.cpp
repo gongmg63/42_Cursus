@@ -11,7 +11,9 @@ int main()
 	vec.push_back(3); 
 	vec.push_back(4); 
 	vec.push_back(5);
-	
+	const std::vector<int> vec2 = vec;
+
+	std::cout << *easyfind(vec2, 3) << "\n";
 	try
 	{
 		std::cout << "Num : " << *easyfind(vec, 3) << "\n\n";
