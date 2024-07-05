@@ -63,7 +63,7 @@ bool	BitcoinExchange::checkLeapYear(const long& year)
 {
 	if (!(year % 4))
 	{
-		if (year % 100)
+		if (!(year % 100))
 		{
 			if (year % 400 == 0)
 				return true;
@@ -211,9 +211,10 @@ void	BitcoinExchange::calculateExchange(const char* input)
 					value = checkValue(tmp_data, VALUE);
 				++flag;
 			}
-			if (flag != 2)
+			if (flag != 2 || tmp_data.size() == 0)
 				throw std::runtime_error("Error: bad input => " + tmp_line);
-			std::cout << date << " => " << findExchange(date) * value << "\n";
+			value *= findExchange(date);
+			std::cout << date << " => " << value << " = " << value << "\n";
 		}
 		catch(const std::exception& e)
 		{
