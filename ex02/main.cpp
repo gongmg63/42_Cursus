@@ -2,14 +2,10 @@
 
 int main(int ac, char* av[])
 {
-	try
+	if (ac < 2)
 	{
-		if (ac < 2)
-			throw std::runtime_error("Error: no input");
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
+		std::cerr << "Error: no input\n";
+		return 1;
 	}
 	try
 	{

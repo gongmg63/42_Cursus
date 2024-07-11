@@ -44,12 +44,14 @@ int	RPN::calculateRPN(const std::string& input)
 		else if (input[i] == '/')
 		{
 			if (rnum == 0)
-				throw std::runtime_error("Error: couldn't divide with 0");
+				throw std::runtime_error("Error: couldn't divide by 0");
 			_stack.push(lnum / rnum);
 		}
 	}
+	if (_stack.size() == 0)
+		throw std::runtime_error("Error: input nothing");
 	if (_stack.size() != 1)
-		throw std::runtime_error("Error: maybe insufficient operator");
+		throw std::runtime_error("Error: insufficient operator");
 	lnum = _stack.top();
 	_stack.pop();
 	return lnum;

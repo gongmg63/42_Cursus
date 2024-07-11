@@ -105,7 +105,7 @@ const std::string&	BitcoinExchange::checkDate(const std::string& date)
 			throw std::runtime_error("Error: bad input => " + date);
 		if (count == 0)
 		{
-			if (tmp_num < 0 || tmp_num > 2024)
+			if (tmp_num < 2009 || tmp_num > 2024)
 				throw std::runtime_error("Error: bad input => " + date);
 			year = tmp_num;
 		}
@@ -142,7 +142,7 @@ float	BitcoinExchange::checkValue(const std::string& value, int type)
 	if (type == VALUE)
 	{
 		if (value_f > 1000)
-			throw std::runtime_error("Error: too large a number.");
+			throw std::runtime_error("Error: too large number.");
 	}
 	return value_f;
 }
@@ -213,8 +213,8 @@ void	BitcoinExchange::calculateExchange(const char* input)
 			}
 			if (flag != 2 || tmp_data.size() == 0)
 				throw std::runtime_error("Error: bad input => " + tmp_line);
-			value *= findExchange(date);
-			std::cout << date << " => " << value << " = " << value << "\n";
+			float ret = value * findExchange(date);
+			std::cout << date << " => " << value << " = " << ret << "\n";
 		}
 		catch(const std::exception& e)
 		{

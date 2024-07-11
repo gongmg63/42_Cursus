@@ -64,6 +64,8 @@ void	PmergeMe::printVectorDuration()
 {
 	if (_vec_duration == -1)
 		throw std::runtime_error("Error: Can't print vector duration. Sort first.");
+	if (!checkSort(_vec))
+		throw std::runtime_error("Error: Vector fail to sort");
 	std::cout << std::fixed;
 	std::cout << "Time to process a range of " << _vec.size() << " elements with std::[vector] : " << _vec_duration << " us\n";
 }
@@ -72,6 +74,8 @@ void	PmergeMe::printDequeDuration()
 {
 	if (_deq_duration == -1)
 		throw std::runtime_error("Error: Can't print deque duration. Sort first.");
+	if (!checkSort(_deq))
+		throw std::runtime_error("Error: Deque fail to sort");
 	std::cout << std::fixed;
 	std::cout << "Time to process a range of " << _deq.size() << " elements with std::[deque] : " << _deq_duration << " us\n";
 }
@@ -109,46 +113,13 @@ void	PmergeMe::mergeInsertionVector(std::vector<int>& vec, std::vector<int>& sub
 	if (vec.size() % 2)
 		sub_chain.push_back(vec[vec.size() - 1]);
 	mergeInsertionVector(main_chain, sub_chain);
-	sort_vec.push_back(sub_chain[0]);
-	sort_vec.push_back(main_chain[0]);
-	if (sub_vec.size() && vec[0] != sub_chain[0])
-		std::swap(sub_vec[0], sub_vec[1]);
-	std::size_t	pre_jacob = 1;
-	std::size_t jacob = 1;
-	while (jacob <= sub_chain.size())
-	{
-		int tmp = jacob;
-		jacob = jacob + 2 * pre_jacob;
-		pre_jacob = tmp;
-		for (std::size_t i = pre_jacob; i < (jacob > main_chain.size() ? main_chain.size() : jacob); ++i)
-			sort_vec.push_back(main_chain[i]);
-		for (std::size_t i = (jacob > sub_chain.size() ? sub_chain.size() : jacob); i > pre_jacob; --i)
-		{
-			std::size_t	insert_idx = binarySearch(sort_vec, 0, sort_vec.size(), sub_chain[i - 1]);
-			if (insert_idx == sort_vec.size() + 1)
-				sort_vec.push_back(sub_chain[i - 1]);
-			else
-				sort_vec.insert(sort_vec.begin() + insert_idx, sub_chain[i - 1]);
-		}
-	}
+	sort_vec = mergeInsertion(main_chain, sub_chain);
 	if (!sub_vec.size())
 	{
 		_vec = sort_vec;
 		return ;
 	}
-	std::vector<bool>	check(vec.size(), false);
-	for (std::size_t i = 0; i < sort_vec.size(); ++i)
-	{
-		for (std::size_t j = 0; j < vec.size(); ++j)
-		{
-			if (!check[j] && vec[j] == sort_vec[i] && i != j)
-			{
-				std::swap(vec[i], vec[j]);
-				std::swap(sub_vec[i], sub_vec[j]);
-				check[i] = true;
-			}
-		}
-	}
+	indexingContainer(sort_vec, vec, sub_vec);
 }
 
 void	PmergeMe::mergeInsertionDeque(std::deque<int>& deq, std::deque<int>& sub_deq)
@@ -167,42 +138,11 @@ void	PmergeMe::mergeInsertionDeque(std::deque<int>& deq, std::deque<int>& sub_de
 	if (deq.size() % 2)
 		sub_chain.push_back(deq[deq.size() - 1]);
 	mergeInsertionDeque(main_chain, sub_chain);
-	sort_deque.push_back(sub_chain[0]);
-	sort_deque.push_back(main_chain[0]);
-	std::size_t	pre_jacob = 1;
-	std::size_t jacob = 1;
-	while (jacob <= sub_chain.size())
-	{
-		int tmp = jacob;
-		jacob = jacob + 2 * pre_jacob;
-		pre_jacob = tmp;
-		for (std::size_t i = pre_jacob; i < (jacob > main_chain.size() ? main_chain.size() : jacob); ++i)
-			sort_deque.push_back(main_chain[i]);
-		for (std::size_t i = (jacob > sub_chain.size() ? sub_chain.size() : jacob); i > pre_jacob; --i)
-		{
-			std::size_t	insert_idx = binarySearch(sort_deque, 0, sort_deque.size() - 1, sub_chain[i - 1]);
-			if (insert_idx == sort_deque.size())
-				sort_deque.push_back(sub_chain[i - 1]);
-			else
-				sort_deque.insert(sort_deque.begin() + insert_idx, sub_chain[i - 1]);
-		}
-	}
+	sort_deque = mergeInsertion(main_chain, sub_chain);
 	if (!sub_deq.size())
 	{
 		_deq = sort_deque;
 		return ;
 	}
-	std::deque<bool>	check(deq.size(), false);
-	for (std::size_t i = 0; i < sort_deque.size(); ++i)
-	{
-		for (std::size_t j = 0; j < deq.size(); ++j)
-		{
-			if (!check[j] && deq[j] == sort_deque[i] && i != j)
-			{
-				std::swap(deq[i], deq[j]);
-				std::swap(sub_deq[i], sub_deq[j]);
-				check[i] = true;
-			}
-		}
-	}
+	indexingContainer(sort_deque, deq, sub_deq);
 }
