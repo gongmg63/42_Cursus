@@ -7,7 +7,8 @@
 #include <cstdlib>
 #include <utility>
 #include <vector>
-#include <list>
+#include <deque>
+#include <ctime>
 
 class PmergeMe 
 {
@@ -19,14 +20,19 @@ public:
 	~PmergeMe();
 
 	void	sortVector();
-	void	sortList();
+	void	sortDeque();
+	void	printVectorDuration();
+	void	printDequeDuration();
+	void	inputValue(int ac, char* av[]);
 private:
 	std::vector<int>	_vec;
-	std::list<int>		_list;
+	std::deque<int>		_deq;
+	bool				_check_set;
+	double				_vec_duration;
+	double				_deq_duration;
 
-	void	inputValue(int ac, char* av[]);
 	void	mergeInsertionVector(std::vector<int>& vec, std::vector<int>& sub_vec);
-	void	mergeInsertionList(std::list<int> list);
+	void	mergeInsertionDeque(std::deque<int>& deque, std::deque<int>& sub_deque);
 };
 
 template<typename T>

@@ -2,11 +2,25 @@
 
 int main(int ac, char* av[])
 {
-	if (ac < 2)
+	try
 	{
-		std::cerr << "Error: no input\n";
-		return 1;
+		if (ac < 2)
+			throw std::runtime_error("Error: no input");
 	}
-	PmergeMe ford(ac, av);
-	ford.sortVector();
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	try
+	{
+		PmergeMe ford(ac, av);
+		ford.sortVector();
+		ford.sortDeque();
+		ford.printVectorDuration();
+		ford.printDequeDuration();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 }
