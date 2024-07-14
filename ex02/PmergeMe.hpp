@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>
+#include <cerrno>
 #include <utility>
 #include <vector>
 #include <deque>
@@ -118,8 +119,6 @@ T	mergeInsertion(T main_chain, T sub_chain)
 	std::size_t	pre_jacob = 1;
 	std::size_t	jacob = 1;
 	int	tmp;
-	int insert_count;
-	int	main_count;
 	while (jacob <= sub_chain.size())
 	{
 		tmp = jacob;
@@ -128,20 +127,14 @@ T	mergeInsertion(T main_chain, T sub_chain)
 		for (std::size_t i = pre_jacob; i < (jacob > main_chain.size() ? main_chain.size() : jacob); ++i)
 			sort_con.push_back(main_chain[i]);
 		
-		insert_count = 0;
-		main_count = 1;
 		for (std::size_t i = (jacob > sub_chain.size() ? sub_chain.size() : jacob); i > pre_jacob; --i)
 		{
-			std::size_t	insert_idx = binarySearch(sort_con, 0, sort_con.size() - main_count + insert_count, sub_chain[i - 1]);
+			std::size_t	insert_idx = binarySearch(sort_con, 0, std::distance(sort_con.begin(), std::find(sort_con.rbegin(), sort_con.rend(), main_chain[i - 2]).base()) - 1, sub_chain[i - 1]);
 			if (insert_idx == sort_con.size())
 				sort_con.push_back(sub_chain[i - 1]);
 			else
-			{
 				sort_con.insert(sort_con.begin() + insert_idx, sub_chain[i - 1]);
-				if (insert_idx < sort_con.size() - main_count + insert_count)
-					++insert_count;
-			}
-			++main_count;
+			printArray(sort_con);
 		}
 	}
 	return sort_con;
