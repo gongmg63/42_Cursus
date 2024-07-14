@@ -10,6 +10,7 @@
 #include <vector>
 #include <deque>
 #include <ctime>
+#include <cmath>
 
 class PmergeMe 
 {
@@ -114,28 +115,30 @@ T	mergeInsertion(T main_chain, T sub_chain)
 	T	sort_con;
 
 	sort_con.push_back(sub_chain[0]);
-	sort_con.push_back(main_chain[0]);
+	for (std::size_t i = 0; i < main_chain.size(); ++i)
+		sort_con.push_back(main_chain[i]);
 
 	std::size_t	pre_jacob = 1;
 	std::size_t	jacob = 1;
+	int	i = 2;
 	int	tmp;
-	while (jacob <= sub_chain.size())
+	int	high;
+	while (jacob < sub_chain.size())
 	{
 		tmp = jacob;
 		jacob = jacob + 2 * pre_jacob;
 		pre_jacob = tmp;
-		for (std::size_t i = pre_jacob; i < (jacob > main_chain.size() ? main_chain.size() : jacob); ++i)
-			sort_con.push_back(main_chain[i]);
 		
+		high = std::pow(2, i) > sort_con.size() ? sort_con.size() : std::pow(2, i);
 		for (std::size_t i = (jacob > sub_chain.size() ? sub_chain.size() : jacob); i > pre_jacob; --i)
 		{
-			std::size_t	insert_idx = binarySearch(sort_con, 0, std::distance(sort_con.begin(), std::find(sort_con.rbegin(), sort_con.rend(), main_chain[i - 2]).base()) - 1, sub_chain[i - 1]);
+			std::size_t	insert_idx = binarySearch(sort_con, 0, high - 1, sub_chain[i - 1]);
 			if (insert_idx == sort_con.size())
 				sort_con.push_back(sub_chain[i - 1]);
 			else
 				sort_con.insert(sort_con.begin() + insert_idx, sub_chain[i - 1]);
-			printArray(sort_con);
 		}
+		++i;
 	}
 	return sort_con;
 }
