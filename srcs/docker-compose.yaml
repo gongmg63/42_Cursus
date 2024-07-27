@@ -1,0 +1,56 @@
+version: '3'
+
+volumes:
+    data: {}
+services:
+    mariadb:
+        build: 
+            context: ./mariadb
+            dockerfile: Dockerfile
+        restart: always
+        environment:
+            DATABASE: wordpress_db
+            USER: mkong
+            PASSWORD: password
+        volumes:
+            - ./volumes:/var/www/html
+        networks:
+            - intra
+        tty: true
+
+    wordpress:
+        build:
+            context: ./wordpress
+            dockerfile: Dockerfile
+        restart: always
+        environment:
+            DATABASE: wordpress_db
+            MDB_USER: mkong
+            USER_PASSWORD: password
+        depends_on:
+            - mariadb
+        volumes:
+            - ./volumes:/var/www/html
+        networks:
+            - intra
+        tty: true
+
+    nginx:
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        restart: always
+        depends_on:
+            - mariadb
+            - wordpress
+        ports:
+            - "443:443"
+        volumes:
+            - ./volumes:/var/www/html
+        networks:
+            - intra
+        tty: true
+
+networks:
+    intra:
+        driver: bridge
