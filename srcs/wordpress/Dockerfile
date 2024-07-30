@@ -14,21 +14,21 @@ RUN apt-get -y update && \
 	php-mysql \
 	php-mbstring \
 	php-xml \
+	mariadb-client \
 	sendmail && \
+	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+	chmod +x wp-cli.phar && \
+	mv wp-cli.phar /usr/local/bin/wp && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy configuration files
 COPY ./www.conf /etc/php/8.2/fpm/pool.d/www.conf
-
-# Set environment variables
-# ENV WORDPRESS_DB=wordpress_db
-# ENV USER=mkong
-# ENV PASSWORD=password
-# ENV WORDPRESS_DB_HOST=172.17.0.2
+COPY ./init.sh /usr/local/bin/init.sh
+COPY ./wp-config.php /
 
 # Start wordpress server
-CMD ["php-fpm8.2", "-F"]
+ENTRYPOINT ["/usr/local/bin/init.sh"]
 
 # Expose wordpress port
 EXPOSE 9000

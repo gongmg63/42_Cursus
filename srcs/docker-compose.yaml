@@ -1,18 +1,20 @@
 version: '3'
 
 volumes:
-    data: {}
+    wordpress: {}
+    database: {}
+
 services:
     mariadb:
-        build: 
+        build:
             context: ./mariadb
             dockerfile: Dockerfile
+        image: mariadb
         restart: always
-        environment:
-            DATABASE: wordpress_db
-            USER: mkong
-            PASSWORD: password
+        init: true
+        env_file: ./.env
         volumes:
+            - database:/var/lib/mysql
             - ./volumes:/var/www/html
         networks:
             - intra
@@ -22,11 +24,10 @@ services:
         build:
             context: ./wordpress
             dockerfile: Dockerfile
+        image: wordpress
         restart: always
-        environment:
-            DATABASE: wordpress_db
-            MDB_USER: mkong
-            USER_PASSWORD: password
+        init: true
+        env_file: ./.env
         depends_on:
             - mariadb
         volumes:
@@ -39,7 +40,10 @@ services:
         build:
             context: ./nginx
             dockerfile: Dockerfile
+        image: nginx
         restart: always
+        init: true
+        env_file: ./.env
         depends_on:
             - mariadb
             - wordpress
