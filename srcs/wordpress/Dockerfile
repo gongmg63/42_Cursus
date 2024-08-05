@@ -25,7 +25,6 @@ RUN apt-get -y update && \
 # Copy configuration files
 COPY ./www.conf /etc/php/8.2/fpm/pool.d/www.conf
 COPY ./init.sh /usr/local/bin/init.sh
-COPY ./wp-config.php /
 
 # Start wordpress server
 ENTRYPOINT ["/usr/local/bin/init.sh"]

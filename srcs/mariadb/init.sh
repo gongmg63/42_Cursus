@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+if [ ! -d /var/lib/mysql/$DATABASE ]; then
+    mariadb-install-db
+fi
+
 service mariadb start
 
 while ! mysqladmin ping --silent; do
@@ -15,19 +19,14 @@ else
     echo "Database $DATABASE already exists."
 fi
 
-if ! mysql -e "SELECT User FROM mysql.user WHERE User='$USER';" | grep -q "$USER"; then
-    echo "Creating user $USER..."
-    mysql -e "CREATE USER '$USER'@'%' IDENTIFIED BY '$PASSWORD';"
-    mysql -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO '$USER'@'%';"
+if ! mysql -e "SELECT User FROM mysql.user WHERE User='$MDB_USER';" | grep -q "$MDB_USER"; then
+    echo "Creating user $MDB_USER..."
+    mysql -e "CREATE USER '$MDB_USER'@'%' IDENTIFIED BY '$USER_PASSWORD';"
+    mysql -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO '$MDB_USER'@'%';"
     mysql -e "FLUSH PRIVILEGES;"
 else
-    echo "User $USER already exists."
+    echo "User $MDB_USER already exists."
 fi
-
-# mysql -e "CREATE DATABASE IF NOT EXISTS $DATABASE;"
-# mysql -e "CREATE USER '$USER'@'%' IDENTIFIED BY '$PASSWORD';"
-# mysql -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO '$USER'@'%';"
-# mysql -e "FLUSH PRIVILEGES;"
 
 service mariadb stop
 

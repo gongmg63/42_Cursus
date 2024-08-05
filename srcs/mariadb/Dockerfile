@@ -9,7 +9,7 @@ RUN apt-get -y update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN chmod -R 755 /var/lib/mysql 
+RUN chmod -R 755 /var/lib/mysql
 
 # Copy configuration files
 COPY ./50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
