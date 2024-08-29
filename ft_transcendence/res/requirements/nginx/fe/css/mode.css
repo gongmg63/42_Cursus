@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    /* background-image: url('../images/pong.png'); /* 적절한 배경 사진 경로 */
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #ffffff;
+}
+
+.container {
+    text-align: center;
+}
+
+.title {
+    font-size: 48px;
+    margin-bottom: 100px;
+    color: #2c3e50;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 70px; /* 버튼들 사이의 간격 */
+	justify-content: center;
+}
+
+.mode-btn {
+    width: 400px;
+	height: 400px;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #3498db;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+.mode-btn:hover {
+    background-color: #2980b9;
+}

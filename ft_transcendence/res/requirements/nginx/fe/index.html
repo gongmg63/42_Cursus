@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Dashboard</title>
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
     <div class="container">
@@ -22,7 +22,7 @@
                     <li class="friend-item">
                         <div class="friend-avatar">
                             <!-- <div class="avatar"></div> -->
-							<img src="/images/cat.jpeg" alt="Friend 1 Avatar" class="avatar">
+							<img src="../images/cat.jpeg" alt="Friend 1 Avatar" class="avatar">
                         </div>
                         <div class="friend-info">
                             <span class="friend-name">Friend 1</span>
@@ -32,7 +32,7 @@
                     <li class="friend-item">
                         <div class="friend-avatar">
                             <!-- <div class="avatar"></div> -->
-							<img src="/images/dog.jpg" alt="Friend 2 Avatar" class="avatar">
+							<img src="../images/dog.jpg" alt="Friend 2 Avatar" class="avatar">
                         </div>
                         <div class="friend-info">
                             <span class="friend-name">Friend 2</span>
@@ -42,7 +42,7 @@
                     <li class="friend-item">
                         <div class="friend-avatar">
                             <!-- <div class="avatar"></div> -->
-							<img src="/images/siu.jpg" alt="Friend 2 Avatar" class="avatar">
+							<img src="../images/siu.jpg" alt="Friend 2 Avatar" class="avatar">
                         </div>
                         <div class="friend-info">
                             <span class="friend-name">Friend 3</span>
@@ -55,10 +55,32 @@
             <button class="game-start-btn">Game Start</button>
         </div>
 
+		<div id="addFriendModal" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<h2>Add Friend</h2>
+				<form id="addFriendForm">
+					<input type="text" id="friendNameInput" placeholder="Enter friend's nickname" required>
+					<button type="submit" class="submit-btn">Add Friend</button>
+				</form>
+			</div>
+		</div>
+		<div id="removeFriendModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Remove Friend</h2>
+                <form id="removeFriendForm">
+                    <label for="friendSelect">Select a friend to remove:</label>
+                    <select id="friendSelect" required></select>
+                    <button type="submit" class="submit-btn">Remove Friend</button>
+                </form>
+            </div>
+        </div>
+
 		<div class="user-panel">
             <div class="user-header">
                 <div class="avatar-container">
-                    <img src="/images/god.png" alt="User Avatar" class="avatar">
+                    <img src="../images/god.png" alt="User Avatar" class="avatar">
                 </div>
                 <div class="user-details">
                     <h1>Nickname</h1>
@@ -70,7 +92,7 @@
                 <div class="match-history-container">
                     <div class="match">
                         <div class="match-avatar-container">
-                            <img src="/images/god.png" alt="User Avatar" class="match-avatar">
+                            <img src="../images/god.png" alt="User Avatar" class="match-avatar">
                             <p class="match-nickname">You</p>
                         </div>
                         <div class="match-info">
@@ -78,13 +100,13 @@
                             <p class="match-result win">Win</p>
                         </div>
                         <div class="match-avatar-container">
-                            <img src="/images/cat.jpeg" alt="Opponent Avatar" class="match-avatar">
+                            <img src="../images/cat.jpeg" alt="Opponent Avatar" class="match-avatar">
                             <p class="match-nickname">Opponent</p>
                         </div>
                     </div>
                     <div class="match">
                         <div class="match-avatar-container">
-                            <img src="/images/god.png" alt="User Avatar" class="match-avatar">
+                            <img src="../images/god.png" alt="User Avatar" class="match-avatar">
                             <p class="match-nickname">You</p>
                         </div>
                         <div class="match-info">
@@ -92,7 +114,7 @@
                             <p class="match-result loss">Loss</p>
                         </div>
                         <div class="match-avatar-container">
-                            <img src="/images/siu.jpg" alt="Opponent Avatar" class="match-avatar">
+                            <img src="../images/siu.jpg" alt="Opponent Avatar" class="match-avatar">
                             <p class="match-nickname">Opponent</p>
                         </div>
                     </div>
@@ -100,5 +122,6 @@
             </div>
         </div>
     </div>
+	<script src="../js/manageFriend.js"></script>
 </body>
 </html>

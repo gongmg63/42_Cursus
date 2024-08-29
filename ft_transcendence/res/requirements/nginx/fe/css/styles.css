@@ -68,35 +68,3 @@ header h1 {
     background-color: #0056b3;
 }
 
-.buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.signUp-btn, .fortyTwoLogin-btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-	width: 50%;
-}
-
-.signUp-btn {
-    background-color: #28a745;
-    color: white;
-}
-
-.signUp-btn:hover {
-    background-color: #218838;
-}
-
-.fortyTwoLogin-btn {
-    background-color: #6c757d;
-    color: white;
-}
-
-.fortyTwoLogin-btn:hover {
-    background-color: #5a6268;
-}
