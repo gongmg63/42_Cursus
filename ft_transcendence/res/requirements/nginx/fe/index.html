@@ -19,9 +19,8 @@
             </div>
             <div class="friends-list-container">
                 <ul class="friends-list">
-                    <li class="friend-item">
+                    <!-- <li class="friend-item">
                         <div class="friend-avatar">
-                            <!-- <div class="avatar"></div> -->
 							<img src="../images/cat.jpeg" alt="Friend 1 Avatar" class="avatar">
                         </div>
                         <div class="friend-info">
@@ -31,7 +30,6 @@
                     </li>
                     <li class="friend-item">
                         <div class="friend-avatar">
-                            <!-- <div class="avatar"></div> -->
 							<img src="../images/dog.jpg" alt="Friend 2 Avatar" class="avatar">
                         </div>
                         <div class="friend-info">
@@ -41,15 +39,13 @@
                     </li>
                     <li class="friend-item">
                         <div class="friend-avatar">
-                            <!-- <div class="avatar"></div> -->
 							<img src="../images/siu.jpg" alt="Friend 2 Avatar" class="avatar">
                         </div>
                         <div class="friend-info">
                             <span class="friend-name">Friend 3</span>
                             <span class="friend-status online">Online</span>
                         </div>
-                    </li>
-                    <!-- 추가적인 친구 목록 -->
+                    </li> -->
                 </ul>
             </div>
             <button class="game-start-btn">Game Start</button>
@@ -80,17 +76,18 @@
 		<div class="user-panel">
             <div class="user-header">
                 <div class="avatar-container">
-                    <img src="../images/god.png" alt="User Avatar" class="avatar">
+                    <img src="" alt="User Avatar" class="avatar">
                 </div>
                 <div class="user-details">
-                    <h1>Nickname</h1>
-                    <p>Total Stats: 10W 5L</p>
+                    <h1></h1>
+                    <p></p>
                 </div>
             </div>
+			<button class="edit-user-btn">Edit Profile</button>
             <div class="recent-matches">
                 <h2>Recent Matches</h2>
                 <div class="match-history-container">
-                    <div class="match">
+                    <!-- <div class="match">
                         <div class="match-avatar-container">
                             <img src="../images/god.png" alt="User Avatar" class="match-avatar">
                             <p class="match-nickname">You</p>
@@ -117,11 +114,26 @@
                             <img src="../images/siu.jpg" alt="Opponent Avatar" class="match-avatar">
                             <p class="match-nickname">Opponent</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
     </div>
+	<div id="editUserModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h2>Edit Profile</h2>
+			<form id="editUserForm">
+				<label for="nicknameInput">Nickname:</label>
+				<input type="text" id="nicknameInput" placeholder="Enter new nickname" required>
+				
+				<label for="avatarInput">Upload Avatar:</label>
+				<input type="file" id="avatarInput" accept="image/*">
+	
+				<button type="submit" class="submit-btn">Save Changes</button>
+			</form>
+		</div>
+	</div>
 	<script src="../js/manageFriend.js"></script>
 </body>
 </html>

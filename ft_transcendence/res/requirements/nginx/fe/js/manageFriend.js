@@ -1,118 +1,140 @@
-// 서버로부터 데이터 가져오기
-// document.addEventListener('DOMContentLoaded', function() {
+//#region 서버로부터 데이터 가져오기
+document.addEventListener('DOMContentLoaded', function() {
 
-// 	fetchUserData();
+	fetchUserData();
 
-// 	function fetchUserData() {
-// 		fetch('http://localhost/api/user')
-// 			.then(response => response.json())
-// 			.then(data => {
-// 				// User 정보 업데이트
-// 				updateUserInfo(data.user);
-// 				// 친구 목록 업데이트
-// 				updateFriendsList(data.friends);
-// 				// 최근 경기 기록 업데이트
-// 				updateRecentMatches(data.recentMatches);
-// 			})
-// 			// 500 error?
-// 			.catch(error => console.error('Error fetching user data: ', error));
-// 	}
+	function fetchUserData() {
+		fetch('https://localhost/api/user/jgoo', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		})
+		.then(response => response.json())
+		.then(data => {
+			// User 정보 업데이트
+			console.log('Fetched data: ', data);
+			updateUserInfo(data);
+			// 친구 목록 업데이트
+			// updateFriendsList(data.friends);
+			// 최근 경기 기록 업데이트
+			// updateRecentMatches(data.recentMatches);
+		})
+		// 500 error?
+		.catch(error => console.error('Error fetching user data: ', error));
+	}
 
-// 	function updateUserInfo(user)
-// 	{
-// 		const userDetails = document.querySelector('.user-details h1');
-// 		const userStats = document.querySelector('.user-details p');
+	function updateUserInfo(user)
+	{
+		const userDetails = document.querySelector('.user-details h1');
+		const userStats = document.querySelector('.user-details p');
+		const userAvatar = document.querySelector('.avatar-container img');
 
-// 		userDetails.textContent = user.nickname;
-// 		userStats.textContent = `Total Stats: ${user.wins}W ${user.losses}L`;
-// 	}
+		// user 객체가 존재할 경우에만 업데이트 수행
+		if (user) {
+			userDetails.textContent = user.nickname || 'Unknown User';  // 닉네임이 없을 경우 기본값 설정
+			userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;  // 승패 정보 업데이트
 
-// 	function updateFriendsList(friends)
-// 	{
-// 		const friendList = document.querySelector('.friends-list');
-// 		friendList.innerHTML = '';
+			// 프로필 이미지가 비어있거나 없는 경우 기본 이미지 사용
+			if (user.profile && user.profile.trim() !== "") {
+				userAvatar.src = user.profile;
+			} else {
+				userAvatar.src = 'default-avatar.png';  // 기본 프로필 이미지
+			}
+		} else {
+			console.error('User object is undefined or invalid');
+		}
+	}
 
-// 		friends.forEach(friend => {
-// 			const friendItem = document.createElement('li');
-// 			friendItem.classList.add('friend-item');
+	function updateFriendsList(friends)
+	{
+		const friendList = document.querySelector('.friends-list');
+		friendList.innerHTML = '';
 
-// 			const avatarDiv = document.createElement('div');
-// 			avatarDiv.classList.add('friend-avatar');
-// 			const avatarImg = document.createElement('img');
-// 			avatarImg.src = `${friend.avatar}`;
-// 			avatarImg.alt = `${friend.name} Avatar`;
-// 			avatarImg.classList.add('avatar');
-// 			avatarDiv.appendChild(avatarImg);
+		friends.forEach(friend => {
+			const friendItem = document.createElement('li');
+			friendItem.classList.add('friend-item');
 
-// 			const infoDiv = document.createElement('div');
-// 			infoDiv.classList.add('friend-info');
-// 			const nameSpan = document.createElement('span');
-// 			nameSpan.classList.add('friend-name');
-// 			nameSpan.textContent = friend.name;
-// 			const statusSpan = document.createElement('span');
-// 			statusSpan.classList.add('friend-status', friend.status);
-// 			statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
-// 			infoDiv.appendChild(nameSpan);
-// 			infoDiv.appendChild(statusSpan);
+			const avatarDiv = document.createElement('div');
+			avatarDiv.classList.add('friend-avatar');
+			const avatarImg = document.createElement('img');
+			avatarImg.src = `${friend.avatar}`;
+			avatarImg.alt = `${friend.name} Avatar`;
+			avatarImg.classList.add('avatar');
+			avatarDiv.appendChild(avatarImg);
 
-// 			friendItem.appendChild(avatarDiv);
-// 			friendItem.appendChild(infoDiv);
-// 			friendsList.appendChild(friendItem);
-// 		})
-// 	}
+			const infoDiv = document.createElement('div');
+			infoDiv.classList.add('friend-info');
+			const nameSpan = document.createElement('span');
+			nameSpan.classList.add('friend-name');
+			nameSpan.textContent = friend.name;
+			const statusSpan = document.createElement('span');
+			statusSpan.classList.add('friend-status', friend.status);
+			statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
+			infoDiv.appendChild(nameSpan);
+			infoDiv.appendChild(statusSpan);
 
-// 	function updateRecentMatches(recentMatches) {
-// 		const matchHistoryContainer = document.querySelector('.match-history-container');
-// 		matchHistoryContainer.innerHTML = '';
+			friendItem.appendChild(avatarDiv);
+			friendItem.appendChild(infoDiv);
+			friendsList.appendChild(friendItem);
+		})
+	}
 
-// 		recentMatches.forEach(match => {
-// 			const matchDiv = document.createElement('div');
-// 			matchDiv.classList.add('match');
+	function updateRecentMatches(recentMatches) {
+		const matchHistoryContainer = document.querySelector('.match-history-container');
+		matchHistoryContainer.innerHTML = '';
 
-// 			const userAvatarContainer = document.createElement('div');
-// 			userAvatarContainer.classList.add('match-avatar-container');
-// 			const userAvatarImg = document.createElement('img');
-// 			userAvatarImg.src = `${match.userAvatar}`;
-// 			userAvatarImg.alt = 'User Avatar';
-// 			userAvatarImg.classList.add('match-avatar');
-// 			const userNickname = document.createElement('p');
-// 			userNickname.classList.add('match-nickname');
-// 			userNickname.textContent = 'You';
-// 			userAvatarContainer.appendChild(userAvatarImg);
-// 			userAvatarContainer.appendChild(userNickname);
+		recentMatches.forEach(match => {
+			const matchDiv = document.createElement('div');
+			matchDiv.classList.add('match');
 
-// 			const matchInfo = document.createElement('div');
-//             matchInfo.classList.add('match-info');
-//             const matchScore = document.createElement('p');
-//             matchScore.classList.add('match-score');
-//             matchScore.textContent = `${match.userScore} - ${match.opponentScore}`;
-//             const matchResult = document.createElement('p');
-//             matchResult.classList.add('match-result', match.result);
-//             matchResult.textContent = match.result.charAt(0).toUpperCase() + match.result.slice(1);
-//             matchInfo.appendChild(matchScore);
-//             matchInfo.appendChild(matchResult);
+			const userAvatarContainer = document.createElement('div');
+			userAvatarContainer.classList.add('match-avatar-container');
+			const userAvatarImg = document.createElement('img');
+			userAvatarImg.src = `${match.userAvatar}`;
+			userAvatarImg.alt = 'User Avatar';
+			userAvatarImg.classList.add('match-avatar');
+			const userNickname = document.createElement('p');
+			userNickname.classList.add('match-nickname');
+			userNickname.textContent = 'You';
+			userAvatarContainer.appendChild(userAvatarImg);
+			userAvatarContainer.appendChild(userNickname);
 
-//             const opponentAvatarContainer = document.createElement('div');
-//             opponentAvatarContainer.classList.add('match-avatar-container');
-//             const opponentAvatarImg = document.createElement('img');
-//             opponentAvatarImg.src = `../images/${match.opponentAvatar}`;
-//             opponentAvatarImg.alt = 'Opponent Avatar';
-//             opponentAvatarImg.classList.add('match-avatar');
-//             const opponentNickname = document.createElement('p');
-//             opponentNickname.classList.add('match-nickname');
-//             opponentNickname.textContent = 'Opponent';
-//             opponentAvatarContainer.appendChild(opponentAvatarImg);
-//             opponentAvatarContainer.appendChild(opponentNickname);
+			const matchInfo = document.createElement('div');
+            matchInfo.classList.add('match-info');
+            const matchScore = document.createElement('p');
+            matchScore.classList.add('match-score');
+            matchScore.textContent = `${match.userScore} - ${match.opponentScore}`;
+            const matchResult = document.createElement('p');
+            matchResult.classList.add('match-result', match.result);
+            matchResult.textContent = match.result.charAt(0).toUpperCase() + match.result.slice(1);
+            matchInfo.appendChild(matchScore);
+            matchInfo.appendChild(matchResult);
 
-//             matchDiv.appendChild(userAvatarContainer);
-//             matchDiv.appendChild(matchInfo);
-//             matchDiv.appendChild(opponentAvatarContainer);
+            const opponentAvatarContainer = document.createElement('div');
+            opponentAvatarContainer.classList.add('match-avatar-container');
+            const opponentAvatarImg = document.createElement('img');
+            opponentAvatarImg.src = `../images/${match.opponentAvatar}`;
+            opponentAvatarImg.alt = 'Opponent Avatar';
+            opponentAvatarImg.classList.add('match-avatar');
+            const opponentNickname = document.createElement('p');
+            opponentNickname.classList.add('match-nickname');
+            opponentNickname.textContent = 'Opponent';
+            opponentAvatarContainer.appendChild(opponentAvatarImg);
+            opponentAvatarContainer.appendChild(opponentNickname);
 
-//             matchHistoryContainer.appendChild(matchDiv);
-// 		})
-// 	}
-// })
+            matchDiv.appendChild(userAvatarContainer);
+            matchDiv.appendChild(matchInfo);
+            matchDiv.appendChild(opponentAvatarContainer);
 
+            matchHistoryContainer.appendChild(matchDiv);
+		})
+	}
+})
+
+//#endregion
+
+//#region 친구 추가 기능
 // 모달 요소 가져오기
 const modal = document.getElementById("addFriendModal");
 const addFriendBtn = document.querySelector(".friends-controls .btn"); // + 버튼
@@ -202,6 +224,9 @@ window.addEventListener("click", (event) => {
     }
 });
 
+//#endregion
+
+//#region 친구 삭제 기능
 // 친구 삭제 폼 제출 처리
 document.getElementById("removeFriendForm").addEventListener("submit", (event) => {
     event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
@@ -292,12 +317,81 @@ function renderFriends() {
     });
 }
 
-// 초기 친구 목록 렌더링
-document.addEventListener('DOMContentLoaded', () => {
-    renderFriends();
+//#endregion
+
+// // 초기 친구 목록 렌더링
+// document.addEventListener('DOMContentLoaded', () => {
+//     renderFriends();
+// });
+
+//#region 게임 시작 기능
+document.querySelector('.game-start-btn').addEventListener('click', function() {
+	window.location.href = 'https://localhost/html/mode.html';
+})
+//#endregion
+
+//#region User Profile Edit
+
+// 모달 창 열기 및 닫기
+const editUserBtn = document.querySelector('.edit-user-btn');
+const editUserModal = document.getElementById('editUserModal');
+const closeButn = editUserModal.querySelector('.close');
+
+editUserBtn.addEventListener('click', function() {
+    editUserModal.style.display = 'block';
 });
 
-document.querySelector('.game-start-btn').addEventListener('click', function() {
-	window.location.href = 'http://localhost:5500/html/pong.html';
-})
+closeButn.addEventListener('click', function() {
+    editUserModal.style.display = 'none';
+});
 
+window.addEventListener('click', function(event) {
+    if (event.target === editUserModal) {
+        editUserModal.style.display = 'none';
+    }
+});
+
+// 유저 정보 폼 제출 처리
+document.getElementById('editUserForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const nickname = document.getElementById('nicknameInput').value;
+    const avatarFile = document.getElementById('avatarInput').files[0];
+
+    const formData = new FormData();
+    formData.append('nickname', nickname);
+    if (avatarFile) {
+        formData.append('avatar', avatarFile);
+    }
+
+    // 서버에 데이터 전송
+    fetch('http://localhost/api/user/edit', { // 실제 API 엔드포인트로 변경
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('User profile updated:', data);
+        // 유저 정보를 업데이트
+        document.querySelector('.user-details h1').textContent = nickname;
+        if (avatarFile) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('.avatar-container img').src = e.target.result;
+            };
+            reader.readAsDataURL(avatarFile);
+        }
+
+        // 모달 창 닫기
+        editUserModal.style.display = 'none';
+    })
+    .catch(error => {
+        console.error('Error updating profile:', error);
+    });
+});
+
+//#endregion
