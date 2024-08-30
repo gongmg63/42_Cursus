@@ -5,6 +5,7 @@ import jwt
 from django.shortcuts import redirect
 from django.conf import settings
 from django.http import JsonResponse
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import get_object_or_404
@@ -14,7 +15,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .models import User
-from .serializers import UserSerializer, FriendSerializer
+from .serializers import UserSerializer, FriendSerializer, AddFriendSerializer
 
 def Oauth(request):
     auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.INTRA_42_CLIENT_ID}&redirect_uri={settings.INTRA_42_REDIRECT_CALLBACK_URI}&response_type=code"
@@ -64,7 +65,8 @@ def OauthCallback(request):
             user.profile = ' '  # 기본 이미지 URL 설정
         user.save()
 
-    # JWT 생성
+    # return JsonResponse({'message': 'OAuth login successful', 'oauthid': user.oauthid, 'nickname': user.nickname})
+    # # JWT 생성
     payload = {
         'user_id': user.oauthid,
         'nickname': user.nickname,
@@ -82,6 +84,7 @@ def OauthCallback(request):
             'nickname': user.nickname
         }
     })
+
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능
@@ -101,16 +104,31 @@ class UserAPI(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-	# DELETE: 내 계정 삭제
+	# DELETE : 내 계정 삭제
     def delete(self, request):
         user = request.user
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# GET : 닉네임을 통해 유저 정보 확인
 @api_view(['GET'])
 def OtherUserInfo(request, nickname):
 	user = get_object_or_404(User, nickname=nickname) #일치하는 nickname이 없으면 404
 	serializer = UserSerializer(user)
 	return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class AddFriendAPIView(APIView):
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+
+    def post(self, request):
+        # 현재 로그인된 사용자 가져오기
+        current_user = request.user  
         
+        serializer = AddFriendSerializer(data=request.data)
+        if serializer.is_valid():
+            # 친구 추가 로직 실행
+            serializer.update(current_user, serializer.validated_data)
+            return Response({"message": "친구가 성공적으로 추가되었습니다."}, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
