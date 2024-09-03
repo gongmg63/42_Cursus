@@ -62,27 +62,22 @@ def OauthCallback(request):
         if profile:
             user.profile = profile
         else:
-            user.profile = ' '  # 기본 이미지 URL 설정
+            user.profile = ''  # 기본 이미지 URL 설정
         user.save()
 
-    # return JsonResponse({'message': 'OAuth login successful', 'oauthid': user.oauthid, 'nickname': user.nickname})
-    # # JWT 생성
-    payload = {
-        'user_id': user.oauthid,
-        'nickname': user.nickname,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # 토큰 만료 시간
-    }
-    
-    jwt_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+    # JWT 토큰 생성
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
 
-    # JWT와 함께 응답 반환
+
     return JsonResponse({
         'message': 'Login successful',
-        'token': jwt_token,
         'user': {
             'oauthid': user.oauthid,
             'nickname': user.nickname
-        }
+        },
+        'access_token': access_token,
+        'refresh_token': str(refresh),
     })
 
 

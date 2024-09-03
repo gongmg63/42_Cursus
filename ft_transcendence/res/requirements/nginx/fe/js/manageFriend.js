@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
 	fetchUserData();
+	fetchUserData();
 
 	function fetchUserData() {
 		fetch('https://localhost/api/user/jgoo', {
@@ -54,7 +55,17 @@ document.addEventListener('DOMContentLoaded', function() {
 		friends.forEach(friend => {
 			const friendItem = document.createElement('li');
 			friendItem.classList.add('friend-item');
+		friends.forEach(friend => {
+			const friendItem = document.createElement('li');
+			friendItem.classList.add('friend-item');
 
+			const avatarDiv = document.createElement('div');
+			avatarDiv.classList.add('friend-avatar');
+			const avatarImg = document.createElement('img');
+			avatarImg.src = `${friend.avatar}`;
+			avatarImg.alt = `${friend.name} Avatar`;
+			avatarImg.classList.add('avatar');
+			avatarDiv.appendChild(avatarImg);
 			const avatarDiv = document.createElement('div');
 			avatarDiv.classList.add('friend-avatar');
 			const avatarImg = document.createElement('img');
@@ -73,7 +84,22 @@ document.addEventListener('DOMContentLoaded', function() {
 			statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
 			infoDiv.appendChild(nameSpan);
 			infoDiv.appendChild(statusSpan);
+			const infoDiv = document.createElement('div');
+			infoDiv.classList.add('friend-info');
+			const nameSpan = document.createElement('span');
+			nameSpan.classList.add('friend-name');
+			nameSpan.textContent = friend.name;
+			const statusSpan = document.createElement('span');
+			statusSpan.classList.add('friend-status', friend.status);
+			statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
+			infoDiv.appendChild(nameSpan);
+			infoDiv.appendChild(statusSpan);
 
+			friendItem.appendChild(avatarDiv);
+			friendItem.appendChild(infoDiv);
+			friendsList.appendChild(friendItem);
+		})
+	}
 			friendItem.appendChild(avatarDiv);
 			friendItem.appendChild(infoDiv);
 			friendsList.appendChild(friendItem);
@@ -83,11 +109,28 @@ document.addEventListener('DOMContentLoaded', function() {
 	function updateRecentMatches(recentMatches) {
 		const matchHistoryContainer = document.querySelector('.match-history-container');
 		matchHistoryContainer.innerHTML = '';
+	function updateRecentMatches(recentMatches) {
+		const matchHistoryContainer = document.querySelector('.match-history-container');
+		matchHistoryContainer.innerHTML = '';
 
 		recentMatches.forEach(match => {
 			const matchDiv = document.createElement('div');
 			matchDiv.classList.add('match');
+		recentMatches.forEach(match => {
+			const matchDiv = document.createElement('div');
+			matchDiv.classList.add('match');
 
+			const userAvatarContainer = document.createElement('div');
+			userAvatarContainer.classList.add('match-avatar-container');
+			const userAvatarImg = document.createElement('img');
+			userAvatarImg.src = `${match.userAvatar}`;
+			userAvatarImg.alt = 'User Avatar';
+			userAvatarImg.classList.add('match-avatar');
+			const userNickname = document.createElement('p');
+			userNickname.classList.add('match-nickname');
+			userNickname.textContent = 'You';
+			userAvatarContainer.appendChild(userAvatarImg);
+			userAvatarContainer.appendChild(userNickname);
 			const userAvatarContainer = document.createElement('div');
 			userAvatarContainer.classList.add('match-avatar-container');
 			const userAvatarImg = document.createElement('img');
@@ -110,7 +153,28 @@ document.addEventListener('DOMContentLoaded', function() {
             matchResult.textContent = match.result.charAt(0).toUpperCase() + match.result.slice(1);
             matchInfo.appendChild(matchScore);
             matchInfo.appendChild(matchResult);
+			const matchInfo = document.createElement('div');
+            matchInfo.classList.add('match-info');
+            const matchScore = document.createElement('p');
+            matchScore.classList.add('match-score');
+            matchScore.textContent = `${match.userScore} - ${match.opponentScore}`;
+            const matchResult = document.createElement('p');
+            matchResult.classList.add('match-result', match.result);
+            matchResult.textContent = match.result.charAt(0).toUpperCase() + match.result.slice(1);
+            matchInfo.appendChild(matchScore);
+            matchInfo.appendChild(matchResult);
 
+            const opponentAvatarContainer = document.createElement('div');
+            opponentAvatarContainer.classList.add('match-avatar-container');
+            const opponentAvatarImg = document.createElement('img');
+            opponentAvatarImg.src = `../images/${match.opponentAvatar}`;
+            opponentAvatarImg.alt = 'Opponent Avatar';
+            opponentAvatarImg.classList.add('match-avatar');
+            const opponentNickname = document.createElement('p');
+            opponentNickname.classList.add('match-nickname');
+            opponentNickname.textContent = 'Opponent';
+            opponentAvatarContainer.appendChild(opponentAvatarImg);
+            opponentAvatarContainer.appendChild(opponentNickname);
             const opponentAvatarContainer = document.createElement('div');
             opponentAvatarContainer.classList.add('match-avatar-container');
             const opponentAvatarImg = document.createElement('img');
@@ -126,7 +190,14 @@ document.addEventListener('DOMContentLoaded', function() {
             matchDiv.appendChild(userAvatarContainer);
             matchDiv.appendChild(matchInfo);
             matchDiv.appendChild(opponentAvatarContainer);
+            matchDiv.appendChild(userAvatarContainer);
+            matchDiv.appendChild(matchInfo);
+            matchDiv.appendChild(opponentAvatarContainer);
 
+            matchHistoryContainer.appendChild(matchDiv);
+		})
+	}
+})
             matchHistoryContainer.appendChild(matchDiv);
 		})
 	}
@@ -165,7 +236,7 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
     // 실제로는 여기서 서버에 추가 요청을 보냄
     console.log(`Added friend: ${friendName}`);
 	const data = { friendName: friendName };
-	fetch('http://localhost/api/friends/add', {
+	fetch('https://localhost/api/friends/add', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
