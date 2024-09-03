@@ -6,7 +6,8 @@ RUN pip install psycopg2-binary \
 	uvicorn \
 	requests \
 	django-oauth-toolkit \
-	djangorestframework-simplejwt
+	djangorestframework-simplejwt \
+	pillow
 # RUN django-admin startproject mysite 
 # RUN cd /mysite/mysite/ && \
 	# sed -i 's/ALLOWED_HOSTS = \[]/ALLOWED_HOSTS = \["*"]/g' settings.py
