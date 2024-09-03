@@ -31,8 +31,8 @@ services:
       - postgres
     volumes:
       - django:/volumes
-    # ports:
-    #   - "8000:8000"
+    ports:
+      - "8000:8000"
     networks:
       - intra
     tty: true
@@ -49,8 +49,8 @@ services:
     depends_on:
       - postgres
       - django
-    # volumes:
-    #   - nginx:/volumes
+    volumes:
+      - profile:/usr/share/nginx/html/profile
     ports:
       - "443:443"
     networks:
@@ -70,12 +70,12 @@ volumes:
       type: none
       o: bind
       device: '${PWD}/requirements/django/volumes'
-  # ngnix:
-  #   driver: local
-  #   driver_opts:
-  #     type: none
-  #     o: bind
-  #     device: '/Users/mkong/trans_prac/res/requirements/ngnix/volumes'
+  profile:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: '${PWD}/requirements/django/volumes/mysite/profile'
 
 networks:
   intra:
