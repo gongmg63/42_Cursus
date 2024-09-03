@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    flex-direction: column; /* 요소들을 수직으로 배치 */
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.loading-message {
+    font-size: 75px;
+    color: #7f8c8d;
+}
+
+.match-container {
+    display: flex;
+    flex-direction: column; /* 수직으로 배치 */
+    align-items: center;
+    width: 100%; /* 컨테이너가 화면 전체 너비를 차지하도록 */
+}
+
+.battle-title {
+    font-family: 'Bangers', cursive; /* 새로운 글씨체 사용 */
+    font-size: 75px; /* 큰 글씨 크기 설정 */
+    color: #e74c3c; /* 강렬한 빨간색으로 설정 */
+    margin-bottom: 40px; /* 매치 메이킹 요소와의 간격 */
+    text-transform: uppercase; /* 대문자로 변환 */
+    text-align: center;
+    letter-spacing: 2px; /* 글자 간격을 약간 넓혀 시각적 효과를 강조 */
+}
+
+.match-players {
+    display: flex;
+    flex-direction: row; /* 아바타와 VS를 수평으로 배치 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.player {
+    margin: 0 50px;
+}
+
+.avatar {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #3498db;
+}
+
+.nickname {
+    font-size: 24px;
+    margin-top: 20px;
+    color: #2c3e50;
+}
+
+.stats {
+    font-size: 18px;
+    color: #7f8c8d;
+    margin-top: 10px;
+}
+
+.vs h1 {
+    font-size: 48px;
+    color: #e74c3c;
+}
