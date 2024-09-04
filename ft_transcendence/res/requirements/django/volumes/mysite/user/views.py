@@ -83,7 +83,6 @@ def OauthCallback(request):
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능
-
 	# GET : 내 정보 조회
     def get(self, request):
         user = request.user  # JWT로 인증된 사용자
