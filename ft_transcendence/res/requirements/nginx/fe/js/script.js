@@ -10,8 +10,9 @@ document.querySelector('.login-btn').addEventListener('click', function() {
 		.then(response => response.json())
 		.then(data => {
 			console.log('Fetched user successfully');
-			updateToken(data);
-			window.location.href = '/index.html';
+			// updateToken(data);
+			// window.location.href = data.redirect_url;
+			console.log(data);
 		})
 		.catch(error => console.error('Error fetching user data: ', error));
 	}
