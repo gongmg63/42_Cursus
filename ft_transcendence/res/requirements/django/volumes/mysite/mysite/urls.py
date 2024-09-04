@@ -23,6 +23,7 @@ from . import views # 모든 경로에서 views를 가져온다.
 urlpatterns = [
     path("api/admin/", admin.site.urls),
 	path('api/user/', include('user.urls')),
+	# path('api/game/', include('game.urls')),
 ]
 
 if settings.DEBUG:
