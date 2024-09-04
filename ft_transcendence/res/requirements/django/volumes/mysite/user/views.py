@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .models import User
-from .serializers import UserSerializer, FriendSerializer, AddFriendSerializer
+from .serializers import UserSerializer, AddFriendSerializer
 
 def Oauth(request):
     auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.INTRA_42_CLIENT_ID}&redirect_uri={settings.INTRA_42_REDIRECT_CALLBACK_URI}&response_type=code"
@@ -113,9 +113,10 @@ def OtherUserInfo(request, nickname):
 	return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class AddFriendAPIView(APIView):
+class FriendAPIView(APIView):
     permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
 
+    # POST : 친구 추가
     def post(self, request):
         # 현재 로그인된 사용자 가져오기
         current_user = request.user  
@@ -127,3 +128,27 @@ class AddFriendAPIView(APIView):
             return Response({"message": "친구가 성공적으로 추가되었습니다."}, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # DELETE : 친구 삭제
+    def delete(self, request):
+        # 현재 로그인한 사용자 가져오기
+        current_user = request.user
+        
+        # 요청 데이터에서 친구의 OAuthID 또는 닉네임 받기 (nickname 사용 예시)
+        friend_nickname = request.data.get('nickname')
+        
+        if not friend_nickname:
+            return Response({'error': '친구의 닉네임을 제공해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 삭제할 친구 찾기
+        try:
+            friend = User.objects.get(nickname=friend_nickname)
+        except User.DoesNotExist:
+            return Response({'error': '해당 닉네임의 친구가 존재하지 않습니다.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 친구 관계 해제
+        if friend in current_user.friends.all():
+            current_user.friends.remove(friend)
+            return Response({'message': '친구가 성공적으로 삭제되었습니다.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': '해당 사용자는 친구 목록에 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
