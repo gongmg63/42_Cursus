@@ -17,10 +17,9 @@ from rest_framework import status
 from .models import User
 from .serializers import UserSerializer, AddFriendSerializer
 
-@api_view(['GET'])
 def Oauth(request):
     auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.INTRA_42_CLIENT_ID}&redirect_uri={settings.INTRA_42_REDIRECT_CALLBACK_URI}&response_type=code"
-    return JsonResponse({'redirect_url': auth_url})
+    return redirect(auth_url)
 
 def OauthCallback(request):
     code = request.GET.get('code')
