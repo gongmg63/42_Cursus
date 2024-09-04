@@ -13,13 +13,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from urllib.parse import urlencode
 
 from .models import User
 from .serializers import UserSerializer, AddFriendSerializer
 
 def Oauth(request):
     auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.INTRA_42_CLIENT_ID}&redirect_uri={settings.INTRA_42_REDIRECT_CALLBACK_URI}&response_type=code"
-    return redirect(auth_url)
+    return JsonResponse({'redirect_url': auth_url})
 
 def OauthCallback(request):
     code = request.GET.get('code')
@@ -69,16 +70,18 @@ def OauthCallback(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 
-
-    return JsonResponse({
-        'message': 'Login successful',
-        'user': {
-            'oauthid': user.oauthid,
-            'nickname': user.nickname
-        },
+    # 리다이렉트할 URL에 쿼리 파라미터로 토큰 추가
+    redirect_url = "https://127.0.0.1"
+    params = {
         'access_token': access_token,
         'refresh_token': str(refresh),
-    })
+        'oauthid': user.oauthid,
+        'nickname': user.nickname,
+    }
+
+    # 파라미터를 URL로 인코딩 후 리다이렉트
+    url_with_params = f"{redirect_url}?{urlencode(params)}"
+    return redirect(url_with_params)
 
 
 class UserAPI(APIView):
