@@ -5,6 +5,8 @@ import jwt
 from django.shortcuts import redirect
 from django.conf import settings
 from django.http import JsonResponse
+from urllib.parse import urlencode
+
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
