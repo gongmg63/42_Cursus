@@ -2,10 +2,9 @@
 document.addEventListener('DOMContentLoaded', function() {
 
 	fetchUserData();
-	fetchUserData();
 
 	function fetchUserData() {
-		fetch('https://localhost/api/user/jgoo', {
+		fetch('https://localhost/api/user/me', {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
@@ -14,12 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		.then(response => response.json())
 		.then(data => {
 			// User 정보 업데이트
-			console.log('Fetched data: ', data);
 			updateUserInfo(data);
 			// 친구 목록 업데이트
-			// updateFriendsList(data.friends);
-			// 최근 경기 기록 업데이트
+			updateFriendsList(data.friends);
+
+			// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
 			// updateRecentMatches(data.recentMatches);
+
 		})
 		// 500 error?
 		.catch(error => console.error('Error fetching user data: ', error));
@@ -31,18 +31,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		const userStats = document.querySelector('.user-details p');
 		const userAvatar = document.querySelector('.avatar-container img');
 
-		// user 객체가 존재할 경우에만 업데이트 수행
 		if (user) {
-			userDetails.textContent = user.nickname || 'Unknown User';  // 닉네임이 없을 경우 기본값 설정
+			userDetails.textContent = user.nickname || 'Unknown User';
 			userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;  // 승패 정보 업데이트
 
-			// 프로필 이미지가 비어있거나 없는 경우 기본 이미지 사용
 			if (user.profile && user.profile.trim() !== "") {
 				userAvatar.src = user.profile;
-			} else {
-				userAvatar.src = 'default-avatar.png';  // 기본 프로필 이미지
 			}
-		} else {
+			else {
+				userAvatar.src = '../images/Retriever.jpeg';
+			}
+		}
+		else {
 			console.error('User object is undefined or invalid');
 		}
 	}
@@ -55,21 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		friends.forEach(friend => {
 			const friendItem = document.createElement('li');
 			friendItem.classList.add('friend-item');
-		friends.forEach(friend => {
-			const friendItem = document.createElement('li');
-			friendItem.classList.add('friend-item');
 
 			const avatarDiv = document.createElement('div');
 			avatarDiv.classList.add('friend-avatar');
 			const avatarImg = document.createElement('img');
-			avatarImg.src = `${friend.avatar}`;
-			avatarImg.alt = `${friend.name} Avatar`;
-			avatarImg.classList.add('avatar');
-			avatarDiv.appendChild(avatarImg);
-			const avatarDiv = document.createElement('div');
-			avatarDiv.classList.add('friend-avatar');
-			const avatarImg = document.createElement('img');
-			avatarImg.src = `${friend.avatar}`;
+			avatarImg.src = `${friend.profile}`;
 			avatarImg.alt = `${friend.name} Avatar`;
 			avatarImg.classList.add('avatar');
 			avatarDiv.appendChild(avatarImg);
@@ -79,27 +69,15 @@ document.addEventListener('DOMContentLoaded', function() {
 			const nameSpan = document.createElement('span');
 			nameSpan.classList.add('friend-name');
 			nameSpan.textContent = friend.name;
-			const statusSpan = document.createElement('span');
-			statusSpan.classList.add('friend-status', friend.status);
-			statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
-			infoDiv.appendChild(nameSpan);
-			infoDiv.appendChild(statusSpan);
-			const infoDiv = document.createElement('div');
-			infoDiv.classList.add('friend-info');
-			const nameSpan = document.createElement('span');
-			nameSpan.classList.add('friend-name');
-			nameSpan.textContent = friend.name;
-			const statusSpan = document.createElement('span');
-			statusSpan.classList.add('friend-status', friend.status);
-			statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
-			infoDiv.appendChild(nameSpan);
-			infoDiv.appendChild(statusSpan);
 
-			friendItem.appendChild(avatarDiv);
-			friendItem.appendChild(infoDiv);
-			friendsList.appendChild(friendItem);
-		})
-	}
+			// Online, Offline 상태 표시
+			// const statusSpan = document.createElement('span');
+			// statusSpan.classList.add('friend-status', friend.status);
+			// statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
+			
+			infoDiv.appendChild(nameSpan);
+			// infoDiv.appendChild(statusSpan);
+
 			friendItem.appendChild(avatarDiv);
 			friendItem.appendChild(infoDiv);
 			friendsList.appendChild(friendItem);
@@ -109,28 +87,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	function updateRecentMatches(recentMatches) {
 		const matchHistoryContainer = document.querySelector('.match-history-container');
 		matchHistoryContainer.innerHTML = '';
-	function updateRecentMatches(recentMatches) {
-		const matchHistoryContainer = document.querySelector('.match-history-container');
-		matchHistoryContainer.innerHTML = '';
 
 		recentMatches.forEach(match => {
 			const matchDiv = document.createElement('div');
 			matchDiv.classList.add('match');
-		recentMatches.forEach(match => {
-			const matchDiv = document.createElement('div');
-			matchDiv.classList.add('match');
 
-			const userAvatarContainer = document.createElement('div');
-			userAvatarContainer.classList.add('match-avatar-container');
-			const userAvatarImg = document.createElement('img');
-			userAvatarImg.src = `${match.userAvatar}`;
-			userAvatarImg.alt = 'User Avatar';
-			userAvatarImg.classList.add('match-avatar');
-			const userNickname = document.createElement('p');
-			userNickname.classList.add('match-nickname');
-			userNickname.textContent = 'You';
-			userAvatarContainer.appendChild(userAvatarImg);
-			userAvatarContainer.appendChild(userNickname);
 			const userAvatarContainer = document.createElement('div');
 			userAvatarContainer.classList.add('match-avatar-container');
 			const userAvatarImg = document.createElement('img');
@@ -153,28 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
             matchResult.textContent = match.result.charAt(0).toUpperCase() + match.result.slice(1);
             matchInfo.appendChild(matchScore);
             matchInfo.appendChild(matchResult);
-			const matchInfo = document.createElement('div');
-            matchInfo.classList.add('match-info');
-            const matchScore = document.createElement('p');
-            matchScore.classList.add('match-score');
-            matchScore.textContent = `${match.userScore} - ${match.opponentScore}`;
-            const matchResult = document.createElement('p');
-            matchResult.classList.add('match-result', match.result);
-            matchResult.textContent = match.result.charAt(0).toUpperCase() + match.result.slice(1);
-            matchInfo.appendChild(matchScore);
-            matchInfo.appendChild(matchResult);
 
-            const opponentAvatarContainer = document.createElement('div');
-            opponentAvatarContainer.classList.add('match-avatar-container');
-            const opponentAvatarImg = document.createElement('img');
-            opponentAvatarImg.src = `../images/${match.opponentAvatar}`;
-            opponentAvatarImg.alt = 'Opponent Avatar';
-            opponentAvatarImg.classList.add('match-avatar');
-            const opponentNickname = document.createElement('p');
-            opponentNickname.classList.add('match-nickname');
-            opponentNickname.textContent = 'Opponent';
-            opponentAvatarContainer.appendChild(opponentAvatarImg);
-            opponentAvatarContainer.appendChild(opponentNickname);
             const opponentAvatarContainer = document.createElement('div');
             opponentAvatarContainer.classList.add('match-avatar-container');
             const opponentAvatarImg = document.createElement('img');
@@ -190,14 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             matchDiv.appendChild(userAvatarContainer);
             matchDiv.appendChild(matchInfo);
             matchDiv.appendChild(opponentAvatarContainer);
-            matchDiv.appendChild(userAvatarContainer);
-            matchDiv.appendChild(matchInfo);
-            matchDiv.appendChild(opponentAvatarContainer);
 
-            matchHistoryContainer.appendChild(matchDiv);
-		})
-	}
-})
             matchHistoryContainer.appendChild(matchDiv);
 		})
 	}
@@ -246,6 +179,7 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
 	.then(response => {
 		if (!response.ok) {
 			// 500 error?
+			// 친구 없으면 404
 			throw new Error('Network response was not ok');
 		}
 		return response.json();
@@ -397,6 +331,7 @@ function renderFriends() {
 
 //#region 게임 시작 기능
 document.querySelector('.game-start-btn').addEventListener('click', function() {
+	// url 추후 수정
 	window.location.href = 'https://localhost/html/mode.html';
 })
 //#endregion
@@ -428,15 +363,17 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
     const nickname = document.getElementById('nicknameInput').value;
     const avatarFile = document.getElementById('avatarInput').files[0];
 
+	// 두 정보만 필요??
     const formData = new FormData();
     formData.append('nickname', nickname);
     if (avatarFile) {
-        formData.append('avatar', avatarFile);
+        formData.append('profile', avatarFile);
     }
+	// 둘 중 하나만 있을 때
+	// 둘 다 없을 때
 
-    // 서버에 데이터 전송
-    fetch('http://localhost/api/user/edit', { // 실제 API 엔드포인트로 변경
-        method: 'POST',
+    fetch('http://localhost/api/user/me', {
+        method: 'PATCH',
         body: formData
     })
     .then(response => {
@@ -456,7 +393,6 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
             };
             reader.readAsDataURL(avatarFile);
         }
-
         // 모달 창 닫기
         editUserModal.style.display = 'none';
     })
