@@ -10,8 +10,8 @@ document.querySelector('.login-btn').addEventListener('click', function() {
 		.then(response => response.json())
 		.then(data => {
 			console.log('Fetched user successfully');
-			updateToken(data);
-			window.location.href = '/index.html';
+			window.location.href = data.redirect_url;
+			// /api/user/oauth/callback 으로부터 response 받아오기
 		})
 		.catch(error => console.error('Error fetching user data: ', error));
 	}
