@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework',
     'oauth2_provider',
+    'corsheaders',
 	'user',
 ]
 
@@ -100,6 +101,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -184,3 +187,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/profile/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'profile')
+
+AUTH_USER_MODEL = 'user.User'
+
+CORS_ALLOW_ALL_ORIGINS = True
