@@ -7,6 +7,7 @@ RUN pip install psycopg2-binary \
 	requests \
 	django-oauth-toolkit \
 	djangorestframework-simplejwt \
+	django-cors-headers \
 	pillow
 # RUN django-admin startproject mysite 
 # RUN cd /mysite/mysite/ && \
