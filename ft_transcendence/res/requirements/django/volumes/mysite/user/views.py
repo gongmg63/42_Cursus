@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-
+from urllib.parse import urlencode
 
 from .models import User
 from .serializers import UserSerializer, AddFriendSerializer
@@ -71,7 +71,6 @@ def OauthCallback(request):
     # JWT 토큰 생성
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
-
 
     # 리다이렉트할 URL에 쿼리 파라미터로 토큰 추가
     redirect_url = "https://127.0.0.1"

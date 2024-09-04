@@ -4,9 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	fetchUserData();
 
 	function fetchUserData() {
+		const access_token = localStorage.getItem("access_token");
 		fetch('https://localhost/api/user/me', {
 			method: 'GET',
 			headers: {
+				'Authorization': `Bearer ${access_token}`,
 				'Content-Type': 'application/json'
 			},
 		})
