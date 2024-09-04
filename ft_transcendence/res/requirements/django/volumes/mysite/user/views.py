@@ -7,7 +7,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.per missions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -17,9 +17,10 @@ from rest_framework import status
 from .models import User
 from .serializers import UserSerializer, AddFriendSerializer
 
+@api_view(['GET'])
 def Oauth(request):
     auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.INTRA_42_CLIENT_ID}&redirect_uri={settings.INTRA_42_REDIRECT_CALLBACK_URI}&response_type=code"
-    return redirect(auth_url)
+    return JsonResponse({'redirect_url': auth_url})
 
 def OauthCallback(request):
     code = request.GET.get('code')
@@ -83,7 +84,6 @@ def OauthCallback(request):
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능
-
 	# GET : 내 정보 조회
     def get(self, request):
         user = request.user  # JWT로 인증된 사용자
