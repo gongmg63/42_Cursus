@@ -31,6 +31,7 @@ services:
       - postgres
     volumes:
       - django:/volumes
+      - media:/profile
     ports:
       - "8000:8000"
     networks:
@@ -50,7 +51,7 @@ services:
       - postgres
       - django
     volumes:
-      - profile:/images
+      - media:/images
       - frontend:/usr/share/nginx/html
     ports:
       - "443:443"
@@ -71,12 +72,12 @@ volumes:
       type: none
       o: bind
       device: '${PWD}/requirements/django/volumes'
-  profile:
+  media:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: '${PWD}/requirements/django/volumes/mysite/profile'
+      device: '${PWD}/requirements/nginx/media'
   frontend:
     driver: local
     driver_opts:
