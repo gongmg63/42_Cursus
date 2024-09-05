@@ -8,10 +8,7 @@ class FriendSerializer(serializers.ModelSerializer):
             'id', 
             'oauthid', 
             'nickname', 
-            'wins', 
-            'losses', 
             'profile', 
-            'friends'
         ]
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,9 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'oauthid', 'wins', 'losses']
     
 class AddFriendSerializer(serializers.Serializer):
-    # oauthid = serializers.IntegerField()  # 친구로 추가할 사용자의 OAuthID
     nickname = serializers.CharField(max_length=20)  # 친구의 닉네임
-    # profile = serializers.URLField(max_length=500, required=False)  # 프로필 이미지 URL
 
     def validate(self, data):
         try:
@@ -56,4 +51,4 @@ class AddFriendSerializer(serializers.Serializer):
         
         # 친구 추가
         instance.friends.add(friend)
-        return instance
+        return friend
