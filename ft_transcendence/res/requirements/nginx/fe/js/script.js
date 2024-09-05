@@ -58,7 +58,7 @@ window.addEventListener('load', function() {
 	else
 	{
 		console.log('fuck you');
-		console.log('yeah');
+		// console.log('yeah');
 	}
 })
 
