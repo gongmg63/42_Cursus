@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function fetchUserData() {
 		const access_token = localStorage.getItem("access_token");
-		fetch('https://localhost/api/user/me', {
+		fetch('https://127.0.0.1/api/user/me', {
 			method: 'GET',
 			headers: {
 				'Authorization': `Bearer ${access_token}`,
@@ -170,10 +170,12 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
     
     // 실제로는 여기서 서버에 추가 요청을 보냄
     console.log(`Added friend: ${friendName}`);
-	const data = { friendName: friendName };
-	fetch('https://localhost/api/friends/add', {
+	const data = { nickname: friendName };
+	const access_token = localStorage.getItem("access_token");
+	fetch('https://127.0.0.1/api/user/friend/', {
 		method: 'POST',
 		headers: {
+			'Authorization': `Bearer ${access_token}`,
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(data)
@@ -367,6 +369,7 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
 
 	// 두 정보만 필요??
     const formData = new FormData();
+	const access_token = localStorage.getItem("access_token");
     formData.append('nickname', nickname);
     if (avatarFile) {
         formData.append('profile', avatarFile);
@@ -374,8 +377,11 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
 	// 둘 중 하나만 있을 때
 	// 둘 다 없을 때
 
-    fetch('http://127.0.0.1/api/user/me', {
+    fetch('https://127.0.0.1/api/user/me', {
         method: 'PATCH',
+		headers: {
+			'Authorization': `Bearer ${access_token}`,
+		},
         body: formData
     })
     .then(response => {
