@@ -3,7 +3,7 @@ from django.db import models
 from mysite.utils import uuid_name_upload_to
 
 class User(AbstractUser):
-	oauthid = models.IntegerField(unique=True, verbose_name='OAuth2.0')
+	oauthid = models.IntegerField(default = 0, unique=True, verbose_name='OAuth2.0')
 	nickname = models.CharField(max_length=20, unique=True, verbose_name='닉네임')
 	wins = models.PositiveIntegerField(default=0, verbose_name='승')
 	losses = models.PositiveIntegerField(default=0, verbose_name='패')

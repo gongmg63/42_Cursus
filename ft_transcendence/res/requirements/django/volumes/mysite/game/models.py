@@ -1,21 +1,21 @@
-from django.contrib.auth.models import AbstractUser
-from django.db import models
 from mysite.utils import uuid_name_upload_to
+from django.utils import timezone
+from django.conf import settings
+from django.db import models
 
-class User(AbstractUser):
-	oauthid = models.IntegerField(unique=True, verbose_name='OAuth2.0')
-	nickname = models.CharField(max_length=20, unique=True, verbose_name='닉네임')
-	wins = models.PositiveIntegerField(default=0, verbose_name='승')
-	losses = models.PositiveIntegerField(default=0, verbose_name='패')
-	profile = models.ImageField(blank=True, upload_to=uuid_name_upload_to)
-	friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_set', verbose_name='친구')
+class GameResult(models.Model):
+    GAME_TYPE_CHOICES = [
+        ('1vs1', '1VS1'),
+        ('tournament', 'Tournament'),
+        # 필요한 다른 게임 종류 추가
+    ]
 
-	def __str__(self):
-		return str(self.oauthid)  # 기본적으로 아이디(=oauthid)로 반환
-	
-	class Meta:
-		verbose_name = '사용자'
-		verbose_name_plural = '사용자들'
-		
-class  Game(models.Model):
-	
+    winner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='won_games', on_delete=models.CASCADE)
+    loser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='lost_games', on_delete=models.CASCADE)
+    winner_score = models.PositiveIntegerField(verbose_name='승자 점수')
+    loser_score = models.PositiveIntegerField(verbose_name='패자 점수')
+    game_date = models.DateTimeField(default=timezone.now, verbose_name='게임 날짜')
+    game_type = models.CharField(max_length=50, choices=GAME_TYPE_CHOICES, verbose_name='게임 종류')
+
+    def __str__(self):
+        return f"{self.winner.nickname} vs {self.loser.nickname} - {self.game_type} on {self.game_date}"

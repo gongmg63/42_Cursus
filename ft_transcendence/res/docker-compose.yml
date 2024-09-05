@@ -50,7 +50,7 @@ services:
       - postgres
       - django
     volumes:
-      - profile:/usr/share/nginx/html/profile
+      - profile:/images
     ports:
       - "443:443"
     networks:

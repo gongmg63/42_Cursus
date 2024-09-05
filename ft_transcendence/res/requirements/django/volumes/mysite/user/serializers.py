@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             'friends'
         ]
         read_only_fields = ['id', 'oauthid', 'wins', 'losses']
-
+    
 class AddFriendSerializer(serializers.Serializer):
     # oauthid = serializers.IntegerField()  # 친구로 추가할 사용자의 OAuthID
     nickname = serializers.CharField(max_length=20)  # 친구의 닉네임
