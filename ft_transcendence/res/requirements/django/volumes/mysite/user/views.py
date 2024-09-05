@@ -128,8 +128,11 @@ class FriendAPIView(APIView):
         serializer = AddFriendSerializer(data=request.data)
         if serializer.is_valid():
             # 친구 추가 로직 실행
-            serializer.update(current_user, serializer.validated_data)
-            return Response({"message": "친구가 성공적으로 추가되었습니다."}, status=status.HTTP_200_OK)
+            friend = serializer.update(current_user, serializer.validated_data)
+            return Response({
+                "message": "친구가 성공적으로 추가되었습니다.",
+                "friend": friend # 추가된 친구 정보
+            }, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
