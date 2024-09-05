@@ -1,3 +1,6 @@
+// 친구 목록 - 서버 데이터 읽어오기
+let friends = [];
+
 //#region 서버로부터 데이터 가져오기
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -5,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function fetchUserData() {
 		const access_token = localStorage.getItem("access_token");
-		fetch('https://localhost/api/user/me', {
+		fetch('https://127.0.0.1/api/user/me', {
 			method: 'GET',
 			headers: {
 				'Authorization': `Bearer ${access_token}`,
@@ -17,11 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			// User 정보 업데이트
 			updateUserInfo(data);
 			// 친구 목록 업데이트
+			friends = data.friends;
+			console.log(friends);
 			updateFriendsList(data.friends);
 
 			// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
 			// updateRecentMatches(data.recentMatches);
-
 		})
 		// 500 error?
 		.catch(error => console.error('Error fetching user data: ', error));
@@ -170,9 +174,9 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
     
     // 실제로는 여기서 서버에 추가 요청을 보냄
     console.log(`Added friend: ${friendName}`);
-	const data = { friendName: friendName };
+	const data = { nickname: friendName };
 	const access_token = localStorage.access_token;
-	fetch('https://127.0.0.1/api/user/friend', {
+	fetch('https://127.0.0.1/api/user/friend/', {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,
@@ -182,7 +186,6 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
 	})
 	.then(response => {
 		if (!response.ok) {
-			// 500 error?
 			// 친구 없으면 404
 			throw new Error('Network response was not ok');
 		}
@@ -190,10 +193,9 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
 	})
 	.then(data => {
 		console.log('Friend added successfully:', data);
-
+		
 		// UI 업데이트
 		renderFriends();
-
 		modal.style.display = "none";
 		document.getElementById("friendNameInput").value = "";
 	})
@@ -210,13 +212,6 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
 const removeModal = document.getElementById("removeFriendModal");
 const removeFriendBtn = document.querySelector(".friends-controls .btn:nth-child(2)"); // - 버튼
 const closeRemoveBtn = removeModal.querySelector(".close");
-
-// 친구 목록 - 서버 데이터 읽어오기
-let friends = [
-    { name: "Friend 1", status: "online", avatar: "cat.jpeg" },
-    { name: "Friend 2", status: "offline", avatar: "dog.jpg" },
-    { name: "Friend 3", status: "online", avatar: "siu.jpg" }
-];
 
 // - 버튼 클릭 시 모달 열기
 removeFriendBtn.addEventListener("click", () => {
