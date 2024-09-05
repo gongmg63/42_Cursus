@@ -18,7 +18,7 @@ from rest_framework import status
 from urllib.parse import urlencode
 
 from .models import User
-from .serializers import UserSerializer, AddFriendSerializer
+from .serializers import UserSerializer, AddFriendSerializer, FriendSerializer
 
 def Oauth(request):
     auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.INTRA_42_CLIENT_ID}&redirect_uri={settings.INTRA_42_REDIRECT_CALLBACK_URI}&response_type=code"
@@ -129,9 +129,11 @@ class FriendAPIView(APIView):
         if serializer.is_valid():
             # 친구 추가 로직 실행
             friend = serializer.update(current_user, serializer.validated_data)
+
+            friend_serializer = FriendSerializer(friend)
             return Response({
                 "message": "친구가 성공적으로 추가되었습니다.",
-                "friend": friend # 추가된 친구 정보
+                "friend": friend_serializer.data # 추가된 친구 정보
             }, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
