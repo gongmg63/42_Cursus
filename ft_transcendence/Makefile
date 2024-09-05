@@ -14,7 +14,7 @@ restart    :
 	cd ./res && docker compose restart
 clean   :
 	make down
-	docker system prune -a
+	docker system prune -af
 
 fclean  :
 	make clean

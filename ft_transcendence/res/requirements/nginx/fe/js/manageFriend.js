@@ -4,9 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	fetchUserData();
 
 	function fetchUserData() {
+		const access_token = localStorage.getItem("access_token");
 		fetch('https://localhost/api/user/me', {
 			method: 'GET',
 			headers: {
+				'Authorization': `Bearer ${access_token}`,
 				'Content-Type': 'application/json'
 			},
 		})
@@ -372,7 +374,7 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
 	// 둘 중 하나만 있을 때
 	// 둘 다 없을 때
 
-    fetch('http://localhost/api/user/me', {
+    fetch('http://127.0.0.1/api/user/me', {
         method: 'PATCH',
         body: formData
     })
