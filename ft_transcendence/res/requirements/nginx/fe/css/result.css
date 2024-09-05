@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../images/win.png');
+    /* background-image: url('../images/lose.png'); */
+	background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #f0f0f0;
+}
+
+.result-container {
+    text-align: center;
+}
+
+h1 {
+    font-size: 75px;
+    margin-bottom: 20px;
+}
+
+h1.win {
+    color: #2ecc71;
+}
+
+h1.lose {
+    color: #e74c3c;
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar {
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #3498db;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 48px;
+    color: #2c3e50;
+}

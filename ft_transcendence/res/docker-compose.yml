@@ -51,6 +51,7 @@ services:
       - django
     volumes:
       - profile:/images
+      - frontend:/usr/share/nginx/html
     ports:
       - "443:443"
     networks:
@@ -76,6 +77,12 @@ volumes:
       type: none
       o: bind
       device: '${PWD}/requirements/django/volumes/mysite/profile'
+  frontend:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: '${PWD}/requirements/nginx/fe'
 
 networks:
   intra:
