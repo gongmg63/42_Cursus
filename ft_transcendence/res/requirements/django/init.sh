@@ -5,7 +5,7 @@ set -e
 sleep 5
 
 python manage.py makemigrations user
-# python manage.py makemigrations login
+python manage.py makemigrations game
 
 python manage.py migrate
 

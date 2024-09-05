@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'corsheaders',
 	'user',
-	# 'game',
+	'game',
 ]
 
 INTRA_42_CLIENT_ID = 'u-s4t2ud-a991aa69f5866fee60773246fd85a925d581cc6b802b9a326424b96733b4b5ac'
