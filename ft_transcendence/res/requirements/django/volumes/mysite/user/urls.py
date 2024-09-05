@@ -16,5 +16,5 @@ urlpatterns = [
     # nickname을 통해 정보 확인
     path('<str:nickname>', OtherUserInfo, name='OtherUserInfo'),
     # nickname을 통해 친구 추가, 삭제
-	path('frined', FriendAPIView.as_view(), name='FriendAPI'),
+	path('friend', FriendAPIView.as_view(), name='FriendAPI'),
 ]
