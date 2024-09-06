@@ -27,6 +27,15 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'oauthid', 'wins', 'losses']
     
+    def update(self, instance, validated_data):
+        profile = validated_data.get('profile', None)
+        
+        if profile and instance.profile and instance.profile != profile:
+            # 이전 파일 삭제
+            instance.profile.delete(save=False)
+        
+        return super().update(instance, validated_data)
+    
 class AddFriendSerializer(serializers.Serializer):
     nickname = serializers.CharField(max_length=20)  # 친구의 닉네임
 
