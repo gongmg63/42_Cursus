@@ -186,8 +186,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = '/profile/'
-MEDIA_ROOT = '/profile'
+MEDIA_URL = '/images/'
+MEDIA_ROOT = '/images'
 
 AUTH_USER_MODEL = 'user.User'
 

@@ -1,5 +1,7 @@
 from rest_framework import serializers
+from django.conf import settings
 from .models import User
+import os
 
 class FriendSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,6 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', # Django에서 자동으로 생성되는 기본 ID 필드
             'oauthid',
+            'email',
             'nickname',
             'wins', 
             'losses', 
@@ -31,8 +34,12 @@ class UserSerializer(serializers.ModelSerializer):
         profile = validated_data.get('profile', None)
         
         if profile and instance.profile and instance.profile != profile:
-            # 이전 파일 삭제
-            instance.profile.delete(save=False)
+            protected_path = "../images"
+            if instance.profile.path.startswith(protected_path):
+                pass  # 삭제하지 않음
+            else:
+                # 이전 파일 삭제
+                instance.profile.delete(save=False)
         
         return super().update(instance, validated_data)
     

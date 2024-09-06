@@ -19,6 +19,7 @@ from urllib.parse import urlencode
 
 from .models import User
 from .serializers import UserSerializer, AddFriendSerializer, FriendSerializer
+from mysite.utils import get_random_image_path
 
 def Oauth(request):
     auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.INTRA_42_CLIENT_ID}&redirect_uri={settings.INTRA_42_REDIRECT_CALLBACK_URI}&response_type=code"
@@ -54,6 +55,7 @@ def OauthCallback(request):
     user_data = user_response.json()
     oauth_user_id = user_data.get('id')  # OAuth 제공자에서 제공하는 사용자 ID
     profile = user_data.get('image_url')
+    email = user_data.get('email')
 
     # 여기에서 사용자 데이터를 처리하고 로그인 로직을 구현합니다.
     user, created = User.objects.get_or_create(oauthid=oauth_user_id)
@@ -62,10 +64,11 @@ def OauthCallback(request):
     if created:
         user.oauthid = oauth_user_id
         user.nickname = user_data.get('login')
+        user.email = email
         if profile:
             user.profile = profile
         else:
-            user.profile = ''  # 기본 이미지 URL 설정
+            user.profile = get_random_image_path()  # 기본 이미지 URL 설정
         user.save()
 
     # JWT 토큰 생성
