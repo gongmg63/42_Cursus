@@ -1,0 +1,68 @@
+import { updateFriendsList } from "./utils.js";
+import { friends } from "./index.js";
+
+const modal = document.getElementById("addFriendModal");
+const addFriendBtn = document.querySelector(".friends-controls .btn");
+const closeBtn = document.querySelector(".close");
+
+addFriendBtn.addEventListener("click", () => {
+	modal.style.display = "block";
+});
+
+closeBtn.addEventListener("click", () => {
+	modal.style.display = "none";
+});
+
+window.addEventListener("click", (event) => {
+	if (event.target === modal) {
+		modal.style.display = "none";
+	}
+});
+
+export function addFriend()
+{
+	const friendName = document.getElementById("friendNameInput").value;
+    
+    // 실제로는 여기서 서버에 추가 요청을 보냄
+    console.log(`Added friend: ${friendName}`);
+	const data = { nickname: friendName };
+	const access_token = localStorage.getItem("access_token");
+	postFriendAPI(data, access_token);
+}
+
+function postFriendAPI(data, access_token)
+{
+	fetch('https://127.0.0.1/api/user/friend/', {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${access_token}`,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
+	})
+	.then(response => {
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+		return response.json();
+	})
+	.then(data => {
+		console.log('Friend added successfully:', data);
+		
+		// friends -> readonly data, index.js 쪽에서 수정.
+		friends.push(data.friend);
+
+		// Update friends UI 
+		// renderFriends();
+		updateFriendsList(friends);
+
+		modal.style.display = "none";
+		document.getElementById("friendNameInput").value = "";
+	})
+	.catch(error => {
+        console.error('Error updating profile:', error);
+    });
+
+    modal.style.display = "none";
+    document.getElementById("friendNameInput").value = "";
+}

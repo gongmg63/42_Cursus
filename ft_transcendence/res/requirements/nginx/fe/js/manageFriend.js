@@ -341,12 +341,6 @@ function renderFriends() {
 //     renderFriends();
 // });
 
-//#region 게임 시작 기능
-document.querySelector('.game-start-btn').addEventListener('click', function() {
-	// url 추후 수정
-	window.location.href = 'https://127.0.0.1/mode.html';
-})
-//#endregion
 
 //#region User Profile Edit
 
@@ -376,14 +370,11 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
     const avatarFile = document.getElementById('avatarInput').files[0];
 	const access_token = localStorage.getItem("access_token");
 
-	// 두 정보만 필요??
     const formData = new FormData();
     formData.append('nickname', nickname);
     if (avatarFile) {
         formData.append('profile', avatarFile);
     }
-	// 둘 중 하나만 있을 때
-	// 둘 다 없을 때
 
     fetch('https://127.0.0.1/api/user/me', {
         method: 'PATCH',
