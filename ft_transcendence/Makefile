@@ -21,6 +21,7 @@ fclean  :
 	cd ./res && docker compose down -v
 	rm -rf ./res/requirements/postgresql/volumes/*
 
+
 re      :
 	make fclean
 	make all

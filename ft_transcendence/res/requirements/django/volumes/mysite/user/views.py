@@ -122,7 +122,7 @@ def OtherUserInfo(request, nickname):
 
 class FriendAPIView(APIView):
     permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
-
+    
     # POST : 친구 추가
     def post(self, request):
         # 현재 로그인된 사용자 가져오기

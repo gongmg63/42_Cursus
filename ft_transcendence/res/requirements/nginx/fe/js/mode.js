@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     singleBtn.addEventListener('click', function() {
         console.log('Single mode selected');
-		window.location.href = 'http://localhost:5500/html/pong.html';
+		window.location.href = 'https://127.0.0.1/pong.html';
     });
 
     pvpBtn.addEventListener('click', function() {

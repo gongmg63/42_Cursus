@@ -1,3 +1,6 @@
+// 친구 목록 - 서버 데이터 읽어오기
+let friends = [];
+
 //#region 서버로부터 데이터 가져오기
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -17,11 +20,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			// User 정보 업데이트
 			updateUserInfo(data);
 			// 친구 목록 업데이트
+			friends = data.friends;
+			// console.log(friends);
 			updateFriendsList(data.friends);
+			// remove friend modal 업데이트
+			populateFriendSelect();
 
 			// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
 			// updateRecentMatches(data.recentMatches);
-
 		})
 		// 500 error?
 		.catch(error => console.error('Error fetching user data: ', error));
@@ -54,6 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		const friendList = document.querySelector('.friends-list');
 		friendList.innerHTML = '';
 
+		// console.log(friends);
+
 		friends.forEach(friend => {
 			const friendItem = document.createElement('li');
 			friendItem.classList.add('friend-item');
@@ -62,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			avatarDiv.classList.add('friend-avatar');
 			const avatarImg = document.createElement('img');
 			avatarImg.src = `${friend.profile}`;
-			avatarImg.alt = `${friend.name} Avatar`;
+			avatarImg.alt = `${friend.nickname} Avatar`;
 			avatarImg.classList.add('avatar');
 			avatarDiv.appendChild(avatarImg);
 
@@ -82,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			friendItem.appendChild(avatarDiv);
 			friendItem.appendChild(infoDiv);
-			friendsList.appendChild(friendItem);
+			friendList.appendChild(friendItem);
 		})
 	}
 
@@ -182,7 +190,6 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
 	})
 	.then(response => {
 		if (!response.ok) {
-			// 500 error?
 			// 친구 없으면 404
 			throw new Error('Network response was not ok');
 		}
@@ -190,13 +197,16 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
 	})
 	.then(data => {
 		console.log('Friend added successfully:', data);
-
+		
 		// UI 업데이트
+		friends.push(data.friend);
 		renderFriends();
-
 		modal.style.display = "none";
 		document.getElementById("friendNameInput").value = "";
 	})
+	.catch(error => {
+        console.error('Error updating profile:', error);
+    });
 
     // 모달 닫기 및 입력 필드 초기화
     modal.style.display = "none";
@@ -207,13 +217,6 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
 const removeModal = document.getElementById("removeFriendModal");
 const removeFriendBtn = document.querySelector(".friends-controls .btn:nth-child(2)"); // - 버튼
 const closeRemoveBtn = removeModal.querySelector(".close");
-
-// 친구 목록 - 서버 데이터 읽어오기
-let friends = [
-    { name: "Friend 1", status: "online", avatar: "cat.jpeg" },
-    { name: "Friend 2", status: "offline", avatar: "dog.jpg" },
-    { name: "Friend 3", status: "online", avatar: "siu.jpg" }
-];
 
 // - 버튼 클릭 시 모달 열기
 removeFriendBtn.addEventListener("click", () => {
@@ -241,12 +244,14 @@ document.getElementById("removeFriendForm").addEventListener("submit", (event) =
     event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
     const friendSelect = document.getElementById("friendSelect");
     const selectedFriend = friendSelect.value;
+	const access_token = localStorage.getItem("access_token");
 
-	const data = { friendName: selectedFriend };
+	const data = { nickname: selectedFriend };
 
-	fetch('http://localhost/api/friends/remove', {
-		method: 'POST',
+	fetch('https://127.0.0.1/api/user/friend/', {
+		method: 'DELETE',
 		headers: {
+			'Authorization': `Bearer ${access_token}`,
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(data)
@@ -260,7 +265,7 @@ document.getElementById("removeFriendForm").addEventListener("submit", (event) =
 	})
 	.then(data => {
 		// 친구 목록에서 선택된 친구 삭제
-		friends = friends.filter(friend => friend.name !== selectedFriend);
+		friends = friends.filter(friend => friend.nickname !== selectedFriend);
 	
 		// 서버에 친구 삭제 요청
 		console.log(`Removed friend: ${selectedFriend}`);
@@ -281,12 +286,14 @@ document.getElementById("removeFriendForm").addEventListener("submit", (event) =
 // 드롭다운에 친구 목록을 동적으로 추가하는 함수
 function populateFriendSelect() {
     const friendSelect = document.getElementById("friendSelect");
+	console.log("populate friend select");
     friendSelect.innerHTML = ''; // 기존 옵션 초기화
 
     friends.forEach(friend => {
+		console.log(friend);
         const option = document.createElement("option");
-        option.value = friend.name;
-        option.textContent = friend.name;
+        option.value = friend.nickname;
+        option.textContent = friend.nickname;
         friendSelect.appendChild(option);
     });
 }
@@ -303,8 +310,8 @@ function renderFriends() {
         const avatarDiv = document.createElement('div');
         avatarDiv.classList.add('friend-avatar');
         const avatarImg = document.createElement('img');
-        avatarImg.src = `../images/${friend.avatar}`;
-        avatarImg.alt = `${friend.name} Avatar`;
+        avatarImg.src = `../images/${friend.profile}`;
+        avatarImg.alt = `${friend.nickname} Avatar`;
         avatarImg.classList.add('avatar');
         avatarDiv.appendChild(avatarImg);
 
@@ -313,11 +320,12 @@ function renderFriends() {
         const nameSpan = document.createElement('span');
         nameSpan.classList.add('friend-name');
         nameSpan.textContent = friend.name;
-        const statusSpan = document.createElement('span');
-        statusSpan.classList.add('friend-status', friend.status);
-        statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
+
+        // const statusSpan = document.createElement('span');
+        // statusSpan.classList.add('friend-status', friend.status);
+        // statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
         infoDiv.appendChild(nameSpan);
-        infoDiv.appendChild(statusSpan);
+        // infoDiv.appendChild(statusSpan);
 
         friendItem.appendChild(avatarDiv);
         friendItem.appendChild(infoDiv);
@@ -333,12 +341,6 @@ function renderFriends() {
 //     renderFriends();
 // });
 
-//#region 게임 시작 기능
-document.querySelector('.game-start-btn').addEventListener('click', function() {
-	// url 추후 수정
-	window.location.href = 'https://localhost/html/mode.html';
-})
-//#endregion
 
 //#region User Profile Edit
 
@@ -366,23 +368,20 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
     event.preventDefault();
     const nickname = document.getElementById('nicknameInput').value;
     const avatarFile = document.getElementById('avatarInput').files[0];
-
-	// 두 정보만 필요??
-    const formData = new FormData();
 	const access_token = localStorage.getItem("access_token");
+
+    const formData = new FormData();
     formData.append('nickname', nickname);
     if (avatarFile) {
         formData.append('profile', avatarFile);
     }
-	// 둘 중 하나만 있을 때
-	// 둘 다 없을 때
 
     fetch('https://127.0.0.1/api/user/me', {
         method: 'PATCH',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,
 		},
-        body: formData
+		body: formData
     })
     .then(response => {
         if (!response.ok) {

@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-image: url('../images/pong.png'); /* 적절한 배경 사진 경로 */
+    background-image: url('/images/pong.png'); /* 적절한 배경 사진 경로 */
     background-size: cover;
     background-position: center;
     height: 100vh;
