@@ -5,12 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     singleBtn.addEventListener('click', function() {
         console.log('Single mode selected');
-		window.location.href = 'https://127.0.0.1/pong.html';
+		// player 1, 2 이름, game type이 포함된 url로 redirect
+		let gameType = "single";
+		window.location.href = `https://127.0.0.1/pong.html?gameType=${gameType}`;
     });
 
     pvpBtn.addEventListener('click', function() {
         console.log('1 vs 1 mode selected');
 		// 매치 메이킹 페이지
+		window.location.href = 'https://127.0.0.1/matchmaking.html';
     });
 
     tournamentBtn.addEventListener('click', function() {

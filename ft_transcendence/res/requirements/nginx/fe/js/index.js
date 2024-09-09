@@ -4,6 +4,7 @@ import { deleteFriend } from "./deleteFriend.js";
 
 export let friends = [];
 
+
 document.addEventListener('DOMContentLoaded', function() {
 	fetchUserData();
 });

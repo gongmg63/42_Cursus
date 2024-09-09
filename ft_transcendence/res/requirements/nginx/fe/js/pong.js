@@ -29,6 +29,9 @@ const ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ba
 const paddle1 = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_UP, KEY_DOWN);
 const paddle2 = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
 
+// game 시작 전에 player 1, 2 이름, game type 파싱.
+let player1, player2, gameType;
+parseGameURL();
 gameLoop();
 
 function drawGameScene()
@@ -70,6 +73,22 @@ function drawGameScene()
 	ctx.stroke();
 }
 
+function parseGameURL()
+{
+	const urlParams = new URLSearchParams(window.location.search);
+	gameType = urlParams.get('gameType');
+
+	if (gameType == 'single')
+	{
+		player1 = localStorage.getItem('nickname');
+		player2 = player1;
+	}
+	else
+	{
+
+	}
+}
+
 function gameLoop()
 {
 	// ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -77,8 +96,35 @@ function gameLoop()
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	window.requestAnimationFrame(gameLoop);	
 
+	checkGameEnd();
 	gameUpdate();
 	gameDraw();
+}
+
+function checkGameEnd()
+{
+	// 점수 설정
+	let endScore = 3;
+	if (paddle1.score >= endScore || paddle2.score >= endScore)
+	{
+        let winner, loser;
+        let winnerScore, loserScore;
+
+        if (paddle1.score > paddle2.score) {
+            winner = player1;
+            loser = player2;
+            winnerScore = paddle1.score;
+            loserScore = paddle2.score;
+        }
+		else {
+            winner = player2;
+            loser = player1;
+            winnerScore = paddle2.score;
+            loserScore = paddle1.score;
+        }
+		// game type도 추가.
+        window.location.href = `https://127.0.0.1/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
+	}
 }
 
 function gameUpdate()
