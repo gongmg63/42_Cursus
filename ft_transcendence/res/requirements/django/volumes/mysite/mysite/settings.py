@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'oauth2_provider',
     'corsheaders',
+	'channels',
 	'user',
 	'game',
 ]

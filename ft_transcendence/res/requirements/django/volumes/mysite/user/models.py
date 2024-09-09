@@ -10,6 +10,7 @@ class User(AbstractUser):
 	losses = models.PositiveIntegerField(default=0, verbose_name='패')
 	profile = models.ImageField(blank=True, upload_to=uuid_name_upload_to)
 	friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_set', verbose_name='친구')
+	is_active = models.BooleanField(default=False)  # 접속 여부
 
 	def save(self, *args, **kwargs):
 		if self.pk:
