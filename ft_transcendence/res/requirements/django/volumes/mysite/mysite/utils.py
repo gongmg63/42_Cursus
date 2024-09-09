@@ -24,4 +24,4 @@ def get_random_image_path():
     if not image_files:
         return None
     random_image = random.choice(image_files)
-    return os.path.join('../images', random_image)
+    return os.path.join('/images', random_image)

@@ -9,7 +9,8 @@ class FriendSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'oauthid', 
-            'nickname', 
+            'nickname',
+            'is_active',
             'profile', 
         ]
 
@@ -25,7 +26,8 @@ class UserSerializer(serializers.ModelSerializer):
             'nickname',
             'wins', 
             'losses', 
-            'profile', 
+            'profile',
+            'is_active', 
             'friends'
         ]
         read_only_fields = ['id', 'oauthid', 'wins', 'losses']
@@ -34,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
         profile = validated_data.get('profile', None)
         
         if profile and instance.profile and instance.profile != profile:
-            protected_path = "../images"
+            protected_path = "/images/images"
             if instance.profile.path.startswith(protected_path):
                 pass  # 삭제하지 않음
             else:

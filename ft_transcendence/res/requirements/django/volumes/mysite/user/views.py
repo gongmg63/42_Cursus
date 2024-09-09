@@ -60,6 +60,7 @@ def OauthCallback(request):
     # 여기에서 사용자 데이터를 처리하고 로그인 로직을 구현합니다.
     user, created = User.objects.get_or_create(oauthid=oauth_user_id)
     
+    user.is_active = True
     # 새 유저인 경우 추가 정보 저장
     if created:
         user.oauthid = oauth_user_id
@@ -69,8 +70,8 @@ def OauthCallback(request):
             user.profile = profile
         else:
             user.profile = get_random_image_path()  # 기본 이미지 URL 설정
-        user.save()
 
+    user.save()
     # JWT 토큰 생성
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
