@@ -11,6 +11,7 @@ python manage.py makemigrations user
 python manage.py makemigrations game
 
 python manage.py migrate
+python manage.py loaddata users.json
 
 # python manage.py collectstatic
 

@@ -1,0 +1,30 @@
+[
+	{
+		"model": "user.user",
+		"pk": 1,
+		"fields": {
+			"username": "aaa",
+			"oauthid": 1,
+			"nickname": "aaa",
+			"wins": 10,
+			"losses": 5,
+			"profile": "/images/cat.jpeg",
+			"is_active": true,
+			"friends": []
+		}
+	},
+	{
+		"model": "user.user",
+		"pk": 2,
+		"fields": {
+			"username": "bbb",
+			"oauthid": 2,
+			"nickname": "bbb",
+			"wins": 8,
+			"losses": 15,
+			"profile": "/images/dog.jpg",
+			"is_active": true,
+			"friends": []
+		}
+	}
+]
