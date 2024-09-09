@@ -56,7 +56,7 @@ function updateUserInfo(user)
 	userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;
 
 	if (user.profile && user.profile.trim() !== "") {
-		userAvatar.src = user.profile;
+		userAvatar.src = user.profile.replace('/images', '');
 	}
 	else {
 		userAvatar.src = '../images/Retriever.jpeg';
@@ -128,10 +128,10 @@ export function editUser()
     if (avatarFile) {
         formData.append('profile', avatarFile);
     }
-	patchUserAPI(formData, access_token);
+	patchUserAPI(formData, nickname, avatarFile, access_token);
 }
 
-function patchUserAPI(formData, access_token)
+function patchUserAPI(formData, nickname, avatarFile, access_token)
 {
 	fetch('https://127.0.0.1/api/user/me', {
         method: 'PATCH',

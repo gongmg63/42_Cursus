@@ -31,7 +31,7 @@ services:
       - postgres
     volumes:
       - django:/volumes
-      - media:/profile
+      - media:/images
     ports:
       - "8000:8000"
     networks:

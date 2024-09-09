@@ -50,8 +50,12 @@ function deleteFriendAPI(data, access_token, selectedFriend)
 	.then(data => {
 		// selectedFriend 꼭 필요??
 		// friends -> readonly data, index.js 쪽에서 수정.
-		friends = friends.filter(friend => friend.nickname !== selectedFriend);
+		// friends = friends.filter(friend => friend.nickname !== selectedFriend);
 	
+		const index = friends.findIndex(friend => friend.nickname === selectedFriend);
+		if (index !== -1)
+			friends.splice(index, 1);  // 배열에서 해당 친구를 삭제
+
 		console.log(`Removed friend: ${selectedFriend}`);
 	
 		removeModal.style.display = "none";

@@ -3,7 +3,7 @@ import { friends } from "./index.js";
 export function populateFriendSelect()
 {
 	const friendSelect = document.getElementById("friendSelect");
-	console.log("populate friend select");
+	// console.log("populate friend select");
     friendSelect.innerHTML = '';
 
     friends.forEach(friend => {
@@ -15,7 +15,7 @@ export function populateFriendSelect()
     });
 }
 
-export function updateFriendsList()
+export function updateFriendsList(friends)
 {
 	const friendList = document.querySelector('.friends-list');
 	friendList.innerHTML = '';
