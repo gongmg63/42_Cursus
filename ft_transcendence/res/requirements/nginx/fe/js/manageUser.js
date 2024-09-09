@@ -168,3 +168,31 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
         console.error('Error updating profile:', error);
     });
 }
+
+const friendStatusSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/friend/status/'
+);
+
+friendStatusSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    if (data.type === 'friend_status') {
+        updateFriendStatusUI(data.friends);
+    } else if (data.type === 'friend_status_update') {
+        updateSingleFriendStatus(data.friend_id, data.status);
+    }
+};
+
+function updateFriendStatusUI(friends) {
+    for (const [friendId, status] of Object.entries(friends)) {
+        updateSingleFriendStatus(friendId, status);
+		console.log(status.className);
+    }
+}
+
+function updateSingleFriendStatus(friendId, status) {
+    const statusElement = document.getElementById(`friend-status-${friendId}`);
+    if (statusElement) {
+        statusElement.textContent = status ? '온라인' : '오프라인';
+        statusElement.className = status ? 'online' : 'offline';
+    }
+}
