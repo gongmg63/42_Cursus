@@ -139,7 +139,7 @@ class FriendAPIView(APIView):
                 "message": "친구가 성공적으로 추가되었습니다.",
                 "friend": friend_serializer.data # 추가된 친구 정보
             }, status=status.HTTP_200_OK)
-        
+        print("not valid")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # DELETE : 친구 삭제

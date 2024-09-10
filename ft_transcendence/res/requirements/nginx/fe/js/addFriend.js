@@ -1,5 +1,5 @@
 import { updateFriendsList } from "./utils.js";
-import { friends } from "./index.js";
+import { friends, pushFriends } from "./index.js";
 
 const modal = document.getElementById("addFriendModal");
 const addFriendBtn = document.querySelector(".friends-controls .btn");
@@ -32,6 +32,7 @@ export function addFriend()
 
 function postFriendAPI(data, access_token)
 {
+	console.log("data: ", data);
 	fetch('https://127.0.0.1/api/user/friend/', {
 		method: 'POST',
 		headers: {
@@ -50,8 +51,7 @@ function postFriendAPI(data, access_token)
 		console.log('Friend added successfully:', data);
 		
 		// friends -> readonly data, index.js 쪽에서 수정.
-		friends.push(data.friend);
-
+		pushFriends(data.friend);
 		// Update friends UI 
 		// renderFriends();
 		updateFriendsList(friends);

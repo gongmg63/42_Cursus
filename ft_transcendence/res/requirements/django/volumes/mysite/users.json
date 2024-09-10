@@ -8,7 +8,7 @@
 			"nickname": "aaa",
 			"wins": 10,
 			"losses": 5,
-			"profile": "/images/cat.jpeg",
+			"profile": "cat.jpeg",
 			"is_active": true,
 			"friends": []
 		}
@@ -22,7 +22,21 @@
 			"nickname": "bbb",
 			"wins": 8,
 			"losses": 15,
-			"profile": "/images/dog.jpg",
+			"profile": "dog.jpg",
+			"is_active": true,
+			"friends": []
+		}
+	},
+	{
+		"model": "user.user",
+		"pk": 3,
+		"fields": {
+			"username": "ccc",
+			"oauthid": 3,
+			"nickname": "ccc",
+			"wins": 11,
+			"losses": 7,
+			"profile": "siu.jpg",
 			"is_active": true,
 			"friends": []
 		}

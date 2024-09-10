@@ -1,5 +1,5 @@
 import { populateFriendSelect, updateFriendsList } from "./utils.js";
-import { friends } from "./index.js";
+import { friends, setFriends } from "./index.js";
 
 const editUserBtn = document.querySelector('.edit-user-btn');
 const editUserModal = document.getElementById('editUserModal');
@@ -33,12 +33,10 @@ export function fetchUserData()
 	.then(data => {
 		// User 정보 업데이트
 		updateUserInfo(data);
+
 		// 친구 목록 업데이트
-		// friends = data.friends;
-		// console.log(friends);
+		setFriends(data.friends);
 		updateFriendsList(data.friends);
-		// remove friend modal 업데이트
-		populateFriendSelect();
 
 		// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
 		// updateRecentMatches(data.recentMatches);
@@ -65,8 +63,6 @@ function updateUserInfo(user)
 		localStorage.setItem('profile', userAvatar.src);
 	}
 }
-
-
 
 function updateRecentMatches(recentMatches)
 {
