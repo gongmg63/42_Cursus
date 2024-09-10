@@ -3,12 +3,12 @@
 		"model": "user.user",
 		"pk": 1,
 		"fields": {
-			"username": "aaa",
+			"username": "Steve Jobs",
 			"oauthid": 1,
-			"nickname": "aaa",
+			"nickname": "Jobs",
 			"wins": 10,
 			"losses": 5,
-			"profile": "cat.jpeg",
+			"profile": "Jobs.png",
 			"is_active": true,
 			"friends": []
 		}
@@ -17,12 +17,12 @@
 		"model": "user.user",
 		"pk": 2,
 		"fields": {
-			"username": "bbb",
+			"username": "Jensen Huang",
 			"oauthid": 2,
-			"nickname": "bbb",
+			"nickname": "Huang",
 			"wins": 8,
 			"losses": 15,
-			"profile": "dog.jpg",
+			"profile": "Huang.png",
 			"is_active": true,
 			"friends": []
 		}
@@ -31,12 +31,40 @@
 		"model": "user.user",
 		"pk": 3,
 		"fields": {
-			"username": "ccc",
+			"username": "Larry Page",
 			"oauthid": 3,
-			"nickname": "ccc",
+			"nickname": "Page",
 			"wins": 11,
 			"losses": 7,
-			"profile": "siu.jpg",
+			"profile": "Page.png",
+			"is_active": true,
+			"friends": []
+		}
+	},
+	{
+		"model": "user.user",
+		"pk": 4,
+		"fields": {
+			"username": "Elon Musk",
+			"oauthid": 4,
+			"nickname": "Musk",
+			"wins": 16,
+			"losses": 15,
+			"profile": "Musk.png",
+			"is_active": true,
+			"friends": []
+		}
+	},
+	{
+		"model": "user.user",
+		"pk": 5,
+		"fields": {
+			"username": "Bill Gates",
+			"oauthid": 5,
+			"nickname": "Gates",
+			"wins": 9,
+			"losses": 19,
+			"profile": "Gates.png",
 			"is_active": true,
 			"friends": []
 		}
