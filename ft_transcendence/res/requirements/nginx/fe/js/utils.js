@@ -57,3 +57,13 @@ export function editLocalStorage(nickname, avatar)
 	localStorage.setItem('nickname', nickname);
 	localStorage.setItem('profile', avatar);
 }
+
+export function handleError(error)
+{
+	if (error.message.includes('404')) 
+		alert('User data not found. Please check the user information.');
+	else if (error.message.includes('500'))
+		alert('Server error. Please try again later.');
+	else
+		alert('An unexpected error occurred.');
+}

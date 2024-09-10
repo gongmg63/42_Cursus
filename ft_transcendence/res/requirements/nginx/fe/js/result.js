@@ -1,3 +1,4 @@
+import { handleError } from "./utils";
 
 document.addEventListener('DOMContentLoaded', function() {
 	
@@ -80,6 +81,12 @@ function postMatchAPI(result)
 		body: result
 	})
 	.then(response => {
+		if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
 		return response.json();
 	})
 	.then(data => {
@@ -87,5 +94,6 @@ function postMatchAPI(result)
 	})
 	.catch(error => {
         console.error('Error updating match:', error);
+		handleError(error);
     });
 }

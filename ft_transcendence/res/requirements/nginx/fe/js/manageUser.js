@@ -1,4 +1,4 @@
-import { editLocalStorage, populateFriendSelect, updateFriendsList } from "./utils.js";
+import { editLocalStorage, handleError, populateFriendSelect, updateFriendsList } from "./utils.js";
 import { friends, setFriends } from "./index.js";
 
 const editUserBtn = document.querySelector('.edit-user-btn');
@@ -29,7 +29,15 @@ export function fetchUserData()
 			'Content-Type': 'application/json'
 		},
 	})
-	.then(response => response.json())
+	.then(response => {
+		if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
+		return response.json();
+	})
 	.then(data => {
 		// User 정보 업데이트
 		updateUserInfo(data);
@@ -41,7 +49,10 @@ export function fetchUserData()
 		// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
 		// updateRecentMatches(data.recentMatches);
 	})
-	.catch(error => console.error('Error fetching user data: ', error));
+	.catch(error => {
+		console.error('Error fetching user data: ', error);
+		handleError(error);
+	});
 }
 
 function updateUserInfo(user)
@@ -136,10 +147,13 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
 		body: formData
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
+        if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
+		return response.json();
     })
     .then(data => {
         console.log('User profile updated:', data);
@@ -156,6 +170,7 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
     })
     .catch(error => {
         console.error('Error updating profile:', error);
+		handleError(error);
     });
 }
 
