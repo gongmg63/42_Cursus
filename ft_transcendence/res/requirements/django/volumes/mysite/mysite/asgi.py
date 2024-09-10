@@ -8,21 +8,25 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
 
 import os
+import django
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+django.setup()
 django_asgi_app = get_asgi_application()
 
 from django.urls import path
 from user.consumers import FriendStatusConsumer
 from user.routing import websocket_urlpatterns
+from .jwt_middleware import JWTAuthMiddleware  # JWT 미들웨어 임포트
+
 
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
-    "websocket": AuthMiddlewareStack(
+    "websocket": JWTAuthMiddleware( # JWTAuthMiddleware를 적용
         URLRouter(
             websocket_urlpatterns
         )

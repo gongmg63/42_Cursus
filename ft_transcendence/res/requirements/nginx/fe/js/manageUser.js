@@ -159,9 +159,26 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
     });
 }
 
-const friendStatusSocket = new WebSocket(
-    'ws://' + window.location.host + '/ws/friend/status/'
-);
+const access_token = localStorage.getItem("access_token");
+const socket = new WebSocket('wss://127.0.0.1/ws/friend/status/?token=' + access_token);
+
+const friendStatusSocket = socket;
+
+friendStatusSocket.onopen = function() {
+    console.log('WebSocket connection established.');
+};
+
+friendStatusSocket.onerror = function(error) {
+    console.log('WebSocket error: ' + error.message);
+};
+
+friendStatusSocket.onclose = function(event) {
+    if (event.wasClean) {
+        console.log('WebSocket connection closed cleanly, code=' + event.code + ', reason=' + event.reason);
+    } else {
+        console.log('WebSocket connection closed with error');
+    }
+};
 
 friendStatusSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);

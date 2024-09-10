@@ -2,16 +2,19 @@ FROM python:3.12-alpine
 
 RUN apk update && \
 	apk add postgresql-client
-RUN pip3 install Django
-RUN pip install psycopg2-binary \
+RUN pip3 install Django \
+	psycopg2-binary \
 	djangorestframework \
-	uvicorn \
+	daphne \
 	requests \
 	django-oauth-toolkit \
 	djangorestframework-simplejwt \
 	django-cors-headers \
 	pillow \
 	channels
+	# uvicorn \
+# RUN pinstall --upgrade djangorestframework-simplejwt
+
 # RUN django-admin startproject mysite 
 # RUN cd /mysite/mysite/ && \
 	# sed -i 's/ALLOWED_HOSTS = \[]/ALLOWED_HOSTS = \["*"]/g' settings.py
