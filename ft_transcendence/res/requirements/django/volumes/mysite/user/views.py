@@ -69,7 +69,7 @@ def OauthCallback(request):
         if profile:
             user.profile = profile
         else:
-            user.profile = get_random_image_path()  # 기본 이미지 URL 설정
+            user.profile = "/images/Retriever.jpeg"  # 기본 이미지 URL 설정
 
     user.save()
     # JWT 토큰 생성
