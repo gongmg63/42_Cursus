@@ -1,48 +1,49 @@
-from channels.generic.websocket import WebsocketConsumer
 import json
-from asgiref.sync import async_to_sync
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+from .models import User
 
-class OnlineStatusConsumer(WebsocketConsumer):
-    def connect(self):
-        # 사용자 인증 확인
+class FriendStatusConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
         self.user = self.scope["user"]
         if self.user.is_authenticated:
-            # 그룹에 사용자 추가
-            async_to_sync(self.channel_layer.group_add)(
-                "online_users", self.channel_name
+            await self.channel_layer.group_add(
+                f"user_{self.user.id}",
+                self.channel_name
             )
-            # 온라인 상태로 설정
-            self.user.is_active = True
-            self.user.save()
-            self.accept()
+            await self.accept()
+            await self.update_user_status(True)
+            await self.send_friend_status()
+        else:
+            await self.close()
 
-    def disconnect(self, close_code):
-        # 그룹에서 사용자 제거
-        async_to_sync(self.channel_layer.group_discard)(
-            "online_users", self.channel_name
-        )
+    async def disconnect(self, close_code):
         if self.user.is_authenticated:
-            # 오프라인 상태로 설정
-            self.user.is_active = False
-            self.user.save()
+            await self.update_user_status(False)
+            await self.channel_layer.group_discard(
+                f"user_{self.user.id}",
+                self.channel_name
+            )
 
-    def receive(self, text_data):
-        data = json.loads(text_data)
-        message = data.get("message", "")
+    @database_sync_to_async
+    def update_user_status(self, status):
+        User.objects.filter(id=self.user.id).update(is_active=status)
 
-        # 메시지를 같은 그룹에 있는 사용자에게 브로드캐스트
-        async_to_sync(self.channel_layer.group_send)(
-            "online_users",
-            {
-                "type": "broadcast_message",
-                "message": message,
-            },
-        )
+    @database_sync_to_async
+    def get_friends_status(self):
+        friends = self.user.friends.all()
+        return {friend.id: friend.is_active for friend in friends}
 
-    def broadcast_message(self, event):
-        message = event["message"]
+    async def send_friend_status(self):
+        friend_status = await self.get_friends_status()
+        await self.send(text_data=json.dumps({
+            'type': 'friend_status',
+            'friends': friend_status
+        }))
 
-        # 클라이언트에 메시지 전송
-        self.send(text_data=json.dumps({
-            "message": message,
+    async def friend_status_update(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'friend_status_update',
+            'friend_id': event['friend_id'],
+            'status': event['status']
         }))
