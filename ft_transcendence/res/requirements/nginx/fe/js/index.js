@@ -4,7 +4,6 @@ import { deleteFriend } from "./deleteFriend.js";
 
 export let friends = [];
 
-
 document.addEventListener('DOMContentLoaded', function() {
 	fetchUserData();
 });
@@ -27,3 +26,13 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
 document.querySelector('.game-start-btn').addEventListener('click', function() {
 	window.location.href = 'https://127.0.0.1/mode.html';
 })
+
+export function pushFriends(friend)
+{
+	friends.push(friend);
+}
+
+export function setFriends(newFriends)
+{
+	friends = newFriends;
+}

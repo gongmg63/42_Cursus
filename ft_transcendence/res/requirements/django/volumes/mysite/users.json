@@ -26,5 +26,19 @@
 			"is_active": true,
 			"friends": []
 		}
+	},
+	{
+		"model": "user.user",
+		"pk": 3,
+		"fields": {
+			"username": "ccc",
+			"oauthid": 3,
+			"nickname": "ccc",
+			"wins": 11,
+			"losses": 7,
+			"profile": "siu.jpg",
+			"is_active": true,
+			"friends": []
+		}
 	}
 ]

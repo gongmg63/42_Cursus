@@ -36,7 +36,7 @@ export function updateFriendsList(friends)
 		infoDiv.classList.add('friend-info');
 		const nameSpan = document.createElement('span');
 		nameSpan.classList.add('friend-name');
-		nameSpan.textContent = friend.name;
+		nameSpan.textContent = friend.nickname;
 
 		// Online, Offline 상태 표시
 		// const statusSpan = document.createElement('span');
