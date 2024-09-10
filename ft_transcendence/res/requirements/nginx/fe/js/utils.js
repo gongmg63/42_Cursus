@@ -51,3 +51,9 @@ export function updateFriendsList(friends)
 		friendList.appendChild(friendItem);
 	})
 }
+
+export function editLocalStorage(nickname, avatar)
+{
+	localStorage.setItem('nickname', nickname);
+	localStorage.setItem('profile', avatar);
+}
