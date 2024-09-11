@@ -40,7 +40,7 @@ export function updateFriendsList(friends)
 
 		// Online, Offline 상태 표시
 		// const statusSpan = document.createElement('span');
-		// statusSpan.classList.add('friend-status', friend.status);
+		// statusSpan.classList.add('friend-status', friend.is_active);
 		// statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
 		
 		infoDiv.appendChild(nameSpan);

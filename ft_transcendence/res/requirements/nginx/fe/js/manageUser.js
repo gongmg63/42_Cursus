@@ -68,6 +68,7 @@ function updateUserInfo(user)
 		userAvatar.src = user.profile.replace('/images', '');
 	else
 		userAvatar.src = '../images/Retriever.jpeg';
+	// userAvatar.rc = user.profile;
 	editLocalStorage(user.nickname, userAvatar.src);
 }
 
@@ -174,47 +175,47 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
     });
 }
 
-const access_token = localStorage.getItem("access_token");
-const socket = new WebSocket('wss://127.0.0.1/ws/friend/status/?token=' + access_token);
+// const access_token = localStorage.getItem("access_token");
+// const socket = new WebSocket('wss://127.0.0.1/ws/friend/status/?token=' + access_token);
 
-const friendStatusSocket = socket;
+// const friendStatusSocket = socket;
 
-friendStatusSocket.onopen = function() {
-    console.log('WebSocket connection established.');
-};
+// friendStatusSocket.onopen = function() {
+//     console.log('WebSocket connection established.');
+// };
 
-friendStatusSocket.onerror = function(error) {
-    console.log('WebSocket error: ' + error.message);
-};
+// friendStatusSocket.onerror = function(error) {
+//     console.log('WebSocket error: ' + error.message);
+// };
 
-friendStatusSocket.onclose = function(event) {
-    if (event.wasClean) {
-        console.log('WebSocket connection closed cleanly, code=' + event.code + ', reason=' + event.reason);
-    } else {
-        console.log('WebSocket connection closed with error');
-    }
-};
+// friendStatusSocket.onclose = function(event) {
+//     if (event.wasClean) {
+//         console.log('WebSocket connection closed cleanly, code=' + event.code + ', reason=' + event.reason);
+//     } else {
+//         console.log('WebSocket connection closed with error');
+//     }
+// };
 
-friendStatusSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    if (data.type === 'friend_status') {
-        updateFriendStatusUI(data.friends);
-    } else if (data.type === 'friend_status_update') {
-        updateSingleFriendStatus(data.friend_id, data.status);
-    }
-};
+// friendStatusSocket.onmessage = function(e) {
+//     const data = JSON.parse(e.data);
+//     if (data.type === 'friend_status') {
+//         updateFriendStatusUI(data.friends);
+//     } else if (data.type === 'friend_status_update') {
+//         updateSingleFriendStatus(data.friend_id, data.status);
+//     }
+// };
 
-function updateFriendStatusUI(friends) {
-    for (const [friendId, status] of Object.entries(friends)) {
-        updateSingleFriendStatus(friendId, status);
-		console.log(status.className);
-    }
-}
+// function updateFriendStatusUI(friends) {
+//     for (const [friendId, status] of Object.entries(friends)) {
+//         updateSingleFriendStatus(friendId, status);
+// 		console.log(status.className);
+//     }
+// }
 
-function updateSingleFriendStatus(friendId, status) {
-    const statusElement = document.getElementById(`friend-status-${friendId}`);
-    if (statusElement) {
-        statusElement.textContent = status ? '온라인' : '오프라인';
-        statusElement.className = status ? 'online' : 'offline';
-    }
-}
+// function updateSingleFriendStatus(friendId, status) {
+//     const statusElement = document.getElementById(`friend-status-${friendId}`);
+//     if (statusElement) {
+//         statusElement.textContent = status ? '온라인' : '오프라인';
+//         statusElement.className = status ? 'online' : 'offline';
+//     }
+// }
