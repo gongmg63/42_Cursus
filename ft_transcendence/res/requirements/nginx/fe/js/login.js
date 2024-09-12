@@ -3,7 +3,7 @@ document.querySelector('.login-btn').addEventListener('click', function() {
 	fetchOAuth();
 
 	function fetchOAuth() {
-		fetch('https://127.0.0.1/api/user/oauth', {
+		fetch('/api/user/oauth', {
 			method: 'GET'
 		})
 		.then(response => {
@@ -16,9 +16,10 @@ document.querySelector('.login-btn').addEventListener('click', function() {
 				return response.json();
 		})
 		.then(data => {
-            window.location.href = data.redirect_url;
-   		})
+			window.location.href = data.redirect_url;
+		})
 		.catch(error => {
+			console.log(window.ACCESS_URL);
 			console.error('Error removing friend:', error);
 		})
 	}
@@ -34,7 +35,7 @@ window.addEventListener('load', function() {
 		localStorage.setItem('access_token', accessToken);
 		localStorage.setItem('refresh_token', refreshToken);
 		console.log('Token stored successfully');
-		this.location.href = 'https://127.0.0.1/index.html';
+		this.location.href = '/index.html';
 	}
 	else
 	{

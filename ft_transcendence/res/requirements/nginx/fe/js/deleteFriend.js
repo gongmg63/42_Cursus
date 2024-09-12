@@ -33,7 +33,7 @@ export function deleteFriend()
 
 function deleteFriendAPI(data, access_token, selectedFriend)
 {
-	fetch('https://127.0.0.1/api/user/friend/', {
+	fetch('/api/user/friend/', {
 		method: 'DELETE',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,

@@ -33,7 +33,7 @@ export function addFriend()
 function postFriendAPI(data, access_token)
 {
 	console.log("data: ", data);
-	fetch('https://127.0.0.1/api/user/friend/', {
+	fetch('/api/user/friend/', {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,

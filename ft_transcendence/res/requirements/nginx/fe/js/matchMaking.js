@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function fetchMatchData() {
 	setTimeout(function() {
-		fetch('https://127.0.0.1/api/match')
+		fetch('/api/match')
 		.then(response => response.json())
 		.then(data => {
 			// 매치 데이터를 성공적으로 가져왔을 경우 화면 업데이트
@@ -58,5 +58,5 @@ function startPongGame(matchData)
 	const player2 = matchData.player1.nickname;
 	const gameType = matchData.gameType;
 
-	window.location.href = `https://127.0.0.1/pong.html?player1=${player1}&player2=${player2}&gameType=${gameType}`;
+	window.location.href = `/pong.html?player1=${player1}&player2=${player2}&gameType=${gameType}`;
 }

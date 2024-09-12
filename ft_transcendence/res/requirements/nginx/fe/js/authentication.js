@@ -39,7 +39,7 @@ function postAuthCodeAPI()
 	const data = { code: code };
 
 	//#region code fetch API
-	fetch('https://127.0.0.1/api/user/2fa/auth', {
+	fetch('/api/user/2fa/auth', {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,
@@ -57,7 +57,7 @@ function postAuthCodeAPI()
 		return response.json();
 	})
 	.then(data => {
-        window.location.href = "https://127.0.0.1/index.html";
+        window.location.href = "/index.html";
 	})
 	.catch(error => {
 		console.error('Error fetching user data: ', error);

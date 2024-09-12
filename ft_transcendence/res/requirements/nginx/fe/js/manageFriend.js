@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function fetchUserData() {
 		const access_token = localStorage.getItem("access_token");
-		fetch('https://127.0.0.1/api/user/me', {
+		fetch('/api/user/me', {
 			method: 'GET',
 			headers: {
 				'Authorization': `Bearer ${access_token}`,
@@ -180,7 +180,7 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
     console.log(`Added friend: ${friendName}`);
 	const data = { nickname: friendName };
 	const access_token = localStorage.getItem("access_token");
-	fetch('https://127.0.0.1/api/user/friend/', {
+	fetch('/api/user/friend/', {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,
@@ -248,7 +248,7 @@ document.getElementById("removeFriendForm").addEventListener("submit", (event) =
 
 	const data = { nickname: selectedFriend };
 
-	fetch('https://127.0.0.1/api/user/friend/', {
+	fetch('/api/user/friend/', {
 		method: 'DELETE',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,
@@ -376,7 +376,7 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
         formData.append('profile', avatarFile);
     }
 
-    fetch('https://127.0.0.1/api/user/me', {
+    fetch('/api/user/me', {
         method: 'PATCH',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,
