@@ -9,7 +9,7 @@ services:
     container_name: postgres
     restart: always
     init: true
-    env_file: .beenv
+    env_file: .env
     volumes:
       - db:/var/lib/postgresql/data
     # ports:
@@ -26,7 +26,7 @@ services:
     container_name: django
     restart: always
     init: true
-    env_file: .beenv
+    env_file: .env
     depends_on:
       - postgres
     volumes:
@@ -46,7 +46,7 @@ services:
     container_name: nginx
     restart: always
     init: true
-    env_file: .beenv
+    env_file: .env
     depends_on:
       - postgres
       - django

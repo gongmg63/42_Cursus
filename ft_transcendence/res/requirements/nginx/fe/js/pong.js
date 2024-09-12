@@ -124,7 +124,7 @@ function checkGameEnd()
             loserScore = paddle1.score;
         }
 		// game type도 추가.
-        window.location.href = `https://127.0.0.1/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
+        window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
 	}
 }
 

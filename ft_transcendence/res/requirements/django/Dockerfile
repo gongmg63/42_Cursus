@@ -3,15 +3,16 @@ FROM python:3.12-alpine
 RUN apk update && \
 	apk add postgresql-client
 RUN pip3 install Django \
-	psycopg2-binary \
-	djangorestframework \
-	daphne \
-	requests \
-	django-oauth-toolkit \
 	djangorestframework-simplejwt \
+	django-oauth-toolkit \
+	djangorestframework \
 	django-cors-headers \
-	pillow \
-	channels
+	psycopg2-binary \
+	django-environ \
+	channels \
+	requests \
+	daphne \
+	pillow
 	# uvicorn \
 # RUN pinstall --upgrade djangorestframework-simplejwt
 

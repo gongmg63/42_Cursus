@@ -24,7 +24,7 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
 });
 
 document.querySelector('.game-start-btn').addEventListener('click', function() {
-	window.location.href = 'https://127.0.0.1/mode.html';
+	window.location.href = '/mode.html';
 })
 
 export function pushFriends(friend)

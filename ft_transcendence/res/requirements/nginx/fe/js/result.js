@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.getElementById('continueBtn').addEventListener('click', function() {
-    window.location.href = 'https://127.0.0.1/index.html';
+    window.location.href = '/index.html';
 });
 
 function updateResult(winner)
@@ -72,7 +72,7 @@ function postMatchAPI(result)
 {
 	if (result.gameType == 'single')
 		return ;
-	fetch('https://127.0.0.1/api/game/result/add/', {
+	fetch('/api/game/result/add/', {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,

@@ -21,7 +21,7 @@ closeBtns.forEach(btn => {
 });
 
 document.getElementById('nextStepBtn').addEventListener('click', function() {
-    window.location.href = 'https://127.0.0.1/2fa/authentication.html';
+    window.location.href = '/2fa/authentication.html';
 });
 
 function update2FAStatus() {
@@ -64,7 +64,7 @@ function enable2FA() {
 	// //#region QR fetch API
 	// const access_token = localStorage.getItem("access_token");
 	// // 서버로부터 QR Code GET
-	// fetch('https://127.0.0.1/api/user/2fa/enable', {
+	// fetch('/api/user/2fa/enable', {
 	// 	method: 'GET',
 	// 	headers: {
 	// 		'Authorization': `Bearer ${access_token}`,
@@ -105,7 +105,7 @@ function disable2FA() {
 	// //#region QR disable fetch API
 	// const access_token = localStorage.getItem("access_token");
 	// // 서버에게 disable 요청.
-	// fetch('https://127.0.0.1/api/user/2fa/disable', {
+	// fetch('/api/user/2fa/disable', {
 	// 	method: 'GET',
 	// 	headers: {
 	// 		'Authorization': `Bearer ${access_token}`,

@@ -76,7 +76,7 @@ def OauthCallback(request):
     access_token = str(refresh.access_token)
 
     # 리다이렉트할 URL에 쿼리 파라미터로 토큰 추가
-    redirect_url = "https://127.0.0.1"
+    redirect_url = f"{settings.ACCESS_URL}"
     params = {
         'access_token': access_token,
         'refresh_token': str(refresh),
