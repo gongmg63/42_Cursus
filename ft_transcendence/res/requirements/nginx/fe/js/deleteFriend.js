@@ -1,4 +1,4 @@
-import { updateFriendsList, populateFriendSelect } from "./utils.js";
+import { updateFriendsList, populateFriendSelect, handleError } from "./utils.js";
 import { friends } from "./index.js";
 
 const removeModal = document.getElementById("removeFriendModal");
@@ -42,16 +42,15 @@ function deleteFriendAPI(data, access_token, selectedFriend)
 		body: JSON.stringify(data)
 	})
 	.then(response => {
-		if (!response.ok) {
-			throw new Error('Network response was not ok');
-		}
+		if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
 		return response.json();
 	})
 	.then(data => {
-		// selectedFriend 꼭 필요??
-		// friends -> readonly data, index.js 쪽에서 수정.
-		// friends = friends.filter(friend => friend.nickname !== selectedFriend);
-	
 		const index = friends.findIndex(friend => friend.nickname === selectedFriend);
 		if (index !== -1)
 			friends.splice(index, 1);  // 배열에서 해당 친구를 삭제
@@ -59,12 +58,13 @@ function deleteFriendAPI(data, access_token, selectedFriend)
 		console.log(`Removed friend: ${selectedFriend}`);
 	
 		removeModal.style.display = "none";
-		populateFriendSelect(); // 업데이트된 목록 반영
+		populateFriendSelect();
 	
 		// 친구 목록 UI 업데이트
 		updateFriendsList(friends);
 	})
 	.catch(error => {
 		console.error('Error removing friend:', error);
+		handleError(error);
 	})
 }

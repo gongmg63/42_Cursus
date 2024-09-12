@@ -7,31 +7,21 @@ document.querySelector('.login-btn').addEventListener('click', function() {
 			method: 'GET'
 		})
 		.then(response => {
-			if (!response.ok) {
-				throw new Error('Network response was not ok');
-			}
-			return response.json();
+			if (response.status == 404)
+				throw new Error('User data not found (404)');
+			else if (response.status == 500)
+				throw new Error('Server error (500)')
+			else if (!response.ok)
+				throw new Error(`Unexpected error: ${response.status}`);
+				return response.json();
 		})
 		.then(data => {
             window.location.href = data.redirect_url;
    		})
-    	.catch(error => console.error('Error fetching user data: ', error));
+		.catch(error => {
+			console.error('Error removing friend:', error);
+		})
 	}
-	// function fetchCallback() {
-	// 	fetch('https://127.0.0.1/api/user/oauth/callback', {
-	// 		// method: 'GET'
-	// 	})
-	// 	.then(response => {
-	// 		if (!response.ok) {
-	// 			throw new Error('Network response was not ok');
-	// 		}
-	// 		return response.json();
-	// 	})
-	// 	.then(data => {
-	// 		window.location.href = data.redirect_url;
-	// 	})
-	// 	.catch(error => console.error('Error fetching user data: ', error));
-	// }
 });
 
 window.addEventListener('load', function() {

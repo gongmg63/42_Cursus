@@ -40,7 +40,7 @@ export function updateFriendsList(friends)
 
 		// Online, Offline 상태 표시
 		// const statusSpan = document.createElement('span');
-		// statusSpan.classList.add('friend-status', friend.status);
+		// statusSpan.classList.add('friend-status', friend.is_active);
 		// statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
 		
 		infoDiv.appendChild(nameSpan);
@@ -50,4 +50,20 @@ export function updateFriendsList(friends)
 		friendItem.appendChild(infoDiv);
 		friendList.appendChild(friendItem);
 	})
+}
+
+export function editLocalStorage(nickname, avatar)
+{
+	localStorage.setItem('nickname', nickname);
+	localStorage.setItem('profile', avatar);
+}
+
+export function handleError(error)
+{
+	if (error.message.includes('404')) 
+		alert('User data not found. Please check the user information.');
+	else if (error.message.includes('500'))
+		alert('Server error. Please try again later.');
+	else
+		alert('An unexpected error occurred.');
 }

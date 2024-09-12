@@ -19,5 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
     tournamentBtn.addEventListener('click', function() {
         console.log('Tournament mode selected');
 		// 토너먼트 페이지
+		window.location.href = 'https://127.0.0.1/matchmaking.html';
     });
 });
