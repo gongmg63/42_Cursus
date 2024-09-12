@@ -1,4 +1,4 @@
-import { populateFriendSelect, updateFriendsList } from "./utils.js";
+import { editLocalStorage, handleError, populateFriendSelect, updateFriendsList } from "./utils.js";
 import { friends, setFriends } from "./index.js";
 
 const editUserBtn = document.querySelector('.edit-user-btn');
@@ -29,7 +29,15 @@ export function fetchUserData()
 			'Content-Type': 'application/json'
 		},
 	})
-	.then(response => response.json())
+	.then(response => {
+		if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
+		return response.json();
+	})
 	.then(data => {
 		// User 정보 업데이트
 		updateUserInfo(data);
@@ -41,7 +49,10 @@ export function fetchUserData()
 		// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
 		// updateRecentMatches(data.recentMatches);
 	})
-	.catch(error => console.error('Error fetching user data: ', error));
+	.catch(error => {
+		console.error('Error fetching user data: ', error);
+		handleError(error);
+	});
 }
 
 function updateUserInfo(user)
@@ -52,16 +63,13 @@ function updateUserInfo(user)
 
 	userDetails.textContent = user.nickname || 'Unknown User';
 	userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;
-	localStorage.setItem('nickname', user.nickname);
 
-	if (user.profile && user.profile.trim() !== "") {
+	if (user.profile && user.profile.trim() !== "")
 		userAvatar.src = user.profile.replace('/images', '');
-		localStorage.setItem('profile', userAvatar.src);
-	}
-	else {
+	else
 		userAvatar.src = '../images/Retriever.jpeg';
-		localStorage.setItem('profile', userAvatar.src);
-	}
+	// userAvatar.rc = user.profile;
+	editLocalStorage(user.nickname, userAvatar.src);
 }
 
 function updateRecentMatches(recentMatches)
@@ -140,10 +148,13 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
 		body: formData
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
+        if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
+		return response.json();
     })
     .then(data => {
         console.log('User profile updated:', data);
@@ -156,56 +167,55 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
             reader.readAsDataURL(avatarFile);
         }
         editUserModal.style.display = 'none';
-		// localstorage의 nickname, profile 수정
-		localStorage.setItem('nickname', nickname);
-		localStorage.setItem('profile', avatarFile);
+		editLocalStorage(nickname, avatarFile);
     })
     .catch(error => {
         console.error('Error updating profile:', error);
+		handleError(error);
     });
 }
 
-const access_token = localStorage.getItem("access_token");
-const socket = new WebSocket('wss://127.0.0.1/ws/friend/status/?token=' + access_token);
+// const access_token = localStorage.getItem("access_token");
+// const socket = new WebSocket('wss://127.0.0.1/ws/friend/status/?token=' + access_token);
 
-const friendStatusSocket = socket;
+// const friendStatusSocket = socket;
 
-friendStatusSocket.onopen = function() {
-    console.log('WebSocket connection established.');
-};
+// friendStatusSocket.onopen = function() {
+//     console.log('WebSocket connection established.');
+// };
 
-friendStatusSocket.onerror = function(error) {
-    console.log('WebSocket error: ' + error.message);
-};
+// friendStatusSocket.onerror = function(error) {
+//     console.log('WebSocket error: ' + error.message);
+// };
 
-friendStatusSocket.onclose = function(event) {
-    if (event.wasClean) {
-        console.log('WebSocket connection closed cleanly, code=' + event.code + ', reason=' + event.reason);
-    } else {
-        console.log('WebSocket connection closed with error');
-    }
-};
+// friendStatusSocket.onclose = function(event) {
+//     if (event.wasClean) {
+//         console.log('WebSocket connection closed cleanly, code=' + event.code + ', reason=' + event.reason);
+//     } else {
+//         console.log('WebSocket connection closed with error');
+//     }
+// };
 
-friendStatusSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    if (data.type === 'friend_status') {
-        updateFriendStatusUI(data.friends);
-    } else if (data.type === 'friend_status_update') {
-        updateSingleFriendStatus(data.friend_id, data.status);
-    }
-};
+// friendStatusSocket.onmessage = function(e) {
+//     const data = JSON.parse(e.data);
+//     if (data.type === 'friend_status') {
+//         updateFriendStatusUI(data.friends);
+//     } else if (data.type === 'friend_status_update') {
+//         updateSingleFriendStatus(data.friend_id, data.status);
+//     }
+// };
 
-function updateFriendStatusUI(friends) {
-    for (const [friendId, status] of Object.entries(friends)) {
-        updateSingleFriendStatus(friendId, status);
-		console.log(status.className);
-    }
-}
+// function updateFriendStatusUI(friends) {
+//     for (const [friendId, status] of Object.entries(friends)) {
+//         updateSingleFriendStatus(friendId, status);
+// 		console.log(status.className);
+//     }
+// }
 
-function updateSingleFriendStatus(friendId, status) {
-    const statusElement = document.getElementById(`friend-status-${friendId}`);
-    if (statusElement) {
-        statusElement.textContent = status ? '온라인' : '오프라인';
-        statusElement.className = status ? 'online' : 'offline';
-    }
-}
+// function updateSingleFriendStatus(friendId, status) {
+//     const statusElement = document.getElementById(`friend-status-${friendId}`);
+//     if (statusElement) {
+//         statusElement.textContent = status ? '온라인' : '오프라인';
+//         statusElement.className = status ? 'online' : 'offline';
+//     }
+// }
