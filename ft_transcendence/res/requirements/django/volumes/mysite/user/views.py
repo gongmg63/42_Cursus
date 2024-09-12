@@ -54,24 +54,23 @@ def OauthCallback(request):
 
     user_data = user_response.json()
     oauth_user_id = user_data.get('id')  # OAuth 제공자에서 제공하는 사용자 ID
-    profile = user_data.get('image_url')
     email = user_data.get('email')
+    nickname = user_data.get('login')
 
     # 여기에서 사용자 데이터를 처리하고 로그인 로직을 구현합니다.
     user, created = User.objects.get_or_create(oauthid=oauth_user_id)
     
     user.is_active = True
+    user.save()
     # 새 유저인 경우 추가 정보 저장
     if created:
         user.oauthid = oauth_user_id
-        user.nickname = user_data.get('login')
+        user.username = nickname
+        user.nickname = nickname
         user.email = email
-        if profile:
-            user.profile = profile
-        else:
-            user.profile = "/images/Retriever.jpeg"  # 기본 이미지 URL 설정
+        user.profile = "/images/Retriever.jpeg"  # 기본 이미지 URL 설정
+        user.save()
 
-    user.save()
     # JWT 토큰 생성
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
@@ -162,6 +161,7 @@ class FriendAPIView(APIView):
         # 친구 관계 해제
         if friend in current_user.friends.all():
             current_user.friends.remove(friend)
+            friend.friends.remove(current_user)
             return Response({'message': '친구가 성공적으로 삭제되었습니다.'}, status=status.HTTP_200_OK)
         else:
             return Response({'error': '해당 사용자는 친구 목록에 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)

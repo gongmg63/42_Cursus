@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
+from .utils import CustomValidationError
 from .models import User
 import os
 
@@ -36,7 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
         profile = validated_data.get('profile', None)
         
         if profile and instance.profile and instance.profile != profile:
-            protected_path = "/images/images"
+            protected_path = "/images"
             if instance.profile.path.startswith(protected_path):
                 pass  # 삭제하지 않음
             else:
@@ -52,21 +53,25 @@ class AddFriendSerializer(serializers.Serializer):
         try:
             friend = User.objects.get(nickname=data['nickname'])
         except User.DoesNotExist:
-            raise serializers.ValidationError("해당 정보를 가진 사용자가 존재하지 않습니다.")
+            raise CustomValidationError("해당 정보를 가진 사용자가 존재하지 않습니다.", code=404)  # HTTP 404 Not Found
         
-        data['friend'] = friend  # validated_data에 친구 객체를 추가
+        data['friend'] = friend
         return data
-
+    
     def update(self, instance, validated_data):
         friend = validated_data['friend']
         
-        # 유저 자신을 친구로 추가하는 것을 방지
         if friend.id == instance.id:
-            raise serializers.ValidationError("자기 자신을 친구로 추가할 수 없습니다.")
-    
-        if friend in instance.friends.all():
-            raise serializers.ValidationError("이미 친구로 등록된 사용자입니다.")
+            raise CustomValidationError("자기 자신을 친구로 추가할 수 없습니다.", code=400)  # HTTP 400 Bad Request
         
-        # 친구 추가
+        if friend in instance.friends.all():
+            raise CustomValidationError("이미 친구로 등록된 사용자입니다.", code=400)  # HTTP 400 Bad Request
+        
+        # 친구 추가 로직을 구현하세요
         instance.friends.add(friend)
+        friend.friends.add(instance)
+        
+        # signal 발생
+        friend.save()
+        
         return friend
