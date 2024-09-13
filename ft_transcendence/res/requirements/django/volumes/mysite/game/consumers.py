@@ -16,6 +16,7 @@ final_waiting_queue = []
 #     }));
 
 #	data race...?
+
 class MatchConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.id = self.scope["user"].id
