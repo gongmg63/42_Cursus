@@ -57,8 +57,8 @@ INSTALLED_APPS = [
 
 INTRA_42_CLIENT_ID = 'u-s4t2ud-a991aa69f5866fee60773246fd85a925d581cc6b802b9a326424b96733b4b5ac'
 INTRA_42_CLIENT_SECRET = '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'
-INTRA_42_REDIRECT_CALLBACK_URI = 'https://127.0.0.1/api/user/oauth/callback'
-# INTRA_42_REDIRECT_CALLBACK_URI = 'https://cx1r5s2.42seoul.kr/api/user/oauth/callback'
+# INTRA_42_REDIRECT_CALLBACK_URI = 'https://127.0.0.1/api/user/oauth/callback'
+INTRA_42_REDIRECT_CALLBACK_URI = 'https://cx1r5s2.42seoul.kr/api/user/oauth/callback'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -208,3 +208,5 @@ MEDIA_ROOT = '/images'
 AUTH_USER_MODEL = 'user.User'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = 'true'
