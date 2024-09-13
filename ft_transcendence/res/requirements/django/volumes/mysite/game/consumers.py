@@ -1,5 +1,11 @@
 import json
+
+from user.serializers import UserSerializer
+from django.contrib.auth import get_user_model
+
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+
 
 # player1 / player2 / gameType 
 
@@ -75,22 +81,24 @@ class MatchConsumer(AsyncWebsocketConsumer):
 
     async def send_to_user(self, player1, player2, gametype):
         self.user = self.scope["user"]
+        player1_user = await database_sync_to_async(get_user_model().objects.get)(nickname=player1)
+        player2_user = await database_sync_to_async(get_user_model().objects.get)(nickname=player2)
 		# 상대방 정보 전송
     	# 양쪽에 이 메시지를 똑같이 보내야 하나..? 아님 상대방만 보내야하나..?
         if self.user.nickname == player1:
             await self.send(json.dumps({
         	    "type": "match_found",
         	    "gameType": gametype,
-        	    "player1": player1,
-        	    "player2": player2,
+        	    "player1": player1_user,
+        	    "player2": player2_user,
         	    "opponent": player2 
         	}))
         elif self.user.nickname == player2:
             await self.send(json.dumps({
         	    "type": "match_found",
         	    "gameType": gametype,
-        	    "player1": player1,
-        	    "player2": player2,
+        	    "player1": player1_user,
+        	    "player2": player2_user,
         	    "opponent": player1 
         	}))
     
