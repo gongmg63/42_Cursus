@@ -64,11 +64,11 @@ function updateUserInfo(user)
 	userDetails.textContent = user.nickname || 'Unknown User';
 	userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;
 
-	if (user.profile && user.profile.trim() !== "")
-		userAvatar.src = user.profile.replace('/images', '');
-	else
-		userAvatar.src = '../images/Retriever.jpeg';
-	// userAvatar.rc = user.profile;
+	// if (user.profile && user.profile.trim() !== "")
+	// 	userAvatar.src = user.profile.replace('/images', '');
+	// else
+	// 	userAvatar.src = '../images/Retriever.jpeg';
+	userAvatar.src = user.profile;
 	editLocalStorage(user.nickname, userAvatar.src);
 }
 

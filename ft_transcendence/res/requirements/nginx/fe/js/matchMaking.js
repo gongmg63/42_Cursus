@@ -92,5 +92,5 @@ function startPongGame(matchData)
 	const player2 = matchData.player1.nickname;
 	const gameType = matchData.gameType;
 	
-	window.location.href = `/pong.html?player1=${player1}&player2=${player2}&gameType=${gameType}`;
+	window.location.href = `/multiPong.html?player1=${player1}&player2=${player2}&gameType=${gameType}`;
 }

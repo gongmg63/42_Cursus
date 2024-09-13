@@ -5,8 +5,6 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const keyPressed = [];
-const KEY_UP = "w";
-const KEY_DOWN = "s";
 const KEY_ARROWUP = "ArrowUp";
 const KEY_ARROWDOWN = "ArrowDown";
 
@@ -25,14 +23,50 @@ let ballRadius = 20;
 let ballVelocityX = 20;
 let ballVelocityY = 15;
 
-const ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ballRadius);
-const paddle1 = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_UP, KEY_DOWN);
-const paddle2 = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
+let ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ballRadius);
+let myPad, opPad;
+let playerNumber;
 
+const access_token = localStorage.getItem("access_token");
+// url 수정 필요
+const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
+
+socket.onmessage = function(event) {
+	const data = JSON.parse(event.data);
+	if (data.type == 'paddleMove')
+	{
+		if (data.playerNumber !== playerNumber)
+			opPad.pos.y = data.y
+	}
+	else if (data.type == 'ballMove')
+	{
+		ball = data.ball;
+	}
+	else if (data.type == 'increaseScore')
+	{
+		myPad.score = data.score1;
+		opPad.score = data.score2;
+	}
+}
 
 // game 시작 전에 player 1, 2 이름, game type 파싱.
 let player1, player2, gameType;
 parseGameURL();
+
+// 추후 조건 수정 가능.
+if (player1 == localStorage.getItem('nickname'))
+{
+	myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
+	opPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
+	playerNumber = 1;
+}
+else
+{
+	myPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
+	opPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
+	playerNumber = 2;
+}
+
 gameLoop();
 
 function drawGameScene()
@@ -107,24 +141,23 @@ function checkGameEnd()
 {
 	// 점수 설정
 	let endScore = 3;
-	if (paddle1.score >= endScore || paddle2.score >= endScore)
+	if (myPad.score >= endScore || opPad.score >= endScore)
 	{
         let winner, loser;
         let winnerScore, loserScore;
 
-        if (paddle1.score > paddle2.score) {
+        if (myPad.score > opPad.score) {
             winner = player1;
             loser = player2;
-            winnerScore = paddle1.score;
-            loserScore = paddle2.score;
+            winnerScore = myPad.score;
+            loserScore = opPad.score;
         }
 		else {
             winner = player2;
             loser = player1;
-            winnerScore = paddle2.score;
-            loserScore = paddle1.score;
+            winnerScore = opPad.score;
+            loserScore = myPad.score;
         }
-		// game type도 추가.
         window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
 	}
 }
@@ -132,30 +165,42 @@ function checkGameEnd()
 function gameUpdate()
 {
 	ball.update();
-	paddle1.update();
-	paddle2.update();
-	paddleCollisionWithEdges(paddle1);
-	paddleCollisionWithEdges(paddle2);
-	// paddle2.update();
+	myPad.update();
+	opPad.opUpdate();
+	paddleCollisionWithEdges(myPad);
+	paddleCollisionWithEdges(opPad);
 	ballCollisionWithEdges(ball);
-	if (ballPaddleCollision(ball, paddle1))
+	if (ballPaddleCollision(ball, myPad))
 	{
 		ball.velocity.x *= -1;
-		ball.pos.x = paddle1.pos.x + paddle1.width;
+		ball.pos.x = myPad.pos.x + myPad.width;
 	}
-	if(ballPaddleCollision(ball, paddle2))
+	if(ballPaddleCollision(ball, opPad))
 	{
 		ball.velocity.x *= -1;
-		ball.pos.x = paddle2.pos.x - ball.radius;
+		ball.pos.x = opPad.pos.x - ball.radius;
 	}
-	increaseScore(ball, paddle1, paddle2);
+	increaseScore(ball, myPad, opPad);
+
+	// paddle 위치
+	socket.send(JSON.stringify({
+		type: 'paddleMove',
+		playerNumber,
+		y: myPad.pos.y
+	}));
+
+	// 공 위치
+	socket.send(JSON.stringify({
+		type: 'ballMove',
+		ball
+	}));
 }
 
 function gameDraw()
 {
 	ball.draw();
-	paddle1.draw();
-	paddle2.draw();
+	myPad.draw();
+	opPad.draw();
 	drawGameScene();
 }
 
@@ -196,6 +241,12 @@ function increaseScore(ball, paddle1, paddle2)
 		document.getElementById("player1Score").innerHTML = paddle1.score;
 		respawnBall(ball);
 	}
+
+	socket.send(JSON.stringify({
+		type: 'increaseScore',
+		score1: paddle1.score,
+		score2: paddle2.score
+	}));
 }
 
 function Ball(pos, velocity, radius)
@@ -238,6 +289,10 @@ function Paddle(pos, velocity, width, height, upKey, downKey)
 		{
 			this.pos.y += this.velocity.y;
 		}
+	}
+
+	this.opUpdate = function(y) {
+		this.pos.y = y;
 	}
 
 	this.draw = function() {
@@ -287,19 +342,6 @@ function ballCollisionWithEdges(ball)
 
 function ballPaddleCollision(ball, paddle)
 {
-	// let dx = Math.abs(ball.pos.x - paddle.getCenter().x);
-	// let dy = Math.abs(ball.pos.y - paddle.getCenter().y);
-
-	// if (dx <= (ball.radius + paddle.getHalfWidth()) && dy <= (paddle.getHalfHeight() + ball.radius))
-	// {
-	// 	if (dy + 3 > paddle.getHalfHeight())
-	// 	{
-	// 		ball.velocity.x *= -1;
-	// 		ball.velocity.y *= -1;
-	// 	}
-	// 	else
-	// 		ball.velocity.x *= -1;
-	// }
 	return (ball.pos.x < paddle.pos.x + paddle.width && ball.pos.x + ball.radius > paddle.pos.x &&
 		ball.pos.y < paddle.pos.y + paddle.height && ball.pos.y + ball.radius > paddle.pos.y);
 }
