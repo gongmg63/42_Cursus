@@ -184,7 +184,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.check_all_clients_ready()
         elif message_type == 'paddleMove':
             #상대에게 패들 움직임 전송
-            self.paddle_move(data.get("id", data.get("y")))
+            self.paddle_move(data.get("id"), data.get("y"))
         elif message_type == 'ballMove':
             # 상대에게 공 움직임 보내기? 아님 둘 다한테 보내야하나
             self.ball_move(data.get("ball"))

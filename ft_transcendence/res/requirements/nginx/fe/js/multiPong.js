@@ -38,17 +38,19 @@ if (player1 == localStorage.getItem('nickname'))
 	myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
 	opPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
 	playerNumber = id1;
+	console.log('1');
 }
 else
 {
 	myPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
 	opPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
 	playerNumber = id2;
+	console.log('2');
 }
 
 const access_token = localStorage.getItem("access_token");
 // url 수정 필요
-const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
 
 socket.onopen = function() {
     // 서버로 플레이어 정보와 게임 타입을 보냄
@@ -75,12 +77,12 @@ socket.onmessage = function(event) {
 		myPad.score = data.score1;
 		opPad.score = data.score2;
 	}
-	// else if (data.type == 'startGame')
-	// {
-	// }
+	else if (data.type == 'startGame')
+	{
+		gameLoop();
+	}
 }
 
-gameLoop();
 
 
 function drawGameScene()
@@ -137,7 +139,9 @@ function parseGameURL()
 		player1 = urlParams.get('player1');
 		player2 = urlParams.get('player2');
 		id1 = urlParams.get('id1');
-		id2 = urlParams.get('id2');	
+		id2 = urlParams.get('id2');
+		console.log("Player 1:", player1);
+		console.log("Player 2:", player2);
 	}
 }
 
@@ -199,17 +203,30 @@ function gameUpdate()
 	increaseScore(ball, myPad, opPad);
 
 	// paddle 위치
-	socket.send(JSON.stringify({
-		type: 'paddleMove',
-		id: playerNumber,
-		y: myPad.pos.y
-	}));
-
+	if (socket.readyState == WebSocket.OPEN)
+	{
+		socket.send(JSON.stringify({
+			type: 'paddleMove',
+			id: playerNumber,
+			y: myPad.pos.y
+		}));
+	}
+	else
+	{
+		console.log('not open yet');
+	}
 	// 공 위치
-	socket.send(JSON.stringify({
-		type: 'ballMove',
-		ball
-	}));
+	if (socket.readyState == WebSocket.OPEN)
+	{
+		socket.send(JSON.stringify({
+			type: 'ballMove',
+			ball
+		}));
+	}
+	else
+	{
+		console.log('not open yet');
+	}
 }
 
 function gameDraw()
@@ -258,11 +275,18 @@ function increaseScore(ball, paddle1, paddle2)
 		respawnBall(ball);
 	}
 
-	socket.send(JSON.stringify({
-		type: 'increaseScore',
-		score1: paddle1.score,
-		score2: paddle2.score
-	}));
+	if (socket.readyState == WebSocket.OPEN)
+	{
+		socket.send(JSON.stringify({
+			type: 'increaseScore',
+			score1: paddle1.score,
+			score2: paddle2.score
+		}));
+	}
+	else
+	{
+		console.log("not open yet");
+	}
 }
 
 function Ball(pos, velocity, radius)
