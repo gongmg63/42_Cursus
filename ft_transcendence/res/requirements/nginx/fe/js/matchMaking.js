@@ -89,7 +89,7 @@ function updateMatchInfo(matchData) {
 function startPongGame(matchData)
 {
 	const player1 = matchData.player1.nickname;
-	const player2 = matchData.player1.nickname;
+	const player2 = matchData.player2.nickname;
 	const gameType = matchData.gameType;
 	const id1 = matchData.player1.id;
 	const id2 = matchData.player2.id;
