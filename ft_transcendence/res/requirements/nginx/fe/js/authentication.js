@@ -39,7 +39,7 @@ function postAuthCodeAPI()
 	const data = { code: code };
 
 	//#region code fetch API
-	fetch('/api/user/2fa/auth', {
+	fetch('/api/user/verify', {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,

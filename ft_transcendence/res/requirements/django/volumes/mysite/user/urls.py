@@ -13,9 +13,9 @@ urlpatterns = [
     path('token/verify', TokenVerifyView.as_view(), name='TokenVerify'), # 성공 시 200, 실패 시 401
 	# 내 정보 확인, 수정, 삭제
     path('me', UserAPI.as_view(), name='UserAPI'),
-    # nickname을 통해 정보 확인
     path('enable', views.Enable, name='enable'),
     path('disable', views.Disable, name='disable'),
+    # nickname을 통해 정보 확인
     path('<str:nickname>', OtherUserInfo, name='OtherUserInfo'),
     # nickname을 통해 친구 추가, 삭제
 	path('friend/', FriendAPIView.as_view(), name='FriendAPI'),

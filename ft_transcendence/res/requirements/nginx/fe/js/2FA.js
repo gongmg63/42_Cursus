@@ -73,7 +73,7 @@ function enable2FA() {
 		method: 'GET',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,
-			// 'Content-Type': 'application/json'
+			'Content-Type': 'application/json'
 		},
 	})
 	.then(response => {

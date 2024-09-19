@@ -128,8 +128,10 @@ def Verify(request):
     user = User.objects.get(nickname=request.data.user)
     totp = pyotp.TOTP(user.otp_base32).now()
     if request.data.code == totp:
-        return True
-    return False
+        print("password matched")
+        return Response(status=status.HTTP_200_OK)
+    print("password unmatched")
+    return Response(status=status.HTTP_400)
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능
