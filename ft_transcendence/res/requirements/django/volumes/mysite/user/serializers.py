@@ -37,8 +37,8 @@ class UserSerializer(serializers.ModelSerializer):
         profile = validated_data.get('profile', None)
         
         if profile and instance.profile and instance.profile != profile:
-            protected_path = "/images"
-            if instance.profile.path.startswith(protected_path):
+            protected_path = "/images/images"
+            if protected_path in instance.profile.path:
                 pass  # 삭제하지 않음
             else:
                 # 이전 파일 삭제

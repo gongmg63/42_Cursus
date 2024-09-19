@@ -13,11 +13,6 @@ class User(AbstractUser):
 	is_active = models.BooleanField(default=True)  # 접속 여부
 
 	def save(self, *args, **kwargs):
-		if self.pk:
-			old_user = User.objects.get(pk=self.pk)
-			if old_user.profile and old_user.profile != self.profile:
-				if os.path.isfile(old_user.profile.path):
-					os.remove(old_user.profile.path)
 		super().save(*args, **kwargs)
 
 	def __str__(self):

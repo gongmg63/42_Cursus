@@ -21,7 +21,7 @@ socket.onmessage = function(event) {
         console.log("매칭 성공! 상대방은:", data.opponent);
     }
 	updateMatchInfo(data);
-	setTimeout(startPongGame.bind(data), 2000);
+	setTimeout(() => startPongGame(data), 2000);
 };
 
 // WebSocket 연결이 닫혔을 때 실행
@@ -89,8 +89,10 @@ function updateMatchInfo(matchData) {
 function startPongGame(matchData)
 {
 	const player1 = matchData.player1.nickname;
-	const player2 = matchData.player1.nickname;
+	const player2 = matchData.player2.nickname;
 	const gameType = matchData.gameType;
-	
-	window.location.href = `/multiPong.html?player1=${player1}&player2=${player2}&gameType=${gameType}`;
+	const id1 = matchData.player1.id;
+	const id2 = matchData.player2.id;
+	window.location.href = `/multiPong.html?player1=${player1}&id1=${id1}\
+	&player2=${player2}&id2=${id2}&gameType=${gameType}`;
 }

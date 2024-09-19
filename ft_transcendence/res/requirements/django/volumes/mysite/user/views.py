@@ -19,7 +19,6 @@ from urllib.parse import urlencode
 
 from .models import User
 from .serializers import UserSerializer, AddFriendSerializer, FriendSerializer
-from mysite.utils import get_random_image_path
 
 def Oauth(request):
     auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.INTRA_42_CLIENT_ID}&redirect_uri={settings.INTRA_42_REDIRECT_CALLBACK_URI}&response_type=code"
@@ -68,7 +67,7 @@ def OauthCallback(request):
         user.username = nickname
         user.nickname = nickname
         user.email = email
-        user.profile = "/images/Retriever.jpeg"  # 기본 이미지 URL 설정
+        user.profile = "images/Retriever.jpeg"  # 기본 이미지 URL 설정
         user.save()
 
     # JWT 토큰 생성
