@@ -29,7 +29,7 @@ let playerNumber;
 
 const access_token = localStorage.getItem("access_token");
 // url 수정 필요
-const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
 
 socket.onmessage = function(event) {
 	const data = JSON.parse(event.data);
@@ -51,6 +51,7 @@ socket.onmessage = function(event) {
 
 // game 시작 전에 player 1, 2 이름, game type 파싱.
 let player1, player2, gameType;
+let id1, id2;
 parseGameURL();
 
 // 추후 조건 수정 가능.
@@ -58,13 +59,13 @@ if (player1 == localStorage.getItem('nickname'))
 {
 	myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
 	opPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
-	playerNumber = 1;
+	playerNumber = id1;
 }
 else
 {
 	myPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
 	opPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
-	playerNumber = 2;
+	playerNumber = id2;
 }
 
 gameLoop();
@@ -122,6 +123,8 @@ function parseGameURL()
 	{
 		player1 = urlParams.get('player1');
 		player2 = urlParams.get('player2');
+		id1 = urlParams.get('id1');
+		id2 = urlParams.get('id2');
 	}
 }
 
@@ -340,6 +343,7 @@ function ballCollisionWithEdges(ball)
 	}
 }
 
+// 충돌계산법 수정 필요.
 function ballPaddleCollision(ball, paddle)
 {
 	return (ball.pos.x < paddle.pos.x + paddle.width && ball.pos.x + ball.radius > paddle.pos.x &&
