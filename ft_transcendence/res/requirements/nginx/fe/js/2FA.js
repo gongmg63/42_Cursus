@@ -88,7 +88,7 @@ function enable2FA() {
 	.then(data => {
 		console.log(data);
         const qrCodeImage = document.getElementById('qrCodeImage');
-        qrCodeImage.src = data.qr_code_url;  // 서버가 제공한 QR 코드 URL - 추후 수정 가능.
+        qrCodeImage.src = `data:image/png;base64,${data.qr_code_url}`;  // 서버가 제공한 QR 코드 URL - 추후 수정 가능.
 
         const qrCodeContainer = document.getElementById('qrCodeContainer');
 		const nextStepBtn = document.getElementById('nextStepBtn');

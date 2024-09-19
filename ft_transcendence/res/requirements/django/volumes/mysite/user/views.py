@@ -18,7 +18,8 @@ from rest_framework import status
 from urllib.parse import urlencode
 import pyotp
 import qrcode
-import qrcode.image.svg
+import base64
+from io import BytesIO
 
 from .models import User
 from .serializers import UserSerializer, AddFriendSerializer, FriendSerializer
@@ -103,15 +104,14 @@ def Enable(request):
             name=user.nickname,
             issuer_name='we are groot'
         )
+    img = qrcode.make(qr_uri)
 
-    image_factory = qrcode.image.svg.SvgPathImage
-    qr_code_image = qrcode.make(
-        qr_uri,
-        image_factory=image_factory
-    )
+    # 이미지 Base64로 인코딩
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
     user.save()
-    data = {"qr_code_url": qr_code_image.to_string().decode('utf-8')}
-    return JsonResponse(data, status=200)
+    return JsonResponse({'qr_code_url': img_base64}, status=200)
 
 @api_view(['GET'])
 def Disable(request):
