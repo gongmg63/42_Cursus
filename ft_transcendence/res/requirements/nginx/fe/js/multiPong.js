@@ -27,28 +27,6 @@ let ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ball
 let myPad, opPad;
 let playerNumber;
 
-const access_token = localStorage.getItem("access_token");
-// url 수정 필요
-const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
-
-socket.onmessage = function(event) {
-	const data = JSON.parse(event.data);
-	if (data.type == 'paddleMove')
-	{
-		if (data.playerNumber !== playerNumber)
-			opPad.pos.y = data.y
-	}
-	else if (data.type == 'ballMove')
-	{
-		ball = data.ball;
-	}
-	else if (data.type == 'increaseScore')
-	{
-		myPad.score = data.score1;
-		opPad.score = data.score2;
-	}
-}
-
 // game 시작 전에 player 1, 2 이름, game type 파싱.
 let player1, player2, gameType;
 let id1, id2;
@@ -68,7 +46,42 @@ else
 	playerNumber = id2;
 }
 
+const access_token = localStorage.getItem("access_token");
+// url 수정 필요
+const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
+
+socket.onopen = function() {
+    // 서버로 플레이어 정보와 게임 타입을 보냄
+    socket.send(JSON.stringify({
+        type: "initMatch",
+        player1_id: id1,
+        player2_id: id2,
+    }));
+};
+
+socket.onmessage = function(event) {
+	const data = JSON.parse(event.data);
+	if (data.type == 'paddleMove')
+	{
+		if (data.id !== playerNumber) // playerNumber를 id로 수정
+			opPad.pos.y = data.y
+	}
+	else if (data.type == 'ballMove')
+	{
+		ball = data.ball;
+	}
+	else if (data.type == 'increaseScore')
+	{
+		myPad.score = data.score1;
+		opPad.score = data.score2;
+	}
+	// else if (data.type == 'startGame')
+	// {
+	// }
+}
+
 gameLoop();
+
 
 function drawGameScene()
 {
@@ -119,12 +132,12 @@ function parseGameURL()
 		player1 = localStorage.getItem('nickname');
 		player2 = player1;
 	}
-	else if (gameType == 'multi' || gameType == 'tournament')
+	else if (gameType == '1vs1' || gameType == 'tournament')
 	{
 		player1 = urlParams.get('player1');
 		player2 = urlParams.get('player2');
 		id1 = urlParams.get('id1');
-		id2 = urlParams.get('id2');
+		id2 = urlParams.get('id2');	
 	}
 }
 
@@ -135,7 +148,7 @@ function gameLoop()
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	window.requestAnimationFrame(gameLoop);	
 
-	checkGameEnd();
+	// checkGameEnd();
 	gameUpdate();
 	gameDraw();
 }
@@ -188,7 +201,7 @@ function gameUpdate()
 	// paddle 위치
 	socket.send(JSON.stringify({
 		type: 'paddleMove',
-		playerNumber,
+		id: playerNumber,
 		y: myPad.pos.y
 	}));
 

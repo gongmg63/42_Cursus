@@ -17,11 +17,3 @@ def uuid_name_upload_to(instance, filename):
 		# uuid_name[:2],
 		uuid_name + extension,
 	])
-
-def get_random_image_path():
-    media_root = os.path.join(settings.MEDIA_ROOT, 'images')
-    image_files = [f for f in os.listdir(media_root) if os.path.isfile(os.path.join(media_root, f))]
-    if not image_files:
-        return None
-    random_image = random.choice(image_files)
-    return os.path.join('/images', random_image)
