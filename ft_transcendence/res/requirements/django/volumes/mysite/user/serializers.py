@@ -29,7 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
             'losses', 
             'profile',
             'is_active', 
-            'friends'
+            'friends',
+            'is_tfa_active'
         ]
         read_only_fields = ['id', 'oauthid', 'wins', 'losses']
     

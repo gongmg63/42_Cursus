@@ -16,6 +16,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from urllib.parse import urlencode
+import pyotp
+import qrcode
+import qrcode.image.svg
 
 from .models import User
 from .serializers import UserSerializer, AddFriendSerializer, FriendSerializer
@@ -73,12 +76,12 @@ def OauthCallback(request):
 
     # JWT 토큰 생성
     refresh = RefreshToken.for_user(user)
-    access_token = str(refresh.access_token)
+    refresh['is_tfa_verified'] = 'true'
 
     # 리다이렉트할 URL에 쿼리 파라미터로 토큰 추가
     redirect_url = f"{settings.ACCESS_URL}"
     params = {
-        'access_token': access_token,
+        'access_token': str(refresh.access_token),
         'refresh_token': str(refresh),
         'oauthid': user.oauthid,
         'nickname': user.nickname,
@@ -88,6 +91,45 @@ def OauthCallback(request):
     url_with_params = f"{redirect_url}?{urlencode(params)}"
     return redirect(url_with_params)
 
+@api_view(['GET'])
+def Enable(request):
+    print("here")
+    user = request.user
+    user.otp_base32 = pyotp.random_base32()
+    user.is_tfa_active = True
+
+    totp = pyotp.TOTP(user.otp_base32)    
+    qr_uri = totp.provisioning_uri(
+            name=user.nickname,
+            issuer_name='we are groot'
+        )
+
+    image_factory = qrcode.image.svg.SvgPathImage
+    qr_code_image = qrcode.make(
+        qr_uri,
+        image_factory=image_factory
+    )
+    user.save()
+    data = {"qr_code_url": qr_code_image.to_string().decode('utf-8')}
+    return JsonResponse(data, status=200)
+
+@api_view(['GET'])
+def Disable(request):
+    print("here")
+    user = request.user
+    user.is_tfa_active = False
+    user.otp_base32 = ''
+
+    user.save()
+    data = {}
+    return JsonResponse(data, status=200)
+
+def Verify(request):
+    user = User.objects.get(nickname=request.data.user)
+    totp = pyotp.TOTP(user.otp_base32).now()
+    if request.data.code == totp:
+        return True
+    return False
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능

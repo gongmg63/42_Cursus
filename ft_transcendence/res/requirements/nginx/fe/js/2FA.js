@@ -21,8 +21,13 @@ closeBtns.forEach(btn => {
 });
 
 document.getElementById('nextStepBtn').addEventListener('click', function() {
-    window.location.href = '/2fa/authentication.html';
+    window.location.href = '/authentication.html';
 });
+
+export function setTFA(tfa)
+{
+	is2FAEnabled = tfa;
+}
 
 function update2FAStatus() {
     const statusMessage = document.getElementById('2faStatusMessage');
@@ -59,42 +64,43 @@ cancel2faBtn.addEventListener('click', () => {
 function enable2FA() {
     is2FAEnabled = true; // 2FA 활성화
     alert('2FA가 활성화되었습니다.');
-    update2FAStatus();
+    // update2FAStatus();
 
-	// //#region QR fetch API
-	// const access_token = localStorage.getItem("access_token");
-	// // 서버로부터 QR Code GET
-	// fetch('/api/user/tfa/enable', {
-	// 	method: 'GET',
-	// 	headers: {
-	// 		'Authorization': `Bearer ${access_token}`,
-	// 		'Content-Type': 'application/json'
-	// 	},
-	// })
-	// .then(response => {
-	// 	if (response.status == 404)
-	// 		throw new Error('User data not found (404)');
-	// 	else if (response.status == 500)
-	// 		throw new Error('Server error (500)')
-	// 	else if (!response.ok)
-	// 		throw new Error(`Unexpected error: ${response.status}`);
-	// 	return response.json();
-	// })
-	// .then(data => {
-    //     const qrCodeImage = document.getElementById('qrCodeImage');
-    //     qrCodeImage.src = data.qr_code_url;  // 서버가 제공한 QR 코드 URL - 추후 수정 가능.
+	//#region QR fetch API
+	const access_token = localStorage.getItem("access_token");
+	// 서버로부터 QR Code GET
+	fetch('/api/user/enable', {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${access_token}`,
+			// 'Content-Type': 'application/json'
+		},
+	})
+	.then(response => {
+		if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
+		return response.json();
+	})
+	.then(data => {
+		console.log(data);
+        const qrCodeImage = document.getElementById('qrCodeImage');
+        qrCodeImage.src = data.qr_code_url;  // 서버가 제공한 QR 코드 URL - 추후 수정 가능.
 
-    //     const qrCodeContainer = document.getElementById('qrCodeContainer');
-	// 	const nextStepBtn = document.getElementById('nextStepBtn');
-    //     qrCodeContainer.style.display = 'block';
-	// 	nextStepBtn.style.display = 'block';
-	//  update2FAStatus();
-	// })
-	// .catch(error => {
-	// 	console.error('Error fetching user data: ', error);
-	// 	handleError(error);
-	// });
-	// //#endregion
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+		const nextStepBtn = document.getElementById('nextStepBtn');
+        qrCodeContainer.style.display = 'block';
+		nextStepBtn.style.display = 'block';
+	 update2FAStatus();
+	})
+	.catch(error => {
+		console.error('Error fetching user data: ', error);
+		handleError(error);
+	});
+	//#endregion
 }
 
 function disable2FA() {
@@ -102,32 +108,31 @@ function disable2FA() {
     alert('2FA가 비활성화되었습니다.');
     update2FAStatus();
 
-	// //#region QR disable fetch API
-	// const access_token = localStorage.getItem("access_token");
-	// // 서버에게 disable 요청.
-	// fetch('/api/user/tfa/disable', {
-	// 	method: 'GET',
-	// 	headers: {
-	// 		'Authorization': `Bearer ${access_token}`,
-	// 		'Content-Type': 'application/json'
-	// 	},
-	// })
-	// .then(response => {
-	// 	if (response.status == 404)
-	// 		throw new Error('User data not found (404)');
-	// 	else if (response.status == 500)
-	// 		throw new Error('Server error (500)')
-	// 	else if (!response.ok)
-	// 		throw new Error(`Unexpected error: ${response.status}`);
-	// 	return response.json();
-	// })
-	// .then(data => {
-    // 	alert('2FA가 비활성화되었습니다.');
-    //     update2FAStatus();
-	// })
-	// .catch(error => {
-	// 	console.error('Error fetching user data: ', error);
-	// 	handleError(error);
-	// });
-	// //#endregion
+	//#region QR disable fetch API
+	const access_token = localStorage.getItem("access_token");
+	// 서버에게 disable 요청.
+	fetch('/api/user/disable', {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${access_token}`
+		},
+	})
+	.then(response => {
+		if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
+		return response.json();
+	})
+	.then(data => {
+    	alert('2FA가 비활성화되었습니다.');
+        update2FAStatus();
+	})
+	.catch(error => {
+		console.error('Error fetching user data: ', error);
+		handleError(error);
+	});
+	//#endregion
 }

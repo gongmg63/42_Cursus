@@ -12,7 +12,9 @@ RUN pip3 install Django \
 	channels \
 	requests \
 	daphne \
-	pillow
+	pillow \
+	pyotp \
+	qrcode
 	# uvicorn \
 # RUN pinstall --upgrade djangorestframework-simplejwt
 
