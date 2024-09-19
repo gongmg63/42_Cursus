@@ -93,6 +93,7 @@ function startPongGame(matchData)
 	const gameType = matchData.gameType;
 	const id1 = matchData.player1.id;
 	const id2 = matchData.player2.id;
+	
 	window.location.href = `/multiPong.html?player1=${player1}&id1=${id1}\
 	&player2=${player2}&id2=${id2}&gameType=${gameType}`;
 }

@@ -356,6 +356,7 @@ function ballCollisionWithEdges(ball)
 	}
 }
 
+// 충돌계산법 수정 필요.
 function ballPaddleCollision(ball, paddle)
 {
 	return (ball.pos.x < paddle.pos.x + paddle.width && ball.pos.x + ball.radius > paddle.pos.x &&

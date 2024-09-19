@@ -1,234 +1,74 @@
-/* 기본 스타일 */
+/*
+ *  Flex Layout Specifics
+*/
+main {
+	display:flex;
+	flex-direction:row;
+	justify-content:center;
+}
+h1 {
+	justify-content:center;
+
+}
+.round{
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	width:800px;
+	list-style:none;
+	padding:0;
+	gap: 20px; /* 각 경기 사이의 간격 조정 */
+}
+.round .spacer{ flex-grow:1; }
+.round .spacer:first-child,
+.round .spacer:last-child { flex-grow:1; }
+
+.round .game-spacer {
+	flex-grow:1;
+}
+  
+/*
+*  General Styles
+*/
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-.tournament-container {
-    text-align: center;
-    width: 90%;
-    max-width: 800px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    position: relative;
-}
-
-/* 트로피 아이콘 */
-.trophy {
-    font-size: 80px;
-    margin-bottom: 30px;
-    color: gold;
-}
-
-/* 결승 라운드 스타일 */
-.finals {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    margin-bottom: 50px;
-}
-
-.finals-line {
-    width: 300px; /* 결승 선의 길이 조정 */
-    height: 2px;
-    background-color: #ccc;
-    position: absolute;
-    top: 50%;
-}
-
-.final-match {
-    display: flex;
-    gap: 100px; /* 결승 참가자 간의 간격 */
-}
-
-/* 1라운드 스타일 */
-.round-1 {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 50px; /* 라운드 간 간격 조정 */
-}
-
-.match {
+	margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 50px;
-    position: relative;
-}
-
-.player {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #3498db;
-    margin-bottom: 10px;
-}
-
-.nickname {
-    font-size: 16px;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-/* 트리 연결선 스타일 */
-.match::before, .match::after {
-    content: '';
-    position: absolute;
-    width: 2px;
-    height: 100px; /* 선의 길이를 늘려서 잘리지 않게 */
-    background-color: #ccc;
-    left: 50%;
-}
-
-.match::before {
-    top: -100px; /* 위쪽 선 */
-}
-
-.match::after {
-    bottom: -100px; /* 아래쪽 선 */
-}
-
-/* 1라운드와 결승 사이의 중앙 연결선 */
-.finals::before {
-    content: '';
-    position: absolute;
-    width: 2px;
-    height: 100px; /* 결승과 1라운드를 연결하는 선 */
-    background-color: #ccc;
-    left: 50%;
-    top: 0;
-    transform: translateY(-100%);
-}
-/* 기본 스타일 */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    height: 100vh; /* 화면 전체 높이를 채우도록 설정 */
+    font-family: 'Montserrat', 'Roboto', sans-serif; /* 글꼴 설정 */
+    background-color: #f0f0f0; /* 배경색 설정 */
 }
 
-.tournament-container {
-    text-align: center;
-    width: 90%;
-    max-width: 800px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    position: relative;
+h1 {
+    text-align: center; /* 텍스트 중앙 정렬 */
+    font-family: 'Bangers', cursive; /* Bangers 폰트 적용 */
+    font-size: 48px; /* 글꼴 크기 */
+    color: #333; /* 글꼴 색상 */
+    margin: 20px 0; /* 위 아래 마진 */
 }
 
-/* 트로피 아이콘 */
-.trophy {
-    font-size: 80px;
-    margin-bottom: 30px;
-    color: gold;
+li.game {
+	padding-left:20px;
 }
 
-/* 결승 라운드 스타일 */
-.finals {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    margin-bottom: 50px;
+li.game.winner {
+	font-weight:bold;
+}
+li.game span {
+	float:right;
+	margin-right:5px;
 }
 
-.finals-line {
-    width: 300px; /* 결승 선의 길이 조정 */
-    height: 2px;
-    background-color: #ccc;
-    position: absolute;
-    top: 50%;
+li.game-top { border-bottom:1px solid #aaa; }
+
+li.game-spacer { 
+	border-right:1px solid #aaa;
+	min-height:40px;
 }
 
-.final-match {
-    display: flex;
-    gap: 100px; /* 결승 참가자 간의 간격 */
-}
-
-/* 1라운드 스타일 */
-.round-1 {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 50px; /* 라운드 간 간격 조정 */
-}
-
-.match {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 50px;
-    position: relative;
-}
-
-.player {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #3498db;
-    margin-bottom: 10px;
-}
-
-.nickname {
-    font-size: 16px;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-/* 트리 연결선 스타일 */
-.match::before, .match::after {
-    content: '';
-    position: absolute;
-    width: 2px;
-    height: 100px; /* 선의 길이를 늘려서 잘리지 않게 */
-    background-color: #ccc;
-    left: 50%;
-}
-
-.match::before {
-    top: -100px; /* 위쪽 선 */
-}
-
-.match::after {
-    bottom: -100px; /* 아래쪽 선 */
-}
-
-/* 1라운드와 결승 사이의 중앙 연결선 */
-.finals::before {
-    content: '';
-    position: absolute;
-    width: 2px;
-    height: 100px; /* 결승과 1라운드를 연결하는 선 */
-    background-color: #ccc;
-    left: 50%;
-    top: 0;
-    transform: translateY(-100%);
+li.game-bottom { 
+	border-top:1px solid #aaa;
 }
