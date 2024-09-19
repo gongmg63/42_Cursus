@@ -1,4 +1,6 @@
 import json
+import asyncio
+
 
 from user.serializers import UserSerializer
 from django.contrib.auth import get_user_model
@@ -159,15 +161,25 @@ class MatchConsumer(AsyncWebsocketConsumer):
 #       score2: paddle2.score
 #     }));
 
+client = {}
+client_lock = asyncio.Lock()
+
 class GameConsumer(AsyncWebsocketConsumer):
+
     async def connect(self):
+        global client
         self.user = self.scope["user"]
+        
+        async with client_lock:
+            client[self.user.id] = False
+        
         await self.accept()
 
     async def disconnect(self, close_code):
-        final_waiting_queue.remove(self.id)
+        self.client[self.user.id] = False
 
     async def receive(self, text_data):
+        global client
         data = json.loads(text_data)
         message_type = data.get("type")
         print(data)
@@ -181,7 +193,9 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.group_name,
                 self.channel_name
             )
-            self.check_all_clients_ready()
+            async with client_lock:
+                client[self.user.id] = True
+            await self.check_all_clients_ready(player1_id, player2_id)
         elif message_type == 'paddleMove':
             #상대에게 패들 움직임 전송
             self.paddle_move(data.get("id"), data.get("y"))
@@ -192,14 +206,13 @@ class GameConsumer(AsyncWebsocketConsumer):
             # 양쪽 모두에게 점수 보내기
             self.increase_score(data.get("score1"), data.get("score2"))
 
-    async def check_all_clients_ready(self):
-        # Check if all clients are connected and ready
-        channel_layer = get_channel_layer()
-        # Assuming you have a way to get connected clients' count
-        connected_clients = len(async_to_sync(channel_layer.group_channels)(self.room_group_name))
+    async def check_all_clients_ready(self, p1, p2):
+        global client
 
-        if connected_clients == 2:
-            # All clients are connected
+        async with client_lock:
+            ready_clients = sum(1 for ready in client.values() if ready)
+        
+        if ready_clients % 2 == 0 and ready_clients != 0:
             await self.channel_layer.group_send(
                 self.group_name,
                 {

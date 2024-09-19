@@ -54,28 +54,36 @@ const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + a
 
 socket.onopen = function() {
     // 서버로 플레이어 정보와 게임 타입을 보냄
-    socket.send(JSON.stringify({
-        type: "initMatch",
-        player1_id: id1,
-        player2_id: id2,
-    }));
+	socket.send(JSON.stringify({
+		type: "initMatch",
+		player1_id: id1,
+		player2_id: id2,
+	}));
 };
 
 socket.onmessage = function(event) {
 	const data = JSON.parse(event.data);
 	if (data.type == 'paddleMove')
 	{
-		if (data.id !== playerNumber) // playerNumber를 id로 수정
-			opPad.pos.y = data.y
+		if (data.id !== playerNumber) 
+		{
+			// playerNumber를 id로 수정
+			// opPad.pos.y = data.y
+			opPad.opUpdate(data.y);
+			console.log('paddleMove');
+		}
 	}
 	else if (data.type == 'ballMove')
 	{
 		ball = data.ball;
+		ball.update();
+		console.log('ballMove');
 	}
 	else if (data.type == 'increaseScore')
 	{
 		myPad.score = data.score1;
 		opPad.score = data.score2;
+		console.log('increaseScore');
 	}
 	else if (data.type == 'startGame')
 	{
@@ -184,22 +192,22 @@ function checkGameEnd()
 
 function gameUpdate()
 {
-	ball.update();
+	// ball.update();
 	myPad.update();
-	opPad.opUpdate();
+	// opPad.opUpdate();
 	paddleCollisionWithEdges(myPad);
-	paddleCollisionWithEdges(opPad);
+	// paddleCollisionWithEdges(opPad);
 	ballCollisionWithEdges(ball);
 	if (ballPaddleCollision(ball, myPad))
 	{
 		ball.velocity.x *= -1;
 		ball.pos.x = myPad.pos.x + myPad.width;
 	}
-	if(ballPaddleCollision(ball, opPad))
-	{
-		ball.velocity.x *= -1;
-		ball.pos.x = opPad.pos.x - ball.radius;
-	}
+	// if(ballPaddleCollision(ball, opPad))
+	// {
+	// 	ball.velocity.x *= -1;
+	// 	ball.pos.x = opPad.pos.x - ball.radius;
+	// }
 	increaseScore(ball, myPad, opPad);
 
 	// paddle 위치
