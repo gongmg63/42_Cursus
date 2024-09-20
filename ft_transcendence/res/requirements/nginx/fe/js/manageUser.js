@@ -178,7 +178,7 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
 }
 
 const access_token = localStorage.getItem("access_token");
-const socket = new WebSocket('wss://localhost/ws/friend/status/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/friend/status/?token=' + access_token);
 
 const friendStatusSocket = socket;
 
