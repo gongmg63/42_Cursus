@@ -34,6 +34,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 ACCESS_URL = 'https://' + env('ACCESS_URL')
+TFA_URL = 'https://localhost/authentication.html'
 CSRF_TRUSTED_ORIGINS = [ACCESS_URL, 'https://127.0.0.1', 'https://localhost']
 
 

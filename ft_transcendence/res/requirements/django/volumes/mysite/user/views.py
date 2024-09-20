@@ -11,7 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import get_object_or_404
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -19,6 +19,7 @@ from urllib.parse import urlencode
 import pyotp
 import qrcode
 import base64
+import sys
 from io import BytesIO
 
 from .models import User
@@ -68,19 +69,24 @@ def OauthCallback(request):
     user.save()
     # 새 유저인 경우 추가 정보 저장
     if created:
+        print("created!!!")
         user.oauthid = oauth_user_id
         user.username = nickname
         user.nickname = nickname
         user.email = email
-        user.profile = "/images/Retriever.jpeg"  # 기본 이미지 URL 설정
+        user.profile = "Retriever.jpeg"  # 기본 이미지 URL 설정
         user.save()
 
     # JWT 토큰 생성
     refresh = RefreshToken.for_user(user)
-    refresh['is_tfa_verified'] = 'true'
+    if user.is_tfa_active:
+        refresh['is_tfa_needed'] = 'true'
+    else:
+        refresh['is_tfa_needed'] = 'false'
 
     # 리다이렉트할 URL에 쿼리 파라미터로 토큰 추가
     redirect_url = f"{settings.ACCESS_URL}"
+    tfa_url = f"{settings.TFA_URL}"
     params = {
         'access_token': str(refresh.access_token),
         'refresh_token': str(refresh),
@@ -90,9 +96,13 @@ def OauthCallback(request):
 
     # 파라미터를 URL로 인코딩 후 리다이렉트
     url_with_params = f"{redirect_url}?{urlencode(params)}"
+    tfaurl_with_params = f"{tfa_url}?{urlencode(params)}"
+    if user.is_tfa_active:
+        return redirect(tfaurl_with_params)
     return redirect(url_with_params)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def Enable(request):
     print("here")
     user = request.user
@@ -102,7 +112,7 @@ def Enable(request):
     totp = pyotp.TOTP(user.otp_base32)    
     qr_uri = totp.provisioning_uri(
             name=user.nickname,
-            issuer_name='we are groot'
+            issuer_name='Trancendence'
         )
     img = qrcode.make(qr_uri)
 
@@ -114,6 +124,7 @@ def Enable(request):
     return JsonResponse({'qr_code_url': img_base64}, status=200)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def Disable(request):
     print("here")
     user = request.user
@@ -124,14 +135,30 @@ def Disable(request):
     data = {}
     return JsonResponse(data, status=200)
 
-def Verify(request):
-    user = User.objects.get(nickname=request.data.user)
-    totp = pyotp.TOTP(user.otp_base32).now()
-    if request.data.code == totp:
-        print("password matched")
-        return Response(status=status.HTTP_200_OK)
-    print("password unmatched")
-    return Response(status=status.HTTP_400)
+class TFAView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+
+        # 사용자 닉네임과 코드 가져오기
+        id = request.user.id
+        code = request.data.get('code')
+
+        if not id or not code:
+            return Response({"detail": "User nickname and code are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # OTP 검증
+        totp = pyotp.TOTP(user.otp_base32)
+        if str(code) == str(totp.now()):
+            print("Password matched")
+            return Response({"detail": "Verification successful."}, status=status.HTTP_200_OK)
+        
+        print("Password unmatched")
+        return Response({"detail": "Invalid code."}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserAPI(APIView):
     permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능

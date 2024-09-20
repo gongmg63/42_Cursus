@@ -5,6 +5,23 @@ inputs.forEach((input) => {
     input.addEventListener('keydown', handleBackspace);
 });
 
+window.addEventListener('load', function() {
+	const urlParams = new URLSearchParams(window.location.search);
+	const accessToken = urlParams.get('access_token');
+	const refreshToken = urlParams.get('refresh_token');
+	
+	if (accessToken && refreshToken)
+	{
+		localStorage.setItem('access_token', accessToken);
+		localStorage.setItem('refresh_token', refreshToken);
+		console.log('Token stored successfully');
+	}
+	else
+	{
+		console.log('fuck you');
+	}
+})
+
 document.getElementById('verifyBtn').addEventListener('click', () => {
 	postAuthCodeAPI();
 });
@@ -39,7 +56,7 @@ function postAuthCodeAPI()
 	const data = { code: code };
 
 	//#region code fetch API
-	fetch('/api/user/verify', {
+	fetch('/api/user/verify/', {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${access_token}`,
