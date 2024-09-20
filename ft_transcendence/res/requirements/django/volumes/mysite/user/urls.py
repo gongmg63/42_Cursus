@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from . import views
-from .views import UserAPI, OtherUserInfo, FriendAPIView
+from .views import UserAPI, OtherUserInfo, FriendAPIView, TFAView
 
 urlpatterns = [
 	#oauth 로그인
@@ -13,6 +13,9 @@ urlpatterns = [
     path('token/verify', TokenVerifyView.as_view(), name='TokenVerify'), # 성공 시 200, 실패 시 401
 	# 내 정보 확인, 수정, 삭제
     path('me', UserAPI.as_view(), name='UserAPI'),
+    path('enable', views.Enable, name='enable'),
+    path('disable', views.Disable, name='disable'),
+    path('verify/', TFAView.as_view(), name='TFAView'),
     # nickname을 통해 정보 확인
     path('<str:nickname>', OtherUserInfo, name='OtherUserInfo'),
     # nickname을 통해 친구 추가, 삭제

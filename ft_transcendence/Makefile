@@ -26,6 +26,10 @@ re      :
 	make fclean
 	make all
 
+nocache :
+	@cd ./res && docker-compose build --no-cache && docker-compose up -d
+
+
 ed  :
 	@cd ./res && docker-compose exec django /bin/sh 
 

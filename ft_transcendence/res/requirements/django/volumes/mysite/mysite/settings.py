@@ -34,6 +34,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 ACCESS_URL = 'https://' + env('ACCESS_URL')
+TFA_URL = 'https://' + env('ACCESS_URL') + '/authentication.html'
 CSRF_TRUSTED_ORIGINS = [ACCESS_URL, 'https://127.0.0.1', 'https://localhost']
 
 
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'corsheaders',
 	'user',
 	'game',
+	'qrcode',
 ]
 
 INTRA_42_CLIENT_ID = 'u-s4t2ud-a991aa69f5866fee60773246fd85a925d581cc6b802b9a326424b96733b4b5ac'

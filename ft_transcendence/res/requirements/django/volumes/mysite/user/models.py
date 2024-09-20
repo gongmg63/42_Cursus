@@ -11,6 +11,10 @@ class User(AbstractUser):
 	profile = models.ImageField(blank=True, upload_to=uuid_name_upload_to)
 	friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_set', verbose_name='친구')
 	is_active = models.BooleanField(default=True)  # 접속 여부
+	is_tfa_active = models.BooleanField(default=False)
+	otp_base32 = models.CharField(max_length=32, blank=True, null=True)
+	qrcode_url = models.CharField(max_length=100, blank=True, null=True)
+
 
 	def save(self, *args, **kwargs):
 		super().save(*args, **kwargs)

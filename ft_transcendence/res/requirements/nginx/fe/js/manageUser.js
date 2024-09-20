@@ -1,5 +1,6 @@
 import { editLocalStorage, handleError, populateFriendSelect, updateFriendsList } from "./utils.js";
 import { friends, setFriends } from "./index.js";
+import { setTFA } from "./2FA.js";
 
 const editUserBtn = document.querySelector('.edit-user-btn');
 const editUserModal = document.getElementById('editUserModal');
@@ -35,7 +36,7 @@ export function fetchUserData()
 		else if (response.status == 500)
 			throw new Error('Server error (500)')
 		else if (!response.ok)
-			throw new Error(`Unexpected error: ${response.status}`);
+				throw new Error(`Unexpected error: ${response.status}`);
 		return response.json();
 	})
 	.then(data => {
@@ -69,6 +70,7 @@ function updateUserInfo(user)
 	// else
 	// 	userAvatar.src = '../images/Retriever.jpeg';
 	userAvatar.src = user.profile;
+	setTFA(user.is_tfa_active);
 	editLocalStorage(user.nickname, userAvatar.src);
 }
 
