@@ -4,18 +4,31 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const keyPressed = [];
+// const keyPressed = [];
 const KEY_ARROWUP = "ArrowUp";
 const KEY_ARROWDOWN = "ArrowDown";
 
 window.addEventListener('keydown', function(e) {
-	// 한글은 안되잖아
-	keyPressed[e.key] = true;
-})
+    if (e.key === KEY_ARROWDOWN) { // 이미 눌린 키에 대해 처리하지 않음
+        const message = JSON.stringify({
+            type: 'paddleMove',
+			id: playerNumber,
+            key: 'down'
+        });
+        socket.send(message);
+    }
+	else if (e.key === KEY_ARROWUP) {
+		const message = JSON.stringify({
+			type: 'paddleMove',
+			id: playerNumber,
+			key: 'up'
+		});
+		socket.send(message);
+	}
+});
 
-window.addEventListener('keyup', function(e) {
-	keyPressed[e.key] = false;
-})
+// window.addEventListener('keyup', function(e) {
+// });
 
 let ballX = 200;
 let ballY = 200;
@@ -35,15 +48,15 @@ parseGameURL();
 // 추후 조건 수정 가능.
 if (player1 == localStorage.getItem('nickname'))
 {
-	myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
-	opPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
+	myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
+	opPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200);
 	playerNumber = id1;
 	console.log('1');
 }
 else
 {
-	myPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
-	opPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
+	myPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200);
+	opPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
 	playerNumber = id2;
 	console.log('2');
 }
@@ -58,6 +71,8 @@ socket.onopen = function() {
 		type: "initMatch",
 		player1_id: id1,
 		player2_id: id2,
+		canvas_width: canvas.width,
+		canvas_height: canvas.height,
 	}));
 };
 
@@ -65,24 +80,44 @@ socket.onmessage = function(event) {
 	const data = JSON.parse(event.data);
 	if (data.type == 'paddleMove')
 	{
-		if (data.id !== playerNumber) 
+		if (playerNumber == data.id)
 		{
-			// playerNumber를 id로 수정
-			// opPad.pos.y = data.y
-			opPad.opUpdate(data.y);
-			console.log('paddleMove');
+			myPad.update(data.y)
 		}
+		else
+		{
+			opPad.opUpdate(data.y);
+		}
+		console.log('paddleMove');
 	}
 	else if (data.type == 'ballMove')
 	{
-		ball = data.ball;
+		ball.pos.x = data.ball_pos_x;
+		ball.pos.y = data.ball_pos_y;
+		ball.velocity.x = data.ball_velocity_x;
+		ball.velocity.y = data.ball_velocity_y;
+		ball.radius = data.ball_radius;
 		ball.update();
 		console.log('ballMove');
 	}
 	else if (data.type == 'increaseScore')
 	{
-		myPad.score = data.score1;
-		opPad.score = data.score2;
+		if (data.result == "win")
+		{
+			myPad.score++;
+			if (playerNumber == id1)
+				document.getElementById("player2Score").innerHTML = myPad.score;
+			else
+				document.getElementById("player1Score").innerHTML = myPad.score;
+		}
+		else
+		{
+			opPad.score++;
+			if (playerNumber == id1)
+				document.getElementById("player1Score").innerHTML = opPad.score;
+			else
+				document.getElementById("player2Score").innerHTML = opPad.score;
+		}
 		console.log('increaseScore');
 	}
 	else if (data.type == 'startGame')
@@ -160,7 +195,7 @@ function gameLoop()
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	window.requestAnimationFrame(gameLoop);	
 
-	// checkGameEnd();
+	checkGameEnd();
 	gameUpdate();
 	gameDraw();
 }
@@ -193,48 +228,35 @@ function checkGameEnd()
 function gameUpdate()
 {
 	// ball.update();
-	myPad.update();
+	// myPad.update();
 	// opPad.opUpdate();
-	paddleCollisionWithEdges(myPad);
+	// paddleCollisionWithEdges(myPad);
 	// paddleCollisionWithEdges(opPad);
-	ballCollisionWithEdges(ball);
-	if (ballPaddleCollision(ball, myPad))
-	{
-		ball.velocity.x *= -1;
-		ball.pos.x = myPad.pos.x + myPad.width;
-	}
+	// ballCollisionWithEdges(ball);
+	// if (ballPaddleCollision(ball, myPad))
+	// {
+	// 	ball.velocity.x *= -1;
+	// 	ball.pos.x = myPad.pos.x + myPad.width;
+	// }
 	// if(ballPaddleCollision(ball, opPad))
 	// {
 	// 	ball.velocity.x *= -1;
 	// 	ball.pos.x = opPad.pos.x - ball.radius;
 	// }
-	increaseScore(ball, myPad, opPad);
+	// increaseScore(ball, myPad, opPad);
 
 	// paddle 위치
-	if (socket.readyState == WebSocket.OPEN)
-	{
-		socket.send(JSON.stringify({
-			type: 'paddleMove',
-			id: playerNumber,
-			y: myPad.pos.y
-		}));
-	}
-	else
-	{
-		console.log('not open yet');
-	}
+	// socket.send(JSON.stringify({
+	// 	type: 'paddleMove',
+	// 	id: playerNumber,
+	// 	y: myPad.pos.y
+	// }));
+
 	// 공 위치
-	if (socket.readyState == WebSocket.OPEN)
-	{
-		socket.send(JSON.stringify({
-			type: 'ballMove',
-			ball
-		}));
-	}
-	else
-	{
-		console.log('not open yet');
-	}
+	// socket.send(JSON.stringify({
+	// 	type: 'ballMove',
+	// 	ball
+	// }));
 }
 
 function gameDraw()
@@ -283,18 +305,11 @@ function increaseScore(ball, paddle1, paddle2)
 		respawnBall(ball);
 	}
 
-	if (socket.readyState == WebSocket.OPEN)
-	{
-		socket.send(JSON.stringify({
-			type: 'increaseScore',
-			score1: paddle1.score,
-			score2: paddle2.score
-		}));
-	}
-	else
-	{
-		console.log("not open yet");
-	}
+	// socket.send(JSON.stringify({
+	// 	type: 'increaseScore',
+	// 	score1: paddle1.score,
+	// 	score2: paddle2.score
+	// }));
 }
 
 function Ball(pos, velocity, radius)
@@ -318,25 +333,18 @@ function Ball(pos, velocity, radius)
 	}
 }
 
-function Paddle(pos, velocity, width, height, upKey, downKey)
+function Paddle(pos, velocity, width, height)
 {
 	this.pos = pos;
 	this.velocity = velocity;
 	this.width = width;
 	this.height = height;
-	this.upKey = upKey;
-	this.downKey = downKey;
+	// this.upKey = upKey;
+	// this.downKey = downKey;
 	this.score = 0;
 
-	this.update = function() {
-		if (keyPressed[upKey])
-		{
-			this.pos.y -= this.velocity.y;
-		}
-		if (keyPressed[downKey])
-		{
-			this.pos.y += this.velocity.y;
-		}
+	this.update = function(y) {
+		this.pos.y = y
 	}
 
 	this.opUpdate = function(y) {

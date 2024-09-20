@@ -1,4 +1,4 @@
-import { handleError } from "./utils";
+import { handleError } from "./utils.js";
 
 document.addEventListener('DOMContentLoaded', function() {
 	
