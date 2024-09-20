@@ -10,6 +10,8 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+import math
+import random
 
 # player1 / player2 / gameType 
 
@@ -146,7 +148,12 @@ class MatchConsumer(AsyncWebsocketConsumer):
 #       player1_id: id1,
 #       player2_id: id2,
 #     }));
-#     socket.send(JSON.stringify({
+#     socket.send(JSON.stringify({ // 받는 내용
+#       type: "paddleMove",
+#       id: "12345" (my id)
+#       key: up or down
+#     }));
+#     socket.send(JSON.stringify({ // 보내는 내용
 #       type: "paddleMove",
 #       id: "12345" (my id)
 #       y: "1.2"
@@ -161,14 +168,31 @@ class MatchConsumer(AsyncWebsocketConsumer):
 #       score2: paddle2.score
 #     }));
 
+# Ball ( pos(vec(200, 200)), velocity(vec(20, 20)), radius(20) )
+# Paddle ( pos(vec), velocity(vec(15, 15)), width (20), height (200), upKey, downKey )
+
 client = {}
 client_lock = asyncio.Lock()
+ball_group = {}
+
+class ball():
+    x = 200
+    y = 200
+    velocity_x = 20
+    velocity_y = 15
+    radius = 20
+
+ball()
 
 class GameConsumer(AsyncWebsocketConsumer):
-
     async def connect(self):
         global client
         self.user = self.scope["user"]
+        self.paddle_velocity_x = 15
+        self.paddle_velocity_y = 15
+        self.paddle_width = 20
+        self.paddle_height = 200
+        self.score = 0
         
         async with client_lock:
             client[self.user.id] = False
@@ -176,35 +200,47 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        print("disconnect")
         self.client[self.user.id] = False
 
     async def receive(self, text_data):
         global client
         data = json.loads(text_data)
         message_type = data.get("type")
-        print(data)
         if message_type == 'initMatch':
             # 상대 정보를 기반으로 그룹 이름을 설정
             player1_id = data['player1_id']
             player2_id = data['player2_id']
+            if str(self.user.id) == str(player1_id):
+                self.pos = "left"
+            else:
+                self.pos = "right"
             self.group_name = f"match_{player1_id}_{player2_id}"
+            self.canvas_width = data['canvas_width']
+            self.canvas_height = data['canvas_height']
+            if str(self.user.id) == str(player1_id):
+                self.paddle_pos_x = 0
+                self.paddle_pos_y = 50
+            else:
+                self.paddle_pos_x = self.canvas_width - 20
+                self.paddle_pos_y = 30
             # 그룹 추가
             await self.channel_layer.group_add(
                 self.group_name,
                 self.channel_name
             )
+            # 그룹 공 생성
+            if self.group_name not in ball_group:
+                ball_group[self.group_name] = ball()
             async with client_lock:
                 client[self.user.id] = True
             await self.check_all_clients_ready(player1_id, player2_id)
         elif message_type == 'paddleMove':
             #상대에게 패들 움직임 전송
-            self.paddle_move(data.get("id"), data.get("y"))
-        elif message_type == 'ballMove':
-            # 상대에게 공 움직임 보내기? 아님 둘 다한테 보내야하나
-            self.ball_move(data.get("ball"))
+            await self.paddle_move(data.get("id"), data.get("key"))
         elif message_type == 'increaseScore':
             # 양쪽 모두에게 점수 보내기
-            self.increase_score(data.get("score1"), data.get("score2"))
+            await self.increase_score(data.get("score1"), data.get("score2"))
 
     async def check_all_clients_ready(self, p1, p2):
         global client
@@ -220,6 +256,9 @@ class GameConsumer(AsyncWebsocketConsumer):
                     'message': 'All clients connected. Starting game...'
                 }
             )
+            self.ball = ball_group[self.group_name]
+            self.game_loop_task = asyncio.create_task(self.game_loop())
+
 
     async def startGame(self, event):
         message = event["message"]
@@ -229,61 +268,129 @@ class GameConsumer(AsyncWebsocketConsumer):
             "message": message
         }))
 
-    async def paddle_move(self, id, y):
-        await self.channel_layer.group_send(
-            self.group_name,
-            {
-                "type": "paddleMove",
-                "id": id,
-                "y": y
-            }
-        )
+    async def paddle_move(self, id, key):
+        check_move = True
+
+        if key == "up":
+            self.paddle_pos_y -= self.paddle_velocity_y
+            if self.paddle_pos_y <= 0:
+                self.paddle_pos_y = 0
+                check_move = False
+        else:
+            self.paddle_pos_y += self.paddle_velocity_y
+            if self.paddle_pos_y + self.paddle_height >= self.canvas_height:
+                self.paddle_pos_y = self.canvas_height - self.paddle_height
+                check_move = False
+        if check_move:
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "paddleMove",
+                    "id": id,
+                    "y": self.paddle_pos_y
+                }
+            )
     
     async def paddleMove(self, event):
         id = event["id"]
         y = event["y"]
 
-        if self.user.id != id:
-            await self.send(json.dumps({
-                "type": "paddleMove",
-                "id": id,
-                "y": y,
-            }))
+        await self.send(json.dumps({
+            "type": "paddleMove",
+            "id": id,
+            "y": y,
+        }))
+    
+    async def game_loop(self):
+        while True:
+            await self.update_game_state()
+            await asyncio.sleep(0.02)  # 20ms 간격으로 업데이트 
 
-    async def ball_move(self, ball):
+    async def update_game_state(self):
+        # 공 위치 업데이트
+        ball_group[self.group_name].x += ball_group[self.group_name].velocity_x
+        ball_group[self.group_name].y += ball_group[self.group_name].velocity_y
+
+        # 벽 충돌 처리
+        if ball_group[self.group_name].y - ball_group[self.group_name].radius <= 0 \
+            or ball_group[self.group_name].y + ball_group[self.group_name].radius >= self.canvas_height:
+            ball_group[self.group_name].velocity_y *= -1
+
+        if ball_group[self.group_name].x <= -ball_group[self.group_name].radius or ball_group[self.group_name].x >= self.canvas_width + ball_group[self.group_name].radius:
+            ball_group[self.group_name].velocity_x *= -1
+            if ball_group[self.group_name].x <= ball_group[self.group_name].radius:
+                winner = "left"
+            else:
+                winner = "right"
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "increaseScore",
+                    "winner": winner
+                }
+            )
+            self.respawn_ball()
+        # 게임 상태 전송
         await self.channel_layer.group_send(
             self.group_name,
             {
                 "type": "ballMove",
-                "ball": ball,
             }
         )
 
     async def ballMove(self, event):
-        ball = event["ball"]
-
-        if self.user.id != id:
-            await self.send(json.dumps({
-                "type": "ballMove",
-                "ball": ball,
-            }))
-
-    async def increase_score(self, score1, score2):
-        await self.channel_layer.group_send(
-            self.group_name,
-            {
-                "type": "increaseScore",
-                "score1": score1,
-                "score2": score2,
-            }
-        )
-
-    async def increaseScore(self, event):
-        score1 = event["score1"]
-        score2 = event["score2"]
+            # 패들 충돌 처리
+        ball = ball_group[self.group_name]  # 공 객체 가져오기
+        if self.pos == "left":
+            # 왼쪽 패들 충돌 처리
+            if (ball.x - ball.radius <= self.paddle_pos_x + self.paddle_width and
+                ball.x + ball.radius >= self.paddle_pos_x and
+                ball.y + ball.radius >= self.paddle_pos_y and
+                ball.y - ball.radius <= self.paddle_pos_y + self.paddle_height):
+                # 공의 x 방향 반전
+                ball.velocity_x *= -1
+                # 충돌 후 공의 위치를 패들 바로 앞에 배치
+                ball.x = self.paddle_pos_x + self.paddle_width + ball.radius
+        else:
+            # 오른쪽 패들 충돌 처리
+            if (ball.x + ball.radius >= self.paddle_pos_x and
+                ball.x - ball.radius <= self.paddle_pos_x + self.paddle_width and
+                ball.y + ball.radius >= self.paddle_pos_y and
+                ball.y - ball.radius <= self.paddle_pos_y + self.paddle_height):
+                # 공의 x 방향 반전
+                ball.velocity_x *= -1
+                # 충돌 후 공의 위치를 패들 바로 앞에 배치
+                ball.x = self.paddle_pos_x - ball.radius
 
         await self.send(json.dumps({
-            "type": "increaseScore",
-            "score1": score1,
-            "score2": score2,
+            "type": "ballMove",
+            "ball_pos_x": ball_group[self.group_name].x,
+            "ball_pos_y": ball_group[self.group_name].y,
+            "ball_velocity_x": ball_group[self.group_name].velocity_x,
+            "ball_velocity_y": ball_group[self.group_name].velocity_y,
+            "ball_radius": ball_group[self.group_name].radius
         }))
+
+    async def increaseScore(self, event):
+        winner = event['winner']
+
+        if self.pos == winner:
+            result = "win"
+        else:
+            result = "lose"
+        await self.send(json.dumps({
+            "type": "increaseScore",
+            "result": result
+        }))
+
+    def respawn_ball(self):
+        ball = ball_group[self.group_name]
+        if ball.velocity_x > 0:
+            ball.x = self.canvas_width - 150
+            ball.y = random.uniform(100, self.canvas_height - 100)
+        elif ball.velocity_x < 0:
+            ball.x = 150
+            ball.y = random.uniform(100, self.canvas_height - 100)
+
+        ball.velocity_x *= -1
+        ball.velocity_y *= -1
