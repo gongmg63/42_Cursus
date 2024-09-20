@@ -22,7 +22,7 @@ class FriendStatusConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         print(f"websocket: disconnect... nickname: {self.user.nickname}")
         if self.user.is_authenticated:
-            await self.save_user_status(False)
+            # await self.save_user_status(False)
             await self.channel_layer.group_discard(
                 f"user_{self.user.nickname}",
                 self.channel_name
