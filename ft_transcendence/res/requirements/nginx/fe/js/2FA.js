@@ -1,3 +1,5 @@
+import { checkAndRefreshToken } from "./jwtRefresh.js";
+
 let is2FAEnabled = false; // 예시로 2FA 설정 여부를 저장하는 변수. 서버에서 실제 상태를 받아올 수 있음.
 
 const securityBtn = document.querySelector('.security-btn');
@@ -82,45 +84,47 @@ function enable2FA() {
     // update2FAStatus();
 
 	//#region QR fetch API
-	const access_token = localStorage.getItem("access_token");
-	// 서버로부터 QR Code GET
-	fetch('/api/user/enable', {
-		method: 'GET',
-		headers: {
-			'Authorization': `Bearer ${access_token}`,
-			'Content-Type': 'application/json'
-		},
-	})
-	.then(response => {
-		if (response.status == 404)
-			throw new Error('User data not found (404)');
-		else if (response.status == 500)
-			throw new Error('Server error (500)')
-		else if (!response.ok)
-			throw new Error(`Unexpected error: ${response.status}`);
-		return response.json();
-	})
-	.then(data => {
-		console.log(data);
-        const qrCodeImage = document.getElementById('qrCodeImage');
-        qrCodeImage.src = `data:image/png;base64,${data.qr_code_url}`;  // 서버가 제공한 QR 코드 URL - 추후 수정 가능.
-
-        // const qrCodeContainer = document.getElementById('qrCodeContainer');
-		// const nextStepBtn = document.getElementById('nextStepBtn');
-		// securityModal.style.display = 'none';
-        qrCodeContainer.style.display = 'block';
-		nextStepBtn.style.display = 'block';
-
-		confirm2faBtn.style.display = 'none';
-		cancel2faBtn.style.display = 'none';
-		closeBtns.forEach(btn => {
-			btn.style.display = 'none';
+	checkAndRefreshToken().then(() => {
+		const access_token = localStorage.getItem("access_token");
+		// 서버로부터 QR Code GET
+		fetch('/api/user/enable', {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${access_token}`,
+				'Content-Type': 'application/json'
+			},
 		})
-	 	update2FAStatus();
-	})
-	.catch(error => {
-		console.error('Error fetching user data: ', error);
-		handleError(error);
+		.then(response => {
+			if (response.status == 404)
+				throw new Error('User data not found (404)');
+			else if (response.status == 500)
+				throw new Error('Server error (500)')
+			else if (!response.ok)
+				throw new Error(`Unexpected error: ${response.status}`);
+			return response.json();
+		})
+		.then(data => {
+			console.log(data);
+			const qrCodeImage = document.getElementById('qrCodeImage');
+			qrCodeImage.src = `data:image/png;base64,${data.qr_code_url}`;  // 서버가 제공한 QR 코드 URL - 추후 수정 가능.
+	
+			// const qrCodeContainer = document.getElementById('qrCodeContainer');
+			// const nextStepBtn = document.getElementById('nextStepBtn');
+			// securityModal.style.display = 'none';
+			qrCodeContainer.style.display = 'block';
+			nextStepBtn.style.display = 'block';
+	
+			confirm2faBtn.style.display = 'none';
+			cancel2faBtn.style.display = 'none';
+			closeBtns.forEach(btn => {
+				btn.style.display = 'none';
+			})
+			 update2FAStatus();
+		})
+		.catch(error => {
+			console.error('Error fetching user data: ', error);
+			handleError(error);
+		});
 	});
 	//#endregion
 }
@@ -131,30 +135,32 @@ function disable2FA() {
     // update2FAStatus();
 
 	//#region QR disable fetch API
-	const access_token = localStorage.getItem("access_token");
-	// 서버에게 disable 요청.
-	fetch('/api/user/disable', {
-		method: 'GET',
-		headers: {
-			'Authorization': `Bearer ${access_token}`
-		},
-	})
-	.then(response => {
-		if (response.status == 404)
-			throw new Error('User data not found (404)');
-		else if (response.status == 500)
-			throw new Error('Server error (500)')
-		else if (!response.ok)
-			throw new Error(`Unexpected error: ${response.status}`);
-		return response.json();
-	})
-	.then(data => {
-    	alert('2FA가 비활성화되었습니다.');
-        update2FAStatus();
-	})
-	.catch(error => {
-		console.error('Error fetching user data: ', error);
-		handleError(error);
+	checkAndRefreshToken().then(() => {
+		const access_token = localStorage.getItem("access_token");
+		// 서버에게 disable 요청.
+		fetch('/api/user/disable', {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${access_token}`
+			},
+		})
+		.then(response => {
+			if (response.status == 404)
+				throw new Error('User data not found (404)');
+			else if (response.status == 500)
+				throw new Error('Server error (500)')
+			else if (!response.ok)
+				throw new Error(`Unexpected error: ${response.status}`);
+			return response.json();
+		})
+		.then(data => {
+			alert('2FA가 비활성화되었습니다.');
+			update2FAStatus();
+		})
+		.catch(error => {
+			console.error('Error fetching user data: ', error);
+			handleError(error);
+		});
 	});
 	//#endregion
 }

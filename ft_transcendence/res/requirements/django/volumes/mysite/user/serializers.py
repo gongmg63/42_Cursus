@@ -11,7 +11,7 @@ class FriendSerializer(serializers.ModelSerializer):
             'id', 
             'oauthid', 
             'nickname',
-            'is_active',
+            'active',
             'profile', 
         ]
 
@@ -28,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
             'wins', 
             'losses', 
             'profile',
-            'is_active', 
+            'active', 
             'friends',
             'is_tfa_active'
         ]

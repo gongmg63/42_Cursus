@@ -1,4 +1,5 @@
 import { handleError } from "./utils.js";
+import { checkAndRefreshToken } from "./jwtRefresh.js"
 
 document.addEventListener('DOMContentLoaded', function() {
 	
@@ -12,7 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	// postMatchAPI(result);
 });
 
-document.getElementById('continueBtn').addEventListener('click', function() {
+document.getElementById('continueBtn').addEventListener('click', function(event) {
+	event.preventDefault();
     window.location.href = '/index.html';
 });
 
@@ -72,6 +74,7 @@ function postMatchAPI(result)
 {
 	if (result.gameType == 'single')
 		return ;
+	const access_token = localStorage.getItem("access_token");
 	fetch('/api/game/result/add/', {
 		method: 'POST',
 		headers: {

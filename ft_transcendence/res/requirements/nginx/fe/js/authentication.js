@@ -1,3 +1,5 @@
+import { checkAndRefreshToken } from "./jwtRefresh.js";
+
 const inputs = document.querySelectorAll('.auth-input');
 
 inputs.forEach((input) => {
@@ -55,30 +57,32 @@ function postAuthCodeAPI()
 	const access_token = localStorage.getItem("access_token");
 	const data = { code: code };
 
-	//#region code fetch API
-	fetch('/api/user/verify/', {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${access_token}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(data)
+	checkAndRefreshToken().then(() => {
+		//#region code fetch API
+		fetch('/api/user/verify/', {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${access_token}`,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => {
+			if (response.status == 404)
+				throw new Error('User data not found (404)');
+			else if (response.status == 500)
+				throw new Error('Server error (500)')
+			else if (!response.ok)
+				throw new Error(`Unexpected error: ${response.status}`);
+			return response.json();
+		})
+		.then(data => {
+			window.location.href = "/index.html";
+		})
+		.catch(error => {
+			console.error('Error fetching user data: ', error);
+			handleError(error);
+		});
 	})
-	.then(response => {
-		if (response.status == 404)
-			throw new Error('User data not found (404)');
-		else if (response.status == 500)
-			throw new Error('Server error (500)')
-		else if (!response.ok)
-			throw new Error(`Unexpected error: ${response.status}`);
-		return response.json();
-	})
-	.then(data => {
-        window.location.href = "/index.html";
-	})
-	.catch(error => {
-		console.error('Error fetching user data: ', error);
-		handleError(error);
-	});
 	//#endregion
 }

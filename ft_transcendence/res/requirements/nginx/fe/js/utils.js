@@ -39,12 +39,20 @@ export function updateFriendsList(friends)
 		nameSpan.textContent = friend.nickname;
 
 		// Online, Offline 상태 표시
-		// const statusSpan = document.createElement('span');
-		// statusSpan.classList.add('friend-status', friend.is_active);
+		const statusSpan = document.createElement('span');
+		if (friend.active) {
+			statusSpan.classList.add('friend-status', 'online'); // 활성 상태 클래스 추가
+			statusSpan.textContent = 'Online'; // 또는 friend.status를 사용할 수 있음
+		} else {
+			statusSpan.classList.add('friend-status', 'offline'); // 비활성 상태 클래스 추가
+			statusSpan.textContent = 'Offline'; // 또는 friend.status를 사용할 수 있음
+		}
+		// statusSpan.classList.add('friend-status', friend.active);
+		// statusSpan.textContent = friend.active + friend.status.slice(1);
 		// statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
 		
 		infoDiv.appendChild(nameSpan);
-		// infoDiv.appendChild(statusSpan);
+		infoDiv.appendChild(statusSpan);
 
 		friendItem.appendChild(avatarDiv);
 		friendItem.appendChild(infoDiv);
