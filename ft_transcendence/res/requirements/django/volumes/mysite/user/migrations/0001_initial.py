@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('wins', models.PositiveIntegerField(default=0, verbose_name='승')),
                 ('losses', models.PositiveIntegerField(default=0, verbose_name='패')),
                 ('profile', models.ImageField(blank=True, upload_to=mysite.utils.uuid_name_upload_to)),
-                ('is_active', models.BooleanField(default=True)),
+                ('active', models.BooleanField(default=True)),
                 ('is_tfa_active', models.BooleanField(default=False)),
                 ('otp_base32', models.CharField(blank=True, max_length=32, null=True)),
                 ('qrcode_url', models.CharField(blank=True, max_length=100, null=True)),

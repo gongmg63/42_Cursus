@@ -1,3 +1,5 @@
+import { checkAndRefreshToken } from "./jwtRefresh.js";
+
 // 친구 목록 - 서버 데이터 읽어오기
 let friends = [];
 
@@ -7,30 +9,32 @@ document.addEventListener('DOMContentLoaded', function() {
 	fetchUserData();
 
 	function fetchUserData() {
-		const access_token = localStorage.getItem("access_token");
-		fetch('/api/user/me', {
-			method: 'GET',
-			headers: {
-				'Authorization': `Bearer ${access_token}`,
-				'Content-Type': 'application/json'
-			},
-		})
-		.then(response => response.json())
-		.then(data => {
-			// User 정보 업데이트
-			updateUserInfo(data);
-			// 친구 목록 업데이트
-			friends = data.friends;
-			// console.log(friends);
-			updateFriendsList(data.friends);
-			// remove friend modal 업데이트
-			populateFriendSelect();
-
-			// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
-			// updateRecentMatches(data.recentMatches);
-		})
-		// 500 error?
-		.catch(error => console.error('Error fetching user data: ', error));
+		checkAndRefreshToken().then(() => {
+			const access_token = localStorage.getItem("access_token");
+			fetch('/api/user/me', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${access_token}`,
+					'Content-Type': 'application/json'
+				},
+			})
+			.then(response => response.json())
+			.then(data => {
+				// User 정보 업데이트
+				updateUserInfo(data);
+				// 친구 목록 업데이트
+				friends = data.friends;
+				// console.log(friends);
+				updateFriendsList(data.friends);
+				// remove friend modal 업데이트
+				populateFriendSelect();
+	
+				// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
+				// updateRecentMatches(data.recentMatches);
+			})
+			// 500 error?
+			.catch(error => console.error('Error fetching user data: ', error));
+		});
 	}
 
 	function updateUserInfo(user)
@@ -81,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			nameSpan.textContent = friend.name;
 
 			// Online, Offline 상태 표시
-			// const statusSpan = document.createElement('span');
-			// statusSpan.classList.add('friend-status', friend.status);
+			const statusSpan = document.createElement('span');
+			statusSpan.classList.add('friend-status', friend.status);
 			// statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
 			
 			infoDiv.appendChild(nameSpan);
@@ -179,38 +183,40 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
     // 실제로는 여기서 서버에 추가 요청을 보냄
     console.log(`Added friend: ${friendName}`);
 	const data = { nickname: friendName };
-	const access_token = localStorage.getItem("access_token");
-	fetch('/api/user/friend/', {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${access_token}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(data)
-	})
-	.then(response => {
-		if (!response.ok) {
-			// 친구 없으면 404
-			throw new Error('Network response was not ok');
-		}
-		return response.json();
-	})
-	.then(data => {
-		console.log('Friend added successfully:', data);
-		
-		// UI 업데이트
-		friends.push(data.friend);
-		renderFriends();
+	checkAndRefreshToken().then(() => {
+		const access_token = localStorage.getItem("access_token");
+		fetch('/api/user/friend/', {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${access_token}`,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => {
+			if (!response.ok) {
+				// 친구 없으면 404
+				throw new Error('Network response was not ok');
+			}
+			return response.json();
+		})
+		.then(data => {
+			console.log('Friend added successfully:', data);
+			
+			// UI 업데이트
+			friends.push(data.friend);
+			renderFriends();
+			modal.style.display = "none";
+			document.getElementById("friendNameInput").value = "";
+		})
+		.catch(error => {
+			console.error('Error updating profile:', error);
+		});
+	
+		// 모달 닫기 및 입력 필드 초기화
 		modal.style.display = "none";
 		document.getElementById("friendNameInput").value = "";
-	})
-	.catch(error => {
-        console.error('Error updating profile:', error);
-    });
-
-    // 모달 닫기 및 입력 필드 초기화
-    modal.style.display = "none";
-    document.getElementById("friendNameInput").value = "";
+	});
 });
 
 // 모달 요소 가져오기
@@ -244,42 +250,44 @@ document.getElementById("removeFriendForm").addEventListener("submit", (event) =
     event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
     const friendSelect = document.getElementById("friendSelect");
     const selectedFriend = friendSelect.value;
-	const access_token = localStorage.getItem("access_token");
-
-	const data = { nickname: selectedFriend };
-
-	fetch('/api/user/friend/', {
-		method: 'DELETE',
-		headers: {
-			'Authorization': `Bearer ${access_token}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(data)
-	})
-	.then(response => {
-		if (!response.ok) {
-			// 500 error?
-			throw new Error('Network response was not ok');
-		}
-		return response.json();
-	})
-	.then(data => {
-		// 친구 목록에서 선택된 친구 삭제
-		friends = friends.filter(friend => friend.nickname !== selectedFriend);
+	checkAndRefreshToken().then(() => {
+		const access_token = localStorage.getItem("access_token");
 	
-		// 서버에 친구 삭제 요청
-		console.log(`Removed friend: ${selectedFriend}`);
+		const data = { nickname: selectedFriend };
 	
-		// 모달 닫기 및 드롭다운 초기화
-		removeModal.style.display = "none";
-		populateFriendSelect(); // 업데이트된 목록 반영
-	
-		// 친구 목록 UI 업데이트
-		renderFriends();
-		// updateFriendsList(); - 대체 가능 함수
-	})
-	.catch(error => {
-		console.error('Error removing friend:', error);
+		fetch('/api/user/friend/', {
+			method: 'DELETE',
+			headers: {
+				'Authorization': `Bearer ${access_token}`,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => {
+			if (!response.ok) {
+				// 500 error?
+				throw new Error('Network response was not ok');
+			}
+			return response.json();
+		})
+		.then(data => {
+			// 친구 목록에서 선택된 친구 삭제
+			friends = friends.filter(friend => friend.nickname !== selectedFriend);
+		
+			// 서버에 친구 삭제 요청
+			console.log(`Removed friend: ${selectedFriend}`);
+		
+			// 모달 닫기 및 드롭다운 초기화
+			removeModal.style.display = "none";
+			populateFriendSelect(); // 업데이트된 목록 반영
+		
+			// 친구 목록 UI 업데이트
+			renderFriends();
+			// updateFriendsList(); - 대체 가능 함수
+		})
+		.catch(error => {
+			console.error('Error removing friend:', error);
+		})
 	})
 });
 
@@ -365,47 +373,49 @@ window.addEventListener('click', function(event) {
 
 // 유저 정보 폼 제출 처리
 document.getElementById('editUserForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const nickname = document.getElementById('nicknameInput').value;
-    const avatarFile = document.getElementById('avatarInput').files[0];
-	const access_token = localStorage.getItem("access_token");
-
-    const formData = new FormData();
-    formData.append('nickname', nickname);
-    if (avatarFile) {
-        formData.append('profile', avatarFile);
-    }
-
-    fetch('/api/user/me', {
-        method: 'PATCH',
-		headers: {
-			'Authorization': `Bearer ${access_token}`,
-		},
-		body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('User profile updated:', data);
-        // 유저 정보를 업데이트
-        document.querySelector('.user-details h1').textContent = nickname;
-        if (avatarFile) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.querySelector('.avatar-container img').src = e.target.result;
-            };
-            reader.readAsDataURL(avatarFile);
-        }
-        // 모달 창 닫기
-        editUserModal.style.display = 'none';
-    })
-    .catch(error => {
-        console.error('Error updating profile:', error);
-    });
+	checkAndRefreshToken().then(() => {
+		event.preventDefault();
+		const nickname = document.getElementById('nicknameInput').value;
+		const avatarFile = document.getElementById('avatarInput').files[0];
+		const access_token = localStorage.getItem("access_token");
+	
+		const formData = new FormData();
+		formData.append('nickname', nickname);
+		if (avatarFile) {
+			formData.append('profile', avatarFile);
+		}
+	
+		fetch('/api/user/me', {
+			method: 'PATCH',
+			headers: {
+				'Authorization': `Bearer ${access_token}`,
+			},
+			body: formData
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			return response.json();
+		})
+		.then(data => {
+			console.log('User profile updated:', data);
+			// 유저 정보를 업데이트
+			document.querySelector('.user-details h1').textContent = nickname;
+			if (avatarFile) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					document.querySelector('.avatar-container img').src = e.target.result;
+				};
+				reader.readAsDataURL(avatarFile);
+			}
+			// 모달 창 닫기
+			editUserModal.style.display = 'none';
+		})
+		.catch(error => {
+			console.error('Error updating profile:', error);
+		});
+	});
 });
 
 //#endregion

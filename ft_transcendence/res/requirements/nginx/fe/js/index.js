@@ -1,11 +1,21 @@
-import { fetchUserData, editUser } from "./manageUser.js";
+import { fetchUserData, editUser, friend_websocket } from "./manageUser.js";
 import { addFriend } from "./addFriend.js";
 import { deleteFriend } from "./deleteFriend.js";
+import { checkAndRefreshToken } from "./jwtRefresh.js";
 
 export let friends = [];
 
 document.addEventListener('DOMContentLoaded', function() {
-	fetchUserData();
+    checkAndRefreshToken().then(() => {
+        friend_websocket()
+            .then((websocket) => {
+                console.log("웹소켓이 연결되었습니다.");
+                fetchUserData();
+            })
+            .catch((error) => {
+                console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+            });
+    });
 });
 
 document.getElementById("addFriendForm").addEventListener("submit", (event) => {
