@@ -47,23 +47,11 @@ class FriendStatusConsumer(AsyncWebsocketConsumer):
             'friends': friend_list.data
         }))
 
-    # async def send_friend_status(self):
-    #     friend_status = await self.get_friends_status()
-    #     await self.send(text_data=json.dumps({
-    #         'type': 'friend_status',
-    #         'friends': friend_status
-    #     }))
-
-
-    # async def send_status_update_to_friends(self, status):
-    #     friends = await self.get_friends_status()
-    #     print(f"websocket: send_friend_status... nickname: {self.user.nickname}")
-    #     for friend_id, active in friends.items():
-    #         await self.channel_layer.group_send(
-    #             f"user_{friend_id}",
-    #             {
-    #                 "type": "friend_status_update",
-    #                 "id": self.user.id,
-    #                 "active": status
-    #             }
-    #         )
+    async def friend_update(self, event):
+        friends = self.user.friends.all()  # 모든 친구를 가져오기
+        friend_list = FriendSerializer(friends, many=True)
+        
+        await self.send(text_data=json.dumps({
+            'type': 'friend_update',
+            'friends': friend_list.data
+        }))

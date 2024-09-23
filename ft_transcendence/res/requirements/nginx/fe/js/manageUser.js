@@ -25,7 +25,7 @@ export function friend_websocket()
 {
 	return new Promise((resolve, reject) => {
 		const access_token = localStorage.getItem("access_token");
-		const websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/friend/status/?token=' + access_token);
+		const websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/friend/status/?token=' + access_token);
         
 		
         // 연결이 성공했을 때 호출
@@ -37,9 +37,15 @@ export function friend_websocket()
         // 메시지를 수신할 때 호출
         websocket.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log("서버로부터 받은 메시지:", data);
-			updateFriendsList(data.friends);
-            // 여기에서 메시지에 따라 처리하는 로직을 추가
+			if (data.type == 'friend_status_update')
+            {
+				console.log("서버로부터 받은 메시지:", data);
+				// populateFriendSelect();
+				updateFriendsList(data.friends);
+				// 여기에서 메시지에 따라 처리하는 로직을 추가
+			}
+			else if (data.type == 'friend_update')
+				setFriends(data.friends);
         };
 
         // 오류가 발생했을 때 호출
@@ -53,57 +59,6 @@ export function friend_websocket()
             console.log("웹소켓 연결 종료");
         };
     });
-	
-	socket.onopen = () => {
-        console.log("웹소켓 연결 완료");
-        // 웹소켓이 열렸을 때 fetchUserData 호출
-        fetchUserData();
-    };
-    
-    socket.onerror = (error) => {
-        console.error("웹소켓 연결 오류:", error);
-    };
-	// const friendStatusSocket = socket;
-
-	// friendStatusSocket.onopen = function() {
-	// 	console.log('WebSocket connection established.');
-	// };
-
-	// friendStatusSocket.onerror = function(error) {
-	// 	console.log('WebSocket error: ' + error.message);
-	// };
-
-	// friendStatusSocket.onclose = function(event) {
-	// 	if (event.wasClean) {
-	// 		console.log('WebSocket connection closed cleanly, code=' + event.code + ', reason=' + event.reason);
-	// 	} else {
-	// 		console.log('WebSocket connection closed with error');
-	// 	}
-	// };
-
-	// friendStatusSocket.onmessage = function(e) {
-	// 	const data = JSON.parse(e.data);
-	// 	if (data.type === 'friend_status') {
-	// 		updateFriendStatusUI(data.friends);
-	// 	} else if (data.type === 'friend_status_update') {
-	// 		updateSingleFriendStatus(data.friend_id, data.status);
-	// 	}
-	// };
-
-	// function updateFriendStatusUI(friends) {
-	// 	for (const [friendId, status] of Object.entries(friends)) {
-	// 		updateSingleFriendStatus(friendId, status);
-	// 		console.log(status.className);
-	// 	}
-	// }
-
-	// function updateSingleFriendStatus(friendId, status) {
-	// 	const statusElement = document.getElementById(`friend-status-${friendId}`);
-	// 	if (statusElement) {
-	// 		statusElement.textContent = status ? '온라인' : '오프라인';
-	// 		statusElement.className = status ? 'online' : 'offline';
-	// 	}
-	// }
 }
 
 export function fetchUserData()

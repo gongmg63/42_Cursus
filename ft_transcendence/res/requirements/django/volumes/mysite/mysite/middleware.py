@@ -6,7 +6,7 @@ class LogAllRequestsMiddleware:
         # 요청 메서드, URL, 헤더, 바디를 출력
         print(f"Method: {request.method}")
         print(f"Path: {request.get_full_path()}")
-        print(f"Headers: {request.headers}")
+        # print(f"Headers: {request.headers}")
 
         # POST, PUT 등의 경우 요청 바디 출력 (바디가 클 경우 주의 필요)
         if request.method in ['POST', 'PUT', 'PATCH']:
