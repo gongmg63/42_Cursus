@@ -1,8 +1,8 @@
-import { checkAndRefreshToken } from "./jwtRefresh.js";
+// import { checkAndRefreshToken } from "./jwtRefresh.js";
 
 const access_token = localStorage.getItem("access_token");
 // wss://cx1r5s3.42seoul.kr/ws/game/match/?token=
-const socket = new WebSocket('wss://cx1r4s2.42seoul.kr/ws/game/match/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
 
 // WebSocket 연결이 열렸을 때 실행
 socket.onopen = function(event) {

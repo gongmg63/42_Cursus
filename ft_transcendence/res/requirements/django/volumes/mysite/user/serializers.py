@@ -73,6 +73,6 @@ class AddFriendSerializer(serializers.Serializer):
         friend.friends.add(instance)
         
         # signal 발생
-        friend.save()
+        instance.save()
         
         return friend

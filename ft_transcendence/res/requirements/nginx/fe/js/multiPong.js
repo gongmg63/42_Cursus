@@ -61,7 +61,7 @@ else
 
 const access_token = localStorage.getItem("access_token");
 // url 수정 필요
-const socket = new WebSocket('wss://cx1r4s2.42seoul.kr/ws/game/play/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
 
 socket.onopen = function() {
     // 서버로 플레이어 정보와 게임 타입을 보냄
