@@ -183,8 +183,6 @@ function parseGameURL()
 		player2 = urlParams.get('player2');
 		id1 = urlParams.get('id1');
 		id2 = urlParams.get('id2');
-		console.log("Player 1:", player1);
-		console.log("Player 2:", player2);
 	}
 }
 
@@ -203,24 +201,42 @@ function gameLoop()
 function checkGameEnd()
 {
 	// 점수 설정
-	let endScore = 3;
+	let endScore = 10;
 	if (myPad.score >= endScore || opPad.score >= endScore)
 	{
         let winner, loser;
         let winnerScore, loserScore;
 
-        if (myPad.score > opPad.score) {
-            winner = player1;
-            loser = player2;
+		if (myPad.score > opPad.score)
+		{
+			if (playerNumber == id1)
+			{
+				winner = player1;
+				loser = player2;
+			}
+			else
+			{
+				winner = player2;
+				loser = player1;
+			}
             winnerScore = myPad.score;
             loserScore = opPad.score;
-        }
-		else {
-            winner = player2;
-            loser = player1;
+		}
+		else
+		{
+			if (playerNumber == id1)
+			{
+				winner = player2;
+				loser = player1;
+			}
+			else
+			{
+				winner = player1;
+				loser = player2;
+			}
             winnerScore = opPad.score;
             loserScore = myPad.score;
-        }
+		}
         window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
 	}
 }

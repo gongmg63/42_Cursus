@@ -1,7 +1,6 @@
-import { handleError } from "./utils.js";
+// import { handleError } from "./utils.js";
 
 document.addEventListener('DOMContentLoaded', function() {
-	
 	// single, 1 vs 1, tournament에 따라 결과 다르게 - gameType 설정.
 	const result = resultToJson();
 	
@@ -12,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	// postMatchAPI(result);
 });
 
-document.getElementById('continueBtn').addEventListener('click', function() {
+document.getElementById('continueBtn').addEventListener('click', function(event) {
+	event.preventDefault();
     window.location.href = '/index.html';
 });
 
@@ -22,6 +22,7 @@ function updateResult(winner)
     const nickname = localStorage.getItem('nickname');
 
     const resultMessage = document.getElementById('resultMessage');
+	console.log("winner: ", winner);
 	if (winner == nickname)
 	{
 		resultMessage.textContent = 'You Win!';
@@ -94,6 +95,6 @@ function postMatchAPI(result)
 	})
 	.catch(error => {
         console.error('Error updating match:', error);
-		handleError(error);
+		// handleError(error);
     });
 }
