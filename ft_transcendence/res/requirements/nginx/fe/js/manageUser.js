@@ -103,6 +103,46 @@ export function fetchUserData()
 	});
 }
 
+export function fetchRecentMatch()
+{
+	checkAndRefreshToken().then(()=> {
+		const access_token = localStorage.getItem("access_token");
+		fetch('/api/game/result/me', {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${access_token}`,
+				'Content-Type': 'application/json'
+			},
+		})
+		.then(response => {
+			if (response.status == 404)
+				throw new Error('User data not found (404)');
+			else if (response.status == 500)
+				throw new Error('Server error (500)')
+			else if (!response.ok)
+			{
+				return response.json().then(errData => {
+					throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+				});
+			}
+			return response.json();
+		})
+		.then(data => {
+			if (Array.isArray(data))
+			{
+				if (data.length == 0)
+					console.log("No Recent Matches");
+				else
+					updateRecentMatches(data);
+			}
+		})
+		.catch(error => {
+			console.error('Error fetching user data: ', error);
+			handleError(error);
+		});
+	});
+}
+
 function updateUserInfo(user)
 {
 	const userDetails = document.querySelector('.user-details h1');
@@ -126,6 +166,17 @@ function updateRecentMatches(recentMatches)
 	const matchHistoryContainer = document.querySelector('.match-history-container');
 	matchHistoryContainer.innerHTML = '';
 
+	// {
+	// 	"winner": "winnerUsername",
+	// 	"loser": "loserUsername",
+	// 	"winner_score": 100,
+	// 	"loser_score": 80,
+	// 	"game_type": "chess",
+	// 	"game_date": "2024-09-01T12:00:00Z"
+	//   }
+
+	// 최근 전적 중 5개만 가져오게
+
 	recentMatches.forEach(match => {
 		const matchDiv = document.createElement('div');
 		matchDiv.classList.add('match');
@@ -133,12 +184,14 @@ function updateRecentMatches(recentMatches)
 		const userAvatarContainer = document.createElement('div');
 		userAvatarContainer.classList.add('match-avatar-container');
 		const userAvatarImg = document.createElement('img');
-		userAvatarImg.src = `${match.userAvatar}`;
+		userAvatarImg.src = `${match.winner.profile}`;
 		userAvatarImg.alt = 'User Avatar';
 		userAvatarImg.classList.add('match-avatar');
 		const userNickname = document.createElement('p');
 		userNickname.classList.add('match-nickname');
-		userNickname.textContent = 'You';
+
+		userNickname.textContent = match.winner.nickname;
+
 		userAvatarContainer.appendChild(userAvatarImg);
 		userAvatarContainer.appendChild(userNickname);
 
@@ -146,22 +199,29 @@ function updateRecentMatches(recentMatches)
 		matchInfo.classList.add('match-info');
 		const matchScore = document.createElement('p');
 		matchScore.classList.add('match-score');
-		matchScore.textContent = `${match.userScore} - ${match.opponentScore}`;
+
+		matchScore.textContent = `${match.winner_score} - ${match.loser_score}`;
 		const matchResult = document.createElement('p');
+
 		matchResult.classList.add('match-result', match.result);
-		matchResult.textContent = match.result.charAt(0).toUpperCase() + match.result.slice(1);
+		if (match.winner.nickname == localStorage.getItem("nickname"))
+			matchResult.textContent = "WIN";
+		else
+			matchResult.textContent = "LOSE";
 		matchInfo.appendChild(matchScore);
 		matchInfo.appendChild(matchResult);
 
 		const opponentAvatarContainer = document.createElement('div');
 		opponentAvatarContainer.classList.add('match-avatar-container');
 		const opponentAvatarImg = document.createElement('img');
-		opponentAvatarImg.src = `../images/${match.opponentAvatar}`;
+		opponentAvatarImg.src = `${match.loser.profile}`;
 		opponentAvatarImg.alt = 'Opponent Avatar';
 		opponentAvatarImg.classList.add('match-avatar');
 		const opponentNickname = document.createElement('p');
 		opponentNickname.classList.add('match-nickname');
-		opponentNickname.textContent = 'Opponent';
+
+		opponentNickname.textContent = match.loser.nickname;
+
 		opponentAvatarContainer.appendChild(opponentAvatarImg);
 		opponentAvatarContainer.appendChild(opponentNickname);
 

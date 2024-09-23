@@ -1,4 +1,4 @@
-import { fetchUserData, editUser, friend_websocket } from "./manageUser.js";
+import { fetchUserData, editUser, friend_websocket, fetchRecentMatch } from "./manageUser.js";
 import { addFriend } from "./addFriend.js";
 import { deleteFriend } from "./deleteFriend.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then((websocket) => {
                 console.log("웹소켓이 연결되었습니다.");
                 fetchUserData();
+				fetchRecentMatch();
             })
             .catch((error) => {
                 console.error("웹소켓 연결 중 오류가 발생했습니다:", error);

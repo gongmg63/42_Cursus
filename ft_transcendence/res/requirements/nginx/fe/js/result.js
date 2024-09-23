@@ -1,8 +1,6 @@
-import { handleError } from "./utils.js";
-import { checkAndRefreshToken } from "./jwtRefresh.js"
+// import { handleError } from "./utils.js";
 
 document.addEventListener('DOMContentLoaded', function() {
-	
 	// single, 1 vs 1, tournament에 따라 결과 다르게 - gameType 설정.
 	const result = resultToJson();
 	
@@ -10,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateResult(result.winner);
 
-	// postMatchAPI(result);
+	postMatchAPI(result);
 });
 
 document.getElementById('continueBtn').addEventListener('click', function(event) {
@@ -24,6 +22,7 @@ function updateResult(winner)
     const nickname = localStorage.getItem('nickname');
 
     const resultMessage = document.getElementById('resultMessage');
+	console.log("winner: ", winner);
 	if (winner == nickname)
 	{
 		resultMessage.textContent = 'You Win!';
@@ -81,7 +80,7 @@ function postMatchAPI(result)
 			'Authorization': `Bearer ${access_token}`,
 			'Content-Type': 'application/json'
 		},
-		body: result
+		body: JSON.stringify(result)
 	})
 	.then(response => {
 		if (response.status == 404)
@@ -97,6 +96,6 @@ function postMatchAPI(result)
 	})
 	.catch(error => {
         console.error('Error updating match:', error);
-		handleError(error);
+		// handleError(error);
     });
 }

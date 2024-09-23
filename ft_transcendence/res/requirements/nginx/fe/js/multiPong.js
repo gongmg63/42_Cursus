@@ -51,12 +51,14 @@ if (player1 == localStorage.getItem('nickname'))
 	myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
 	opPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200);
 	playerNumber = id1;
+	console.log('1');
 }
 else
 {
 	myPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200);
 	opPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
 	playerNumber = id2;
+	console.log('2');
 }
 
 const access_token = localStorage.getItem("access_token");
@@ -180,7 +182,7 @@ function parseGameURL()
 		player1 = urlParams.get('player1');
 		player2 = urlParams.get('player2');
 		id1 = urlParams.get('id1');
-		id2 = urlParams.get('id2');	
+		id2 = urlParams.get('id2');
 	}
 }
 
@@ -199,24 +201,42 @@ function gameLoop()
 function checkGameEnd()
 {
 	// 점수 설정
-	let endScore = 3;
+	let endScore = 11;
 	if (myPad.score >= endScore || opPad.score >= endScore)
 	{
         let winner, loser;
         let winnerScore, loserScore;
 
-        if (myPad.score > opPad.score) {
-            winner = player1;
-            loser = player2;
+		if (myPad.score > opPad.score)
+		{
+			if (playerNumber == id1)
+			{
+				winner = player1;
+				loser = player2;
+			}
+			else
+			{
+				winner = player2;
+				loser = player1;
+			}
             winnerScore = myPad.score;
             loserScore = opPad.score;
-        }
-		else {
-            winner = player2;
-            loser = player1;
+		}
+		else
+		{
+			if (playerNumber == id1)
+			{
+				winner = player2;
+				loser = player1;
+			}
+			else
+			{
+				winner = player1;
+				loser = player2;
+			}
             winnerScore = opPad.score;
             loserScore = myPad.score;
-        }
+		}
         window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
 	}
 }
