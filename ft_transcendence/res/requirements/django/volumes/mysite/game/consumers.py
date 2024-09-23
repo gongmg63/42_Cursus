@@ -188,8 +188,8 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         global client
         self.user = self.scope["user"]
-        self.paddle_velocity_x = 15
-        self.paddle_velocity_y = 15
+        self.paddle_velocity_x = 25
+        self.paddle_velocity_y = 25
         self.paddle_width = 20
         self.paddle_height = 200
         self.score = 0

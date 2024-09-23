@@ -23,6 +23,7 @@ import sys
 from io import BytesIO
 
 from .models import User
+from .signals import friend_delete_signal
 from .serializers import UserSerializer, AddFriendSerializer, FriendSerializer
 
 def Oauth(request):
@@ -208,7 +209,6 @@ class FriendAPIView(APIView):
                 "message": "친구가 성공적으로 추가되었습니다.",
                 "friend": friend_serializer.data # 추가된 친구 정보
             }, status=status.HTTP_200_OK)
-        print("not valid")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # DELETE : 친구 삭제
@@ -232,6 +232,7 @@ class FriendAPIView(APIView):
         if friend in current_user.friends.all():
             current_user.friends.remove(friend)
             friend.friends.remove(current_user)
+            friend_delete_signal.send(sender=User, instance=friend)
             return Response({'message': '친구가 성공적으로 삭제되었습니다.'}, status=status.HTTP_200_OK)
         else:
             return Response({'error': '해당 사용자는 친구 목록에 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
