@@ -201,7 +201,7 @@ function gameLoop()
 function checkGameEnd()
 {
 	// 점수 설정
-	let endScore = 10;
+	let endScore = 11;
 	if (myPad.score >= endScore || opPad.score >= endScore)
 	{
         let winner, loser;

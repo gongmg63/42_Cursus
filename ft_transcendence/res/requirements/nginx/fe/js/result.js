@@ -8,11 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateResult(result.winner);
 
-	// postMatchAPI(result);
+	postMatchAPI(result);
 });
 
-document.getElementById('continueBtn').addEventListener('click', function(event) {
-	event.preventDefault();
 document.getElementById('continueBtn').addEventListener('click', function(event) {
 	event.preventDefault();
     window.location.href = '/index.html';
@@ -82,7 +80,7 @@ function postMatchAPI(result)
 			'Authorization': `Bearer ${access_token}`,
 			'Content-Type': 'application/json'
 		},
-		body: result
+		body: JSON.stringify(result)
 	})
 	.then(response => {
 		if (response.status == 404)
