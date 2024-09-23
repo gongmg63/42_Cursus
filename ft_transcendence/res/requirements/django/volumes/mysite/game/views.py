@@ -12,13 +12,13 @@ class AddGameResultView(APIView):
         serializer = AddGameResultSerializer(data=request.data)
         
         if serializer.is_valid():
+            winner = serializer.validated_data.get('winner')  # 'winner' 필드를 문자열로 처리
+            loser = serializer.validated_data.get('loser')  # 'loser' 필드를 문자열로 처리
+            if request.user.id == winner.id:
+                return
             # 유효성 검사가 통과되면 게임 결과 생성
             game_result = serializer.save()
-            
-            # 승리자와 패배자를 가져옵니다.
-            winner = game_result.winner
-            loser = game_result.loser
-            
+
             # 승리자와 패배자의 승리 수 및 패배 수 업데이트
             winner.wins += 1
             loser.losses += 1
