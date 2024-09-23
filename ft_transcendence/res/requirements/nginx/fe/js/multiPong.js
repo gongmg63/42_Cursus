@@ -207,8 +207,9 @@ function checkGameEnd()
         let winner, loser;
         let winnerScore, loserScore;
 
-		if (myPad.score > opPad.score)
+		if (myPad.score < opPad.score)
 		{
+			// console.log("my");
 			if (playerNumber == id1)
 			{
 				winner = player1;
@@ -218,24 +219,25 @@ function checkGameEnd()
 			{
 				winner = player2;
 				loser = player1;
-			}
-            winnerScore = myPad.score;
-            loserScore = opPad.score;
-		}
-		else
-		{
-			if (playerNumber == id1)
-			{
-				winner = player2;
-				loser = player1;
-			}
-			else
-			{
-				winner = player1;
-				loser = player2;
 			}
             winnerScore = opPad.score;
             loserScore = myPad.score;
+		}
+		else
+		{
+			// console.log("op");
+			if (playerNumber == id1)
+			{
+				winner = player2;
+				loser = player1;
+			}
+			else
+			{
+				winner = player1;
+				loser = player2;
+			}
+            winnerScore = myPad.score;
+            loserScore = opPad.score;
 		}
         window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
 	}

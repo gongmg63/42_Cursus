@@ -211,31 +211,30 @@ function updateRecentMatches(recentMatches)
 	const matchHistoryContainer = document.querySelector('.match-history-container');
 	matchHistoryContainer.innerHTML = '';
 
-	// {
-	// 	"winner": "winnerUsername",
-	// 	"loser": "loserUsername",
-	// 	"winner_score": 100,
-	// 	"loser_score": 80,
-	// 	"game_type": "chess",
-	// 	"game_date": "2024-09-01T12:00:00Z"
-	//   }
-
 	// 최근 전적 중 5개만 가져오게
 
-	recentMatches.forEach(match => {
+	recentMatches.slice(0, 5).forEach(match => {
+		console.log(match);
 		const matchDiv = document.createElement('div');
+		const myNickname = localStorage.getItem("nickname");
+		const myProfile = localStorage.getItem("profile");
+		const opNickname = match.winner.nickname == myNickname ? match.loser.nickname : match.winner.nickname;
+		const opProfile = match.winner.nickname == myNickname ? match.loser.profile : match.winner.profile;
+		const myScore = match.winner.nickname == myNickname ? match.winner_score : match.loser_score;
+		const opScore = match.winner.nickname == myNickname ? match.loser_score : match.winner_score;
+		
 		matchDiv.classList.add('match');
 
 		const userAvatarContainer = document.createElement('div');
 		userAvatarContainer.classList.add('match-avatar-container');
 		const userAvatarImg = document.createElement('img');
-		userAvatarImg.src = `${match.winner.profile}`;
+		userAvatarImg.src = `${myProfile}`;
 		userAvatarImg.alt = 'User Avatar';
 		userAvatarImg.classList.add('match-avatar');
 		const userNickname = document.createElement('p');
 		userNickname.classList.add('match-nickname');
 
-		userNickname.textContent = match.winner.nickname;
+		userNickname.textContent = myNickname;
 
 		userAvatarContainer.appendChild(userAvatarImg);
 		userAvatarContainer.appendChild(userNickname);
@@ -245,7 +244,7 @@ function updateRecentMatches(recentMatches)
 		const matchScore = document.createElement('p');
 		matchScore.classList.add('match-score');
 
-		matchScore.textContent = `${match.winner_score} - ${match.loser_score}`;
+		matchScore.textContent = `${myScore} - ${opScore}`;
 		const matchResult = document.createElement('p');
 
 		matchResult.classList.add('match-result', match.result);
@@ -259,13 +258,13 @@ function updateRecentMatches(recentMatches)
 		const opponentAvatarContainer = document.createElement('div');
 		opponentAvatarContainer.classList.add('match-avatar-container');
 		const opponentAvatarImg = document.createElement('img');
-		opponentAvatarImg.src = `${match.loser.profile}`;
+		opponentAvatarImg.src = `${opProfile}`;
 		opponentAvatarImg.alt = 'Opponent Avatar';
 		opponentAvatarImg.classList.add('match-avatar');
 		const opponentNickname = document.createElement('p');
 		opponentNickname.classList.add('match-nickname');
 
-		opponentNickname.textContent = match.loser.nickname;
+		opponentNickname.textContent = opNickname;
 
 		opponentAvatarContainer.appendChild(opponentAvatarImg);
 		opponentAvatarContainer.appendChild(opponentNickname);
