@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.getElementById('continueBtn').addEventListener('click', function(event) {
 	event.preventDefault();
+document.getElementById('continueBtn').addEventListener('click', function(event) {
+	event.preventDefault();
     window.location.href = '/index.html';
 });
 
@@ -73,6 +75,7 @@ function postMatchAPI(result)
 {
 	if (result.gameType == 'single')
 		return ;
+	const access_token = localStorage.getItem("access_token");
 	fetch('/api/game/result/add/', {
 		method: 'POST',
 		headers: {

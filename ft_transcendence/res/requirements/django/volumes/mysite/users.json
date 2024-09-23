@@ -8,8 +8,8 @@
 			"nickname": "Jobs",
 			"wins": 10,
 			"losses": 5,
-			"profile": "Jobs.png",
-			"is_active": true,
+			"profile": "/images/Jobs.png",
+			"active": true,
 			"friends": []
 		}
 	},
@@ -22,8 +22,8 @@
 			"nickname": "Huang",
 			"wins": 8,
 			"losses": 15,
-			"profile": "Huang.png",
-			"is_active": true,
+			"profile": "/images/Huang.png",
+			"active": true,
 			"friends": []
 		}
 	},
@@ -36,8 +36,8 @@
 			"nickname": "Page",
 			"wins": 11,
 			"losses": 7,
-			"profile": "Page.png",
-			"is_active": true,
+			"profile": "/images/Page.png",
+			"active": true,
 			"friends": []
 		}
 	},
@@ -50,8 +50,8 @@
 			"nickname": "Musk",
 			"wins": 16,
 			"losses": 15,
-			"profile": "Musk.png",
-			"is_active": true,
+			"profile": "/images/Musk.png",
+			"active": true,
 			"friends": []
 		}
 	},
@@ -64,8 +64,8 @@
 			"nickname": "Gates",
 			"wins": 9,
 			"losses": 19,
-			"profile": "Gates.png",
-			"is_active": true,
+			"profile": "/images/Gates.png",
+			"active": true,
 			"friends": []
 		}
 	}

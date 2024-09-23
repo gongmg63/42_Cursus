@@ -1,6 +1,7 @@
 import { editLocalStorage, handleError, populateFriendSelect, updateFriendsList } from "./utils.js";
 import { friends, setFriends } from "./index.js";
 import { setTFA } from "./2FA.js";
+import { checkAndRefreshToken } from "./jwtRefresh.js";
 
 const editUserBtn = document.querySelector('.edit-user-btn');
 const editUserModal = document.getElementById('editUserModal');
@@ -20,39 +21,130 @@ window.addEventListener('click', function(event) {
 	}
 });
 
+export function friend_websocket()
+{
+	return new Promise((resolve, reject) => {
+		const access_token = localStorage.getItem("access_token");
+		const websocket = new WebSocket('wss://cx1r4s2.42seoul.kr/ws/friend/status/?token=' + access_token);
+        
+		
+        // 연결이 성공했을 때 호출
+        websocket.onopen = () => {
+            console.log("웹소켓 연결 완료");
+            resolve(websocket);  // 웹소켓 객체를 반환하여 다른 곳에서 사용 가능
+        };
+
+        // 메시지를 수신할 때 호출
+        websocket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("서버로부터 받은 메시지:", data);
+			updateFriendsList(data.friends);
+            // 여기에서 메시지에 따라 처리하는 로직을 추가
+        };
+
+        // 오류가 발생했을 때 호출
+        websocket.onerror = (error) => {
+            console.error("웹소켓 연결 오류:", error);
+            reject(error);  // 연결 실패 시 Promise를 거부
+        };
+
+        // 연결이 종료되었을 때 호출
+        websocket.onclose = () => {
+            console.log("웹소켓 연결 종료");
+        };
+    });
+	
+	socket.onopen = () => {
+        console.log("웹소켓 연결 완료");
+        // 웹소켓이 열렸을 때 fetchUserData 호출
+        fetchUserData();
+    };
+    
+    socket.onerror = (error) => {
+        console.error("웹소켓 연결 오류:", error);
+    };
+	// const friendStatusSocket = socket;
+
+	// friendStatusSocket.onopen = function() {
+	// 	console.log('WebSocket connection established.');
+	// };
+
+	// friendStatusSocket.onerror = function(error) {
+	// 	console.log('WebSocket error: ' + error.message);
+	// };
+
+	// friendStatusSocket.onclose = function(event) {
+	// 	if (event.wasClean) {
+	// 		console.log('WebSocket connection closed cleanly, code=' + event.code + ', reason=' + event.reason);
+	// 	} else {
+	// 		console.log('WebSocket connection closed with error');
+	// 	}
+	// };
+
+	// friendStatusSocket.onmessage = function(e) {
+	// 	const data = JSON.parse(e.data);
+	// 	if (data.type === 'friend_status') {
+	// 		updateFriendStatusUI(data.friends);
+	// 	} else if (data.type === 'friend_status_update') {
+	// 		updateSingleFriendStatus(data.friend_id, data.status);
+	// 	}
+	// };
+
+	// function updateFriendStatusUI(friends) {
+	// 	for (const [friendId, status] of Object.entries(friends)) {
+	// 		updateSingleFriendStatus(friendId, status);
+	// 		console.log(status.className);
+	// 	}
+	// }
+
+	// function updateSingleFriendStatus(friendId, status) {
+	// 	const statusElement = document.getElementById(`friend-status-${friendId}`);
+	// 	if (statusElement) {
+	// 		statusElement.textContent = status ? '온라인' : '오프라인';
+	// 		statusElement.className = status ? 'online' : 'offline';
+	// 	}
+	// }
+}
+
 export function fetchUserData()
 {
-	const access_token = localStorage.getItem("access_token");
-	fetch('/api/user/me', {
-		method: 'GET',
-		headers: {
-			'Authorization': `Bearer ${access_token}`,
-			'Content-Type': 'application/json'
-		},
-	})
-	.then(response => {
-		if (response.status == 404)
-			throw new Error('User data not found (404)');
-		else if (response.status == 500)
-			throw new Error('Server error (500)')
-		else if (!response.ok)
-				throw new Error(`Unexpected error: ${response.status}`);
-		return response.json();
-	})
-	.then(data => {
-		// User 정보 업데이트
-		updateUserInfo(data);
-
-		// 친구 목록 업데이트
-		setFriends(data.friends);
-		updateFriendsList(data.friends);
-
-		// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
-		// updateRecentMatches(data.recentMatches);
-	})
-	.catch(error => {
-		console.error('Error fetching user data: ', error);
-		handleError(error);
+	checkAndRefreshToken().then(()=> {
+		const access_token = localStorage.getItem("access_token");
+		fetch('/api/user/me', {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${access_token}`,
+				'Content-Type': 'application/json'
+			},
+		})
+		.then(response => {
+			if (response.status == 404)
+				throw new Error('User data not found (404)');
+			else if (response.status == 500)
+				throw new Error('Server error (500)')
+			else if (!response.ok)
+			{
+				return response.json().then(errData => {
+					throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+				});
+			}
+			return response.json();
+		})
+		.then(data => {
+			// User 정보 업데이트
+			updateUserInfo(data);
+		
+			// 친구 목록 업데이트
+			setFriends(data.friends);
+			updateFriendsList(data.friends);
+		
+			// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
+			// updateRecentMatches(data.recentMatches);
+		})
+		.catch(error => {
+			console.error('Error fetching user data: ', error);
+			handleError(error);
+		});
 	});
 }
 
@@ -137,7 +229,9 @@ export function editUser()
     if (avatarFile) {
         formData.append('profile', avatarFile);
     }
-	patchUserAPI(formData, nickname, avatarFile, access_token);
+	checkAndRefreshToken().then(() => {
+		patchUserAPI(formData, nickname, avatarFile, access_token);
+	});
 }
 
 function patchUserAPI(formData, nickname, avatarFile, access_token)
@@ -175,49 +269,4 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
         console.error('Error updating profile:', error);
 		handleError(error);
     });
-}
-
-const access_token = localStorage.getItem("access_token");
-const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/friend/status/?token=' + access_token);
-
-const friendStatusSocket = socket;
-
-friendStatusSocket.onopen = function() {
-    console.log('WebSocket connection established.');
-};
-
-friendStatusSocket.onerror = function(error) {
-    console.log('WebSocket error: ' + error.message);
-};
-
-friendStatusSocket.onclose = function(event) {
-    if (event.wasClean) {
-        console.log('WebSocket connection closed cleanly, code=' + event.code + ', reason=' + event.reason);
-    } else {
-        console.log('WebSocket connection closed with error');
-    }
-};
-
-friendStatusSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    if (data.type === 'friend_status') {
-        updateFriendStatusUI(data.friends);
-    } else if (data.type === 'friend_status_update') {
-        updateSingleFriendStatus(data.friend_id, data.status);
-    }
-};
-
-function updateFriendStatusUI(friends) {
-    for (const [friendId, status] of Object.entries(friends)) {
-        updateSingleFriendStatus(friendId, status);
-		console.log(status.className);
-    }
-}
-
-function updateSingleFriendStatus(friendId, status) {
-    const statusElement = document.getElementById(`friend-status-${friendId}`);
-    if (statusElement) {
-        statusElement.textContent = status ? '온라인' : '오프라인';
-        statusElement.className = status ? 'online' : 'offline';
-    }
 }
