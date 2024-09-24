@@ -34,7 +34,6 @@ function updateResult(winner)
     const nickname = localStorage.getItem('nickname');
 
     const resultMessage = document.getElementById('resultMessage');
-	console.log("winner: ", winner);
 	if (winner == nickname)
 	{
 		resultMessage.textContent = 'You Win!';

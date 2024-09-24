@@ -11,6 +11,22 @@ body {
 	/* background-color: #111; */
 }
 
+h2 {
+	color: #fff;
+	font-family: sans-serif;
+	font-size: 2rem;
+	position: absolute;
+	top: 50px;
+}
+
+#player1Name {
+	left: 20%;
+}
+
+#player2Name {
+	right: 20%;
+}
+
 h1 {
 	color: #fff;
 	font-family: sans-serif;

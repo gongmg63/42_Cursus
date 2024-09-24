@@ -168,13 +168,13 @@ function updateUserInfo(user)
 function updateRecentMatches(recentMatches)
 {
 	const matchHistoryContainer = document.querySelector('.match-history-container');
-	
 	// 최근 전적 중 5개만 가져오게
-	if (matchHistoryContainer)
+
+	// match.game_date - 연월일 가져오기
+	if(matchHistoryContainer)
 	{
 		matchHistoryContainer.innerHTML = '';
 		recentMatches.slice(-5).forEach(match => {
-			console.log(match);
 			const matchDiv = document.createElement('div');
 			const myNickname = localStorage.getItem("nickname");
 			const myProfile = localStorage.getItem("profile");
@@ -183,6 +183,10 @@ function updateRecentMatches(recentMatches)
 			const myScore = match.winner.nickname == myNickname ? match.winner_score : match.loser_score;
 			const opScore = match.winner.nickname == myNickname ? match.loser_score : match.winner_score;
 			
+			// 날짜 포맷팅 (연-월-일 형식)
+			const gameDate = new Date(match.game_date);
+			const formattedDate = `${gameDate.getFullYear()}-${String(gameDate.getMonth() + 1).padStart(2, '0')}-${String(gameDate.getDate()).padStart(2, '0')}`;
+
 			matchDiv.classList.add('match');
 	
 			const userAvatarContainer = document.createElement('div');
@@ -201,17 +205,25 @@ function updateRecentMatches(recentMatches)
 	
 			const matchInfo = document.createElement('div');
 			matchInfo.classList.add('match-info');
+			
+			// 날짜 출력
+			const matchDate = document.createElement('p');
+			matchDate.classList.add('match-date');
+			matchDate.textContent = formattedDate;
+
 			const matchScore = document.createElement('p');
 			matchScore.classList.add('match-score');
-	
 			matchScore.textContent = `${myScore} - ${opScore}`;
-			const matchResult = document.createElement('p');
 	
+			const matchResult = document.createElement('p');
 			matchResult.classList.add('match-result', match.result);
+	
 			if (match.winner.nickname == localStorage.getItem("nickname"))
 				matchResult.textContent = "WIN";
 			else
 				matchResult.textContent = "LOSE";
+
+			matchInfo.appendChild(matchDate); // 날짜 추가
 			matchInfo.appendChild(matchScore);
 			matchInfo.appendChild(matchResult);
 	
