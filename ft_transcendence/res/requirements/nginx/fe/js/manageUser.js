@@ -292,11 +292,13 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.querySelector('.avatar-container img').src = e.target.result;
+				localStorage.setItem('profile', e.target.result);
             };
             reader.readAsDataURL(avatarFile);
         }
         editUserModal.style.display = 'none';
-		editLocalStorage(nickname, avatarFile);
+		// editLocalStorage(nickname, avatarFile);
+		localStorage.setItem('nickname', nickname);
     })
     .catch(error => {
         console.error('Error updating profile:', error);

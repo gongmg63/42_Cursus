@@ -5,6 +5,16 @@ const urlParams = new URLSearchParams(window.location.search);
 const type = urlParams.get("gameType");
 const nick = urlParams.get("nickname");
 
+document.addEventListener('DOMContentLoaded', function() {
+	let loadingDots = 0;
+	const loadingMessage = document.getElementById('loadingMessage');
+	
+	const loadingInterval = setInterval(() => {
+		loadingDots = (loadingDots + 1) % 4;
+		loadingMessage.textContent = 'Loading' + '.'.repeat(loadingDots);
+	}, 500);
+});
+
 checkAndRefreshToken().then(() => {
 	friend_websocket()
 		.then((websocket) => {
@@ -43,17 +53,6 @@ checkAndRefreshToken().then(() => {
 			socket.onerror = function(error) {
 				console.error("WebSocket 에러:", error);
 			};
-			
-			document.addEventListener('DOMContentLoaded', function() {
-				let loadingDots = 0;
-				const loadingMessage = document.getElementById('loadingMessage');
-				
-				const loadingInterval = setInterval(() => {
-					loadingDots = (loadingDots + 1) % 4;
-					loadingMessage.textContent = 'Loading' + '.'.repeat(loadingDots);
-				}, 500);
-			});
-			
 			
 			function updateMatchInfo(matchData) {
 				
