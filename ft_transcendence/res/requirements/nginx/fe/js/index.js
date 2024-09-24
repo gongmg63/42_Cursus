@@ -1,7 +1,8 @@
-import { fetchUserData, editUser, friend_websocket, fetchRecentMatch } from "./manageUser.js";
+import { fetchUserData, editUser, fetchRecentMatch } from "./manageUser.js";
 import { addFriend } from "./addFriend.js";
 import { deleteFriend } from "./deleteFriend.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { friend_websocket } from "./friendWebsocket.js";
 
 export let friends = [];
 

@@ -22,8 +22,8 @@ tournament_waiting_queue = []
 final_waiting_queue = []
 
 #     socket.send(JSON.stringify({
-#       type: "1vs1 or Tournament or final _match_request",
-#		gameType: "1vs1 or Tournament"
+#       type: "1vs1 or tournament or final_match_request",
+#		gameType: "1vs1 or tournament"
 #       id: "12345"
 #     }));
 
@@ -200,8 +200,13 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        print("disconnect")
         self.client[self.user.id] = False
+        if hasattr(self, 'game_loop_task'):
+            self.game_loop_task.cancel()  # 태스크 취소
+            try:
+                await self.game_loop_task  # 태스크가 제대로 종료될 때까지 기다림
+            except asyncio.CancelledError:
+                print("Game loop task properly cancelled")
 
     async def receive(self, text_data):
         global client
@@ -302,9 +307,13 @@ class GameConsumer(AsyncWebsocketConsumer):
         }))
     
     async def game_loop(self):
-        while True:
-            await self.update_game_state()
-            await asyncio.sleep(0.02)  # 20ms 간격으로 업데이트 
+        try:
+            while True:
+                await self.update_game_state()
+                await asyncio.sleep(0.02)  # 20ms 간격으로 업데이트
+        except asyncio.CancelledError:
+            # 태스크가 취소될 때 필요한 정리 작업
+            print("Game loop cancelled")
 
     async def update_game_state(self):
         # 공 위치 업데이트

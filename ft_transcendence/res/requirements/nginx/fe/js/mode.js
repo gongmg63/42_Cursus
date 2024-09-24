@@ -1,7 +1,20 @@
+import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { friend_websocket } from "./friendWebsocket.js";
+
 document.addEventListener('DOMContentLoaded', function() {
     const singleBtn = document.getElementById('single');
     const pvpBtn = document.getElementById('pvp');
     const tournamentBtn = document.getElementById('tournament');
+
+    checkAndRefreshToken().then(() => {
+        friend_websocket()
+            .then((websocket) => {
+                console.log("웹소켓이 연결되었습니다.");
+            })
+            .catch((error) => {
+                console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+            });
+    })
 
     singleBtn.addEventListener('click', function() {
         console.log('Single mode selected');
