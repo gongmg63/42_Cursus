@@ -49,7 +49,6 @@ export function checkAndRefreshToken() {
         if (isTokenExpired(accessToken)) {
             refreshToken()
                 .then(() => {
-                    console.log('Token refreshed successfully');
                     resolve(); // 토큰 갱신 완료 후 resolve
                 })
                 .catch(error => {
@@ -57,7 +56,6 @@ export function checkAndRefreshToken() {
                     reject(error); // 오류 발생 시 reject
                 });
         } else {
-            console.log('Token is still valid');
             resolve(); // 토큰이 유효할 경우 resolve
         }
     });

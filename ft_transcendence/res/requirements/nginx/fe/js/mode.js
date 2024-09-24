@@ -1,4 +1,4 @@
-import { friend_websocket } from "./manageUser.js";
+import { friend_websocket } from "./friendWebsocket.js";
 import { refreshToken } from "./jwtRefresh.js";
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -12,15 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	let gameType;
 	
 
-    checkAndRefreshToken().then(() => {
-        friend_websocket()
-            .then((websocket) => {
-                console.log("웹소켓이 연결되었습니다.");
-            })
-            .catch((error) => {
-                console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
-            });
-    })
+    // checkAndRefreshToken().then(() => {
+    //     friend_websocket()
+    //         .then((websocket) => {
+    //             console.log("웹소켓이 연결되었습니다.");
+    //         })
+    //         .catch((error) => {
+    //             console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+    //         });
+    // })
 
     singleBtn.addEventListener('click', function() {
         console.log('Single mode selected');

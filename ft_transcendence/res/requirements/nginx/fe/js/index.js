@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     checkAndRefreshToken().then(() => {
         friend_websocket()
             .then((websocket) => {
-                console.log("웹소켓이 연결되었습니다.");
                 fetchUserData();
 				fetchRecentMatch();
             })

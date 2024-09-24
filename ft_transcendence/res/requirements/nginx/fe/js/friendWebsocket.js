@@ -10,7 +10,6 @@ export function friend_websocket()
 		
         // 연결이 성공했을 때 호출
         websocket.onopen = () => {
-            console.log("웹소켓 연결 완료");
             resolve(websocket);  // 웹소켓 객체를 반환하여 다른 곳에서 사용 가능
         };
 
@@ -19,10 +18,7 @@ export function friend_websocket()
             const data = JSON.parse(event.data);
 			if (data.type == 'friend_status_update')
             {
-				console.log("서버로부터 받은 메시지:", data);
-				// populateFriendSelect();
 				updateFriendsList(data.friends);
-				// 여기에서 메시지에 따라 처리하는 로직을 추가
 			}
 			else if (data.type == 'friend_update')
 				setFriends(data.friends);
@@ -32,11 +28,6 @@ export function friend_websocket()
         websocket.onerror = (error) => {
             console.error("웹소켓 연결 오류:", error);
             reject(error);  // 연결 실패 시 Promise를 거부
-        };
-
-        // 연결이 종료되었을 때 호출
-        websocket.onclose = () => {
-            console.log("웹소켓 연결 종료");
         };
     });
 }

@@ -168,72 +168,74 @@ function updateUserInfo(user)
 function updateRecentMatches(recentMatches)
 {
 	const matchHistoryContainer = document.querySelector('.match-history-container');
-	matchHistoryContainer.innerHTML = '';
-
+	
 	// 최근 전적 중 5개만 가져오게
-
-	recentMatches.slice(0, 5).forEach(match => {
-		console.log(match);
-		const matchDiv = document.createElement('div');
-		const myNickname = localStorage.getItem("nickname");
-		const myProfile = localStorage.getItem("profile");
-		const opNickname = match.winner.nickname == myNickname ? match.loser.nickname : match.winner.nickname;
-		const opProfile = match.winner.nickname == myNickname ? match.loser.profile : match.winner.profile;
-		const myScore = match.winner.nickname == myNickname ? match.winner_score : match.loser_score;
-		const opScore = match.winner.nickname == myNickname ? match.loser_score : match.winner_score;
-		
-		matchDiv.classList.add('match');
-
-		const userAvatarContainer = document.createElement('div');
-		userAvatarContainer.classList.add('match-avatar-container');
-		const userAvatarImg = document.createElement('img');
-		userAvatarImg.src = `${myProfile}`;
-		userAvatarImg.alt = 'User Avatar';
-		userAvatarImg.classList.add('match-avatar');
-		const userNickname = document.createElement('p');
-		userNickname.classList.add('match-nickname');
-
-		userNickname.textContent = myNickname;
-
-		userAvatarContainer.appendChild(userAvatarImg);
-		userAvatarContainer.appendChild(userNickname);
-
-		const matchInfo = document.createElement('div');
-		matchInfo.classList.add('match-info');
-		const matchScore = document.createElement('p');
-		matchScore.classList.add('match-score');
-
-		matchScore.textContent = `${myScore} - ${opScore}`;
-		const matchResult = document.createElement('p');
-
-		matchResult.classList.add('match-result', match.result);
-		if (match.winner.nickname == localStorage.getItem("nickname"))
-			matchResult.textContent = "WIN";
-		else
-			matchResult.textContent = "LOSE";
-		matchInfo.appendChild(matchScore);
-		matchInfo.appendChild(matchResult);
-
-		const opponentAvatarContainer = document.createElement('div');
-		opponentAvatarContainer.classList.add('match-avatar-container');
-		const opponentAvatarImg = document.createElement('img');
-		opponentAvatarImg.src = `${opProfile}`;
-		opponentAvatarImg.alt = 'Opponent Avatar';
-		opponentAvatarImg.classList.add('match-avatar');
-		const opponentNickname = document.createElement('p');
-		opponentNickname.classList.add('match-nickname');
-
-		opponentNickname.textContent = opNickname;
-
-		opponentAvatarContainer.appendChild(opponentAvatarImg);
-		opponentAvatarContainer.appendChild(opponentNickname);
-
-		matchDiv.appendChild(userAvatarContainer);
-		matchDiv.appendChild(matchInfo);
-		matchDiv.appendChild(opponentAvatarContainer);
-
-		matchHistoryContainer.appendChild(matchDiv);
-	})
+	if (matchHistoryContainer)
+	{
+		matchHistoryContainer.innerHTML = '';
+		recentMatches.slice(-5).forEach(match => {
+			console.log(match);
+			const matchDiv = document.createElement('div');
+			const myNickname = localStorage.getItem("nickname");
+			const myProfile = localStorage.getItem("profile");
+			const opNickname = match.winner.nickname == myNickname ? match.loser.nickname : match.winner.nickname;
+			const opProfile = match.winner.nickname == myNickname ? match.loser.profile : match.winner.profile;
+			const myScore = match.winner.nickname == myNickname ? match.winner_score : match.loser_score;
+			const opScore = match.winner.nickname == myNickname ? match.loser_score : match.winner_score;
+			
+			matchDiv.classList.add('match');
+	
+			const userAvatarContainer = document.createElement('div');
+			userAvatarContainer.classList.add('match-avatar-container');
+			const userAvatarImg = document.createElement('img');
+			userAvatarImg.src = `${myProfile}`;
+			userAvatarImg.alt = 'User Avatar';
+			userAvatarImg.classList.add('match-avatar');
+			const userNickname = document.createElement('p');
+			userNickname.classList.add('match-nickname');
+	
+			userNickname.textContent = myNickname;
+	
+			userAvatarContainer.appendChild(userAvatarImg);
+			userAvatarContainer.appendChild(userNickname);
+	
+			const matchInfo = document.createElement('div');
+			matchInfo.classList.add('match-info');
+			const matchScore = document.createElement('p');
+			matchScore.classList.add('match-score');
+	
+			matchScore.textContent = `${myScore} - ${opScore}`;
+			const matchResult = document.createElement('p');
+	
+			matchResult.classList.add('match-result', match.result);
+			if (match.winner.nickname == localStorage.getItem("nickname"))
+				matchResult.textContent = "WIN";
+			else
+				matchResult.textContent = "LOSE";
+			matchInfo.appendChild(matchScore);
+			matchInfo.appendChild(matchResult);
+	
+			const opponentAvatarContainer = document.createElement('div');
+			opponentAvatarContainer.classList.add('match-avatar-container');
+			const opponentAvatarImg = document.createElement('img');
+			opponentAvatarImg.src = `${opProfile}`;
+			opponentAvatarImg.alt = 'Opponent Avatar';
+			opponentAvatarImg.classList.add('match-avatar');
+			const opponentNickname = document.createElement('p');
+			opponentNickname.classList.add('match-nickname');
+	
+			opponentNickname.textContent = opNickname;
+	
+			opponentAvatarContainer.appendChild(opponentAvatarImg);
+			opponentAvatarContainer.appendChild(opponentNickname);
+	
+			matchDiv.appendChild(userAvatarContainer);
+			matchDiv.appendChild(matchInfo);
+			matchDiv.appendChild(opponentAvatarContainer);
+	
+			matchHistoryContainer.appendChild(matchDiv);
+		})
+	}
 }
 
 export function editUser()
