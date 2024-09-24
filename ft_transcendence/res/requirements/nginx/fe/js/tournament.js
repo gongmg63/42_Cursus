@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	const round = parseRound();
 
     // 첫 번째 라운드 데이터 불러오기
-    fetchTournamentData(round);
+    // fetchTournamentData(round);
+	updateTournamentUI();
 });
 
 function parseRound()

@@ -16,14 +16,15 @@
             <button class="mode-btn" id="tournament">Tournament</button>
         </div>
     </div>
-    <script type="module" src="/js/mode.js"></script>
-    <!-- <script type="module" src="/js/friendWebsocket.js"></script>"
-    <script type="module" src="/js/jwtRefresh.js"></script>" -->
-    <!-- <script type="module" src="../js/jwtRefresh.js"></script>
-    <script type="module" src="../js/manageUser.js"></script> -->
-    <!-- <script src="../js/jwtRefresh.js" defer></script> -->
-    <!-- <script type="module" src="../js/jwtRefresh.js" defer></script> -->
-    <!-- <script type="module" src="../js/mode.js" defer></script> -->
-    <!-- jwtRefresh.js도 모듈로 불러오기 -->
+
+    <div id="tournament-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Enter Nickname</h2>
+            <input type="text" id="nickname" placeholder="Your Nickname">
+            <button id="start-tournament" class="modal-btn">Start</button>
+        </div>
+    </div>
+	<script type="module" src="../js/mode.js"></script>
 </body>
 </html>

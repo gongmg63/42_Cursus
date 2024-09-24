@@ -20,22 +20,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-document.getElementById("addFriendForm").addEventListener("submit", (event) => {
+document.getElementById("addFriendForm")?.addEventListener("submit", (event) => {
     event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
 	addFriend();
 });
 
-document.getElementById("removeFriendForm").addEventListener("submit", (event) => {
+document.getElementById("removeFriendForm")?.addEventListener("submit", (event) => {
     event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
 	deleteFriend();
 });
 
-document.getElementById('editUserForm').addEventListener('submit', function(event) {
+document.getElementById('editUserForm')?.addEventListener('submit', function(event) {
     event.preventDefault();
 	editUser();
 });
 
-document.querySelector('.game-start-btn').addEventListener('click', function() {
+document.querySelector('.game-start-btn')?.addEventListener('click', function() {
 	window.location.href = '/mode.html';
 })
 

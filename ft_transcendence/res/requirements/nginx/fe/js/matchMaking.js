@@ -2,14 +2,18 @@
 
 const access_token = localStorage.getItem("access_token");
 // wss://cx1r5s3.42seoul.kr/ws/game/match/?token=
-const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
+
+const urlParams = URLSearchParams();
+const type = urlParams.get("gameType");
+const nick = urlParams.get("nickname");
 
 // WebSocket 연결이 열렸을 때 실행
 socket.onopen = function(event) {
     console.log("WebSocket 연결 성공:", event);
     // 서버에 메시지를 보내는 예시 (매칭 요청)
     socket.send(JSON.stringify({
-        type: "1vs1_match_request"
+        type: type
     }));
 };
 
@@ -46,22 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 500);
 });
 
-function fetchMatchData() {
-	setTimeout(function() {
-		fetch('/api/match')
-		.then(response => response.json())
-		.then(data => {
-			// 매치 데이터를 성공적으로 가져왔을 경우 화면 업데이트
-			updateMatchInfo(data);
-			// 잠시 후에 pong 게임 시작.
-			startPongGame(data);
-		})
-		.catch(error => {
-			console.error('Error fetching match data:', error);
-			// 매치 정보를 가져오는 데 실패하면 다시 시도하거나 오류 처리 가능
-		});
-	}, 2000); // 테스트 목적으로 2초 대기 후 데이터를 가져옴
-}
 
 function updateMatchInfo(matchData) {
 	
@@ -86,6 +74,11 @@ function updateMatchInfo(matchData) {
 		document.getElementById('player2Stats').textContent = `Wins: ${matchData.player2.wins} | Losses: ${matchData.player2.losses}`;
 	}
 	// game type이 tournament이면 tournament 매치 화면
+	else if (matchData.gameType == "tournament")
+	{
+		
+		window.location.href = `/tournament.html?round=1`;
+	}
 }
 
 function startPongGame(matchData)
