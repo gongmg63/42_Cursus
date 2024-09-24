@@ -1,3 +1,24 @@
+import { friend_websocket } from "./friendWebsocket.js";
+import { checkAndRefreshToken } from "./jwtRefresh.js";
+
+checkAndRefreshToken().then(() => {
+	friend_websocket()
+		.catch((error) => {
+			console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+		});
+})
+
+window.addEventListener("beforeunload", function (e) {
+	// e.returnValue = "refresh message";
+	
+	const message = JSON.stringify({
+		type: 'outPage',
+		id: playerNumber,
+	});
+	socket.send(message);
+    window.location.href = "https://cx1r5s2.42seoul.kr/index.html";
+});
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -51,19 +72,17 @@ if (player1 == localStorage.getItem('nickname'))
 	myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
 	opPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200);
 	playerNumber = id1;
-	console.log('1');
 }
 else
 {
 	myPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200);
 	opPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
 	playerNumber = id2;
-	console.log('2');
 }
 
 const access_token = localStorage.getItem("access_token");
 // url 수정 필요
-const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
 
 socket.onopen = function() {
     // 서버로 플레이어 정보와 게임 타입을 보냄
@@ -81,14 +100,9 @@ socket.onmessage = function(event) {
 	if (data.type == 'paddleMove')
 	{
 		if (playerNumber == data.id)
-		{
 			myPad.update(data.y)
-		}
 		else
-		{
 			opPad.opUpdate(data.y);
-		}
-		console.log('paddleMove');
 	}
 	else if (data.type == 'ballMove')
 	{
@@ -98,7 +112,6 @@ socket.onmessage = function(event) {
 		ball.velocity.y = data.ball_velocity_y;
 		ball.radius = data.ball_radius;
 		ball.update();
-		console.log('ballMove');
 	}
 	else if (data.type == 'increaseScore')
 	{
@@ -118,11 +131,41 @@ socket.onmessage = function(event) {
 			else
 				document.getElementById("player2Score").innerHTML = opPad.score;
 		}
-		console.log('increaseScore');
 	}
 	else if (data.type == 'startGame')
-	{
 		gameLoop();
+	else if (data.type == 'outPlayer')
+	{
+		if (data.out_player == playerNumber)
+		{
+			myPad.score = 0;
+			opPad.score = 11;
+			// if (playerNumber == id1)
+			// {
+			// 	document.getElementById("player1Score").innerHTML = 0;
+			// 	document.getElementById("player2Score").innerHTML = 11;
+			// }
+			// else
+			// {
+			// 	document.getElementById("player1Score").innerHTML = 11;
+			// 	document.getElementById("player2Score").innerHTML = 0;
+			// }
+		}
+		else
+		{
+			myPad.score = 11;
+			opPad.score = 0;
+			// if (playerNumber == id1)
+			// {
+			// 	document.getElementById("player1Score").innerHTML = 11;
+			// 	document.getElementById("player2Score").innerHTML = 0;
+			// }
+			// else
+			// {
+			// 	document.getElementById("player1Score").innerHTML = 0;
+			// 	document.getElementById("player2Score").innerHTML = 11;
+			// }
+		}
 	}
 }
 
@@ -212,7 +255,6 @@ function checkGameEnd()
 
 		if (myPad.score < opPad.score)
 		{
-			// console.log("my");
 			if (playerNumber == id1)
 			{
 				winner = player1;
@@ -228,7 +270,6 @@ function checkGameEnd()
 		}
 		else
 		{
-			// console.log("op");
 			if (playerNumber == id1)
 			{
 				winner = player2;
