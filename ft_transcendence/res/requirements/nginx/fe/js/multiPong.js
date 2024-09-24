@@ -63,7 +63,7 @@ else
 
 const access_token = localStorage.getItem("access_token");
 // url 수정 필요
-const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
 
 socket.onopen = function() {
     // 서버로 플레이어 정보와 게임 타입을 보냄
@@ -239,6 +239,7 @@ function checkGameEnd()
             winnerScore = myPad.score;
             loserScore = opPad.score;
 		}
+		// game type에 따라 다르게 redirect - 1vs1, tournament
         window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
 	}
 }

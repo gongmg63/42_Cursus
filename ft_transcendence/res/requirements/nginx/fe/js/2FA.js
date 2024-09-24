@@ -13,24 +13,30 @@ const cancel2faBtn = document.getElementById('cancel2faBtn');
 const qrCodeContainer = document.getElementById('qrCodeContainer');
 const nextStepBtn = document.getElementById('nextStepBtn');
 
-securityBtn.addEventListener('click', () => {
-    securityModal.style.display = 'block';
-	confirm2faBtn.style.display = 'block';
-	cancel2faBtn.style.display = 'block';
+if (securityBtn)
+{
+	securityBtn.addEventListener('click', () => {
+		securityModal.style.display = 'block';
+		confirm2faBtn.style.display = 'block';
+		cancel2faBtn.style.display = 'block';
+		closeBtns.forEach(btn => {
+			btn.style.display = 'block';
+		})
+		update2FAStatus();
+	});
+}
+
+if (closeBtns)
+{
 	closeBtns.forEach(btn => {
-		btn.style.display = 'block';
-	})
-    update2FAStatus();
-});
+		btn.addEventListener('click', () => {
+			securityModal.style.display = 'none';
+			change2faModal.style.display = 'none';
+		});
+	});
+}
 
-closeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        securityModal.style.display = 'none';
-        change2faModal.style.display = 'none';
-    });
-});
-
-document.getElementById('nextStepBtn').addEventListener('click', function() {
+document.getElementById('nextStepBtn')?.addEventListener('click', function() {
     window.location.href = '/authentication.html';
 });
 
@@ -49,34 +55,43 @@ function update2FAStatus() {
 		statusMessage.textContent = '현재 2FA가 비활성화되어 있습니다.';
 }
 
-changeSettingsBtn.addEventListener('click', () => {
-	securityModal.style.display = 'none';
-	change2faModal.style.display = 'block';
+if (changeSettingsBtn)
+{
+	changeSettingsBtn.addEventListener('click', () => {
+		securityModal.style.display = 'none';
+		change2faModal.style.display = 'block';
+	
+		const changeTitle = document.getElementById('2faChangeTitle');
+		if (is2FAEnabled)
+		{
+			changeTitle.textContent = '2FA 설정을 해제하시겠습니까?';
+			qrCodeContainer.style.display = 'none';
+			nextStepBtn.style.display = 'none';
+		}
+		else
+			changeTitle.textContent = '2FA 설정을 하시겠습니까?';
+	});
+}
 
-	const changeTitle = document.getElementById('2faChangeTitle');
-	if (is2FAEnabled)
-	{
-		changeTitle.textContent = '2FA 설정을 해제하시겠습니까?';
-		qrCodeContainer.style.display = 'none';
-		nextStepBtn.style.display = 'none';
-	}
-	else
-		changeTitle.textContent = '2FA 설정을 하시겠습니까?';
-});
+if (confirm2faBtn)
+{
+	confirm2faBtn.addEventListener('click', () => {
+		if (is2FAEnabled)
+		{
+			disable2FA();
+			change2faModal.style.display = 'none';
+		}
+		else
+			enable2FA();
+	});
+}
 
-confirm2faBtn.addEventListener('click', () => {
-	if (is2FAEnabled)
-	{
-		disable2FA();
+if (cancel2faBtn)
+{
+	cancel2faBtn.addEventListener('click', () => {
 		change2faModal.style.display = 'none';
-	}
-	else
-		enable2FA();
-});
-
-cancel2faBtn.addEventListener('click', () => {
-    change2faModal.style.display = 'none';
-});
+	});
+}
 
 function enable2FA() {
     is2FAEnabled = true; // 2FA 활성화

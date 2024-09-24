@@ -18,46 +18,49 @@ export function populateFriendSelect()
 export function updateFriendsList(friends)
 {
 	const friendList = document.querySelector('.friends-list');
-	friendList.innerHTML = '';
-
-	friends.forEach(friend => {
-		const friendItem = document.createElement('li');
-		friendItem.classList.add('friend-item');
-
-		const avatarDiv = document.createElement('div');
-		avatarDiv.classList.add('friend-avatar');
-		const avatarImg = document.createElement('img');
-		avatarImg.src = `${friend.profile}`;
-		avatarImg.alt = `${friend.nickname} Avatar`;
-		avatarImg.classList.add('avatar');
-		avatarDiv.appendChild(avatarImg);
-
-		const infoDiv = document.createElement('div');
-		infoDiv.classList.add('friend-info');
-		const nameSpan = document.createElement('span');
-		nameSpan.classList.add('friend-name');
-		nameSpan.textContent = friend.nickname;
-
-		// Online, Offline 상태 표시
-		const statusSpan = document.createElement('span');
-		if (friend.active) {
-			statusSpan.classList.add('friend-status', 'online'); // 활성 상태 클래스 추가
-			statusSpan.textContent = 'Online'; // 또는 friend.status를 사용할 수 있음
-		} else {
-			statusSpan.classList.add('friend-status', 'offline'); // 비활성 상태 클래스 추가
-			statusSpan.textContent = 'Offline'; // 또는 friend.status를 사용할 수 있음
-		}
-		// statusSpan.classList.add('friend-status', friend.active);
-		// statusSpan.textContent = friend.active + friend.status.slice(1);
-		// statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
-		
-		infoDiv.appendChild(nameSpan);
-		infoDiv.appendChild(statusSpan);
-
-		friendItem.appendChild(avatarDiv);
-		friendItem.appendChild(infoDiv);
-		friendList.appendChild(friendItem);
-	})
+	
+	if (friendList)
+	{
+		friendList.innerHTML = '';
+		friends.forEach(friend => {
+			const friendItem = document.createElement('li');
+			friendItem.classList.add('friend-item');
+	
+			const avatarDiv = document.createElement('div');
+			avatarDiv.classList.add('friend-avatar');
+			const avatarImg = document.createElement('img');
+			avatarImg.src = `${friend.profile}`;
+			avatarImg.alt = `${friend.nickname} Avatar`;
+			avatarImg.classList.add('avatar');
+			avatarDiv.appendChild(avatarImg);
+	
+			const infoDiv = document.createElement('div');
+			infoDiv.classList.add('friend-info');
+			const nameSpan = document.createElement('span');
+			nameSpan.classList.add('friend-name');
+			nameSpan.textContent = friend.nickname;
+	
+			// Online, Offline 상태 표시
+			const statusSpan = document.createElement('span');
+			if (friend.active) {
+				statusSpan.classList.add('friend-status', 'online'); // 활성 상태 클래스 추가
+				statusSpan.textContent = 'Online'; // 또는 friend.status를 사용할 수 있음
+			} else {
+				statusSpan.classList.add('friend-status', 'offline'); // 비활성 상태 클래스 추가
+				statusSpan.textContent = 'Offline'; // 또는 friend.status를 사용할 수 있음
+			}
+			// statusSpan.classList.add('friend-status', friend.active);
+			// statusSpan.textContent = friend.active + friend.status.slice(1);
+			// statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
+			
+			infoDiv.appendChild(nameSpan);
+			infoDiv.appendChild(statusSpan);
+	
+			friendItem.appendChild(avatarDiv);
+			friendItem.appendChild(infoDiv);
+			friendList.appendChild(friendItem);
+		})
+	}
 }
 
 export function editLocalStorage(nickname, avatar)

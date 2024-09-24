@@ -5,13 +5,13 @@ import { checkAndRefreshToken } from "./jwtRefresh.js";
 
 const editUserBtn = document.querySelector('.edit-user-btn');
 const editUserModal = document.getElementById('editUserModal');
-const closeButn = editUserModal.querySelector('.close');
+const closeButn = editUserModal?.querySelector('.close');
 
-editUserBtn.addEventListener('click', function() {
+editUserBtn?.addEventListener('click', function() {
 	editUserModal.style.display = 'block';
 });
 
-closeButn.addEventListener('click', function() {
+closeButn?.addEventListener('click', function() {
 	editUserModal.style.display = 'none';
 });
 
@@ -25,7 +25,7 @@ export function friend_websocket()
 {
 	return new Promise((resolve, reject) => {
 		const access_token = localStorage.getItem("access_token");
-		const websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/friend/status/?token=' + access_token);
+		const websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/friend/status/?token=' + access_token);
         
 		
         // 연결이 성공했을 때 호출
@@ -149,16 +149,20 @@ function updateUserInfo(user)
 	const userStats = document.querySelector('.user-details p');
 	const userAvatar = document.querySelector('.avatar-container img');
 
-	userDetails.textContent = user.nickname || 'Unknown User';
-	userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;
+	if (userDetails)
+		userDetails.textContent = user.nickname || 'Unknown User';
+	if (userStats)
+		userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;
 
 	// if (user.profile && user.profile.trim() !== "")
 	// 	userAvatar.src = user.profile.replace('/images', '');
 	// else
 	// 	userAvatar.src = '../images/Retriever.jpeg';
-	userAvatar.src = user.profile;
+	if (userAvatar)
+		userAvatar.src = user.profile;
 	setTFA(user.is_tfa_active);
-	editLocalStorage(user.nickname, userAvatar.src);
+	if (userAvatar)
+		editLocalStorage(user.nickname, userAvatar.src);
 }
 
 function updateRecentMatches(recentMatches)

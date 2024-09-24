@@ -6,9 +6,12 @@ const modal = document.getElementById("addFriendModal");
 const addFriendBtn = document.querySelector(".friends-controls .btn");
 const closeBtn = document.querySelector(".close");
 
-addFriendBtn.addEventListener("click", () => {
-	modal.style.display = "block";
-});
+if (addFriendBtn !== null)
+{
+	addFriendBtn.addEventListener("click", () => {
+		modal.style.display = "block";
+	});
+}
 
 closeBtn.addEventListener("click", () => {
 	modal.style.display = "none";

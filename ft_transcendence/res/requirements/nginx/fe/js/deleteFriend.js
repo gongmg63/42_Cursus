@@ -4,15 +4,15 @@ import { checkAndRefreshToken } from "./jwtRefresh.js";
 
 const removeModal = document.getElementById("removeFriendModal");
 const removeFriendBtn = document.querySelector(".friends-controls .btn:nth-child(2)"); // - 버튼
-const closeRemoveBtn = removeModal.querySelector(".close");
+const closeRemoveBtn = removeModal?.querySelector(".close");
 
-removeFriendBtn.addEventListener("click", () => {
+removeFriendBtn?.addEventListener("click", () => {
 	console.log(friends);
 	populateFriendSelect();
 	removeModal.style.display = "block";
 });
 
-closeRemoveBtn.addEventListener("click", () => {
+closeRemoveBtn?.addEventListener("click", () => {
 	removeModal.style.display = "none";
 });
 
