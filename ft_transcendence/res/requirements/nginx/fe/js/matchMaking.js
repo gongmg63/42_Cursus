@@ -4,9 +4,11 @@ const access_token = localStorage.getItem("access_token");
 // wss://cx1r5s3.42seoul.kr/ws/game/match/?token=
 const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
 
-const urlParams = URLSearchParams();
+const urlParams = new URLSearchParams(window.location.search);
 const type = urlParams.get("gameType");
 const nick = urlParams.get("nickname");
+
+console.log(type);
 
 // WebSocket 연결이 열렸을 때 실행
 socket.onopen = function(event) {

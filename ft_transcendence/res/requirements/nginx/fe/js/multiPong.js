@@ -184,6 +184,9 @@ function parseGameURL()
 		id1 = urlParams.get('id1');
 		id2 = urlParams.get('id2');
 	}
+
+	document.getElementById("player1Name").textContent = player1;
+	document.getElementById("player2Name").textContent = player2;
 }
 
 function gameLoop()
@@ -201,7 +204,7 @@ function gameLoop()
 function checkGameEnd()
 {
 	// 점수 설정
-	let endScore = 11;
+	let endScore = 3;
 	if (myPad.score >= endScore || opPad.score >= endScore)
 	{
         let winner, loser;
@@ -323,12 +326,6 @@ function increaseScore(ball, paddle1, paddle2)
 		document.getElementById("player1Score").innerHTML = paddle1.score;
 		respawnBall(ball);
 	}
-
-	// socket.send(JSON.stringify({
-	// 	type: 'increaseScore',
-	// 	score1: paddle1.score,
-	// 	score2: paddle2.score
-	// }));
 }
 
 function Ball(pos, velocity, radius)
