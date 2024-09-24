@@ -31,8 +31,8 @@ class AddGameResultView(APIView):
             return Response({
                 'message': 'Game result added successfully',
                 'game_result': {
-                    'winner': game_result.winner.username,
-                    'loser': game_result.loser.username,
+                    'winner': game_result.winner.nickname,
+                    'loser': game_result.loser.nickname,
                     'winner_score': game_result.winner_score,
                     'loser_score': game_result.loser_score,
                     'game_type': game_result.game_type,
