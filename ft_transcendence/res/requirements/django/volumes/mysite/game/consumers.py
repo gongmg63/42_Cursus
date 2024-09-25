@@ -194,6 +194,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.paddle_width = 20
         self.paddle_height = 200
         self.score = 0
+        self.spawn = False
+        self.out_page = False
 
         await self.accept()
 
@@ -212,7 +214,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 del game_loop_dict[self.player1]
 
     async def play_disconnect(self, event):
-        print("game disconnect:", event["id"])
         if hasattr(self, 'game_loop_task') and not self.game_loop_task.done():
             self.game_loop_task.cancel()
             try: 
@@ -260,13 +261,24 @@ class GameConsumer(AsyncWebsocketConsumer):
             # 양쪽 모두에게 점수 보내기
             await self.increase_score(data.get("score1"), data.get("score2"))
         elif message_type == 'outPage':
+            await self.check_refresh_page(data)
+
+    async def check_refresh_page(self, data):
+        out_player = data.get("id")
+        out_score = data.get("myScore")
+        op_score = data.get("opScore")
+        end_score = data.get("endScore")
+
+        if out_score != end_score and op_score != end_score:
+            print("data :", data)
             await self.channel_layer.group_send(
                 self.group_name,
                 {
                     "type": "outPlayer",
-                    "id": self.user.id
+                    "id": out_player
                 }
             )
+        
 
     async def outPlayer(self, event):
         await self.send(json.dumps({
@@ -280,7 +292,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         async with client_lock:
             ready_clients = sum(1 for ready in client.values() if ready)
-        
         if ready_clients % 2 == 0 and ready_clients != 0:
             self.ball = ball_group[self.group_name]
             if player1_id not in game_loop_dict:
