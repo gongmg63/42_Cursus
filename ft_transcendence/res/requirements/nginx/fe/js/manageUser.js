@@ -26,6 +26,7 @@ export function friend_websocket()
 	return new Promise((resolve, reject) => {
 		const access_token = localStorage.getItem("access_token");
 		const websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/friend/status/?token=' + access_token);
+		// const websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/friend/status/?token=' + access_token);
         
 		
         // 연결이 성공했을 때 호출

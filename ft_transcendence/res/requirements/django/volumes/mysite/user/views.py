@@ -35,7 +35,7 @@ def OauthCallback(request):
     if not code:
         return JsonResponse({'error': 'No code provided'}, status=400)
 
-    # 액세스 토큰 요청
+    # 42 액세스 토큰 요청
     token_url = "https://api.intra.42.fr/oauth/token"
     data = {
         'grant_type': 'authorization_code',
@@ -62,43 +62,35 @@ def OauthCallback(request):
     email = user_data.get('email')
     nickname = user_data.get('login')
 
-    # 여기에서 사용자 데이터를 처리하고 로그인 로직을 구현합니다.
+    # 유저 DB 업데이트
     user, created = User.objects.get_or_create(oauthid=oauth_user_id)
     
     user.active = True
-    user.save()
-    # 새 유저인 경우 추가 정보 저장
     if created:
-        print("created!!!")
         user.oauthid = oauth_user_id
         user.username = nickname
         user.nickname = nickname
         user.email = email
-        user.profile = "images/Retriever.jpeg"  # 기본 이미지 URL 설정
-        user.save()
+        user.profile = "images/Retriever.jpeg"
+    user.save()
 
-    # JWT 토큰 생성
-    refresh = RefreshToken.for_user(user)
+    # 2FA 설정시 2fa 페이지, 그렇지 않으면 토큰 발급 후 메인페이지로 리다이렉트
     if user.is_tfa_active:
-        refresh['is_tfa_needed'] = 'true'
-    else:
-        refresh['is_tfa_needed'] = 'false'
-
-    # 리다이렉트할 URL에 쿼리 파라미터로 토큰 추가
-    redirect_url = f"{settings.ACCESS_URL}"
-    tfa_url = f"{settings.TFA_URL}"
-    params = {
-        'access_token': str(refresh.access_token),
-        'refresh_token': str(refresh),
-        'oauthid': user.oauthid,
+        redirect_url = f"{settings.TFA_URL}"
+        params = {
         'nickname': user.nickname,
-    }
-
-    # 파라미터를 URL로 인코딩 후 리다이렉트
-    url_with_params = f"{redirect_url}?{urlencode(params)}"
-    tfaurl_with_params = f"{tfa_url}?{urlencode(params)}"
-    if user.is_tfa_active:
-        return redirect(tfaurl_with_params)
+        }
+        url_with_params = f"{redirect_url}?{urlencode(params)}"
+    else :
+        refresh = RefreshToken.for_user(user)
+        redirect_url = f"{settings.ACCESS_URL}"
+        params = {
+            'access_token': str(refresh.access_token),
+            'refresh_token': str(refresh),
+            'oauthid': user.oauthid,
+            'nickname': user.nickname,
+        }
+        url_with_params = f"{redirect_url}?{urlencode(params)}"
     return redirect(url_with_params)
 
 @api_view(['GET'])
@@ -136,28 +128,31 @@ def Disable(request):
     return JsonResponse(data, status=200)
 
 class TFAView(APIView):
-    permission_classes = [IsAuthenticated]
     def post(self, request):
 
         # 사용자 닉네임과 코드 가져오기
-        id = request.user.id
+        nickname = request.data.get('nickname')
         code = request.data.get('code')
 
-        if not id or not code:
+        if not nickname or not code:
             return Response({"detail": "User nickname and code are required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            user = User.objects.get(id=id)
+            user = User.objects.get(nickname=nickname)
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         # OTP 검증
         totp = pyotp.TOTP(user.otp_base32)
         if str(code) == str(totp.now()):
-            print("Password matched")
-            return Response({"detail": "Verification successful."}, status=status.HTTP_200_OK)
-        
-        print("Password unmatched")
+            refresh = RefreshToken.for_user(user)
+            data = {
+                "detail": "Verification successful.",
+                'access_token': str(refresh.access_token),
+                'refresh_token': str(refresh),
+                'nickname': user.nickname,
+            }
+            return JsonResponse(data, status=status.HTTP_200_OK)
         return Response({"detail": "Invalid code."}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserAPI(APIView):
@@ -197,7 +192,7 @@ class FriendAPIView(APIView):
     # POST : 친구 추가
     def post(self, request):
         # 현재 로그인된 사용자 가져오기
-        current_user = request.user  
+        current_user = request.user
         
         serializer = AddFriendSerializer(data=request.data)
         if serializer.is_valid():

@@ -37,7 +37,8 @@ if (closeBtns)
 }
 
 document.getElementById('nextStepBtn')?.addEventListener('click', function() {
-    window.location.href = '/authentication.html';
+	const nickname = localStorage.getItem('nickname');
+    window.location.href = `/authentication.html?nickname=${nickname}`;
 });
 
 export function setTFA(tfa)

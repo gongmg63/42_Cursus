@@ -3,6 +3,7 @@
 const access_token = localStorage.getItem("access_token");
 // wss://cx1r5s3.42seoul.kr/ws/game/match/?token=
 const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
+// const socket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/match/?token=' + access_token);
 
 const urlParams = URLSearchParams();
 const type = urlParams.get("gameType");
