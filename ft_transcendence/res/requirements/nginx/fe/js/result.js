@@ -2,6 +2,8 @@
 import { friend_websocket } from "./friendWebsocket.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 
+sessionStorage.removeItem('pong_pageLoaded');
+
 checkAndRefreshToken().then(() => {
 	friend_websocket()
 		.then((websocket) => {

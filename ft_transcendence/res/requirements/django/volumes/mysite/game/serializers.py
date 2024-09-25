@@ -29,7 +29,7 @@ class AddGameResultSerializer(serializers.Serializer):
 
     def validate(self, data):
         try:
-            # winner와 loser는 각각 유저의 username (혹은 다른 필드 값)에 해당합니다.
+            # winner와 loser는 각각 유저의 nickname (혹은 다른 필드 값)에 해당합니다.
             winner = User.objects.get(nickname=data['winner'])
             loser = User.objects.get(nickname=data['loser'])
         except User.DoesNotExist:
