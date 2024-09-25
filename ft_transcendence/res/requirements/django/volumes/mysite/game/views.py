@@ -8,14 +8,18 @@ from .models import GameResult
 from user.models import User
 
 class AddGameResultView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = AddGameResultSerializer(data=request.data)
         
         if serializer.is_valid():
             winner = serializer.validated_data.get('winner')  # 'winner' 필드를 문자열로 처리
             loser = serializer.validated_data.get('loser')  # 'loser' 필드를 문자열로 처리
-            if request.user.id == winner.id:
-                return
+            if request.user.id == loser.id:
+                return Response({
+                'message': 'Game result added successfully',
+            }, status=status.HTTP_201_CREATED)
             # 유효성 검사가 통과되면 게임 결과 생성
             game_result = serializer.save()
 
@@ -28,14 +32,6 @@ class AddGameResultView(APIView):
             
             return Response({
                 'message': 'Game result added successfully',
-                'game_result': {
-                    'winner': game_result.winner.username,
-                    'loser': game_result.loser.username,
-                    'winner_score': game_result.winner_score,
-                    'loser_score': game_result.loser_score,
-                    'game_type': game_result.game_type,
-                    'game_date': game_result.game_date,
-                }
             }, status=status.HTTP_201_CREATED)
         
         # 유효성 검사가 실패하면 오류 반환
@@ -60,7 +56,7 @@ class GetGameResultView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
         
 class GetGameResultByNicknameView(APIView):
-    # permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능
+    permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능
 
     def get(self, request, nickname):
         # nickname으로 User 조회

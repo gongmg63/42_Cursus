@@ -1,3 +1,13 @@
+import { friend_websocket } from "./friendWebsocket.js";
+import { checkAndRefreshToken } from "./jwtRefresh.js";
+
+checkAndRefreshToken().then(() => {
+	friend_websocket()
+		.catch((error) => {
+			console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+		});
+})
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -8,33 +18,12 @@ canvas.height = window.innerHeight;
 const KEY_ARROWUP = "ArrowUp";
 const KEY_ARROWDOWN = "ArrowDown";
 
-window.addEventListener('keydown', function(e) {
-    if (e.key === KEY_ARROWDOWN) { // 이미 눌린 키에 대해 처리하지 않음
-        const message = JSON.stringify({
-            type: 'paddleMove',
-			id: playerNumber,
-            key: 'down'
-        });
-        socket.send(message);
-    }
-	else if (e.key === KEY_ARROWUP) {
-		const message = JSON.stringify({
-			type: 'paddleMove',
-			id: playerNumber,
-			key: 'up'
-		});
-		socket.send(message);
-	}
-});
-
-// window.addEventListener('keyup', function(e) {
-// });
-
 let ballX = 200;
 let ballY = 200;
 let ballRadius = 20;
 let ballVelocityX = 20;
 let ballVelocityY = 15;
+let endScore = 3;
 
 let ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ballRadius);
 let myPad, opPad;
@@ -51,23 +40,67 @@ if (player1 == localStorage.getItem('nickname'))
 	myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
 	opPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200);
 	playerNumber = id1;
-	console.log('1');
 }
 else
 {
 	myPad = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200);
 	opPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
 	playerNumber = id2;
-	console.log('2');
 }
 
 const access_token = localStorage.getItem("access_token");
 // url 수정 필요
-const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
-// const socket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/play/?token=' + access_token);
+const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
+
+window.addEventListener("beforeunload", function (e) {
+	// e.returnValue = "refresh message";
+	const message = JSON.stringify({
+		"type": 'outPage',
+		"id": playerNumber,
+		"myScore": myPad.score,
+		"opScore": opPad.score,
+		"endScore": endScore
+	});
+	socket.send(message);
+});
+
+window.onload = function() {
+	// 페이지가 이미 로드되었는지 확인
+	if (sessionStorage.getItem('pong_pageLoaded')) {
+		// 페이지가 이미 로드되었다면 (즉, 새로고침된 경우)
+		setTimeout(function() {
+		// 원하는 URL로 변경하세요
+		myPad.score = 0;
+		opPad.score = endScore;
+		checkGameEnd();
+	  }, 100);
+	} else {
+	  // 페이지가 처음 로드된 경우
+	  sessionStorage.setItem('pong_pageLoaded', 'true');
+	}
+  };
+
+window.addEventListener('keydown', function(e) {
+	if (e.key === KEY_ARROWDOWN) { // 이미 눌린 키에 대해 처리하지 않음
+        const message = JSON.stringify({
+			type: 'paddleMove',
+			id: playerNumber,
+            key: 'down'
+        });
+        socket.send(message);
+    }
+	else if (e.key === KEY_ARROWUP) {
+		const message = JSON.stringify({
+			type: 'paddleMove',
+			id: playerNumber,
+			key: 'up'
+		});
+		socket.send(message);
+	}
+});
 
 socket.onopen = function() {
-    // 서버로 플레이어 정보와 게임 타입을 보냄
+	// 서버로 플레이어 정보와 게임 타입을 보냄
 	socket.send(JSON.stringify({
 		type: "initMatch",
 		player1_id: id1,
@@ -76,20 +109,16 @@ socket.onopen = function() {
 		canvas_height: canvas.height,
 	}));
 };
-
+	
 socket.onmessage = function(event) {
 	const data = JSON.parse(event.data);
+	console.log(data)
 	if (data.type == 'paddleMove')
 	{
 		if (playerNumber == data.id)
-		{
 			myPad.update(data.y)
-		}
 		else
-		{
 			opPad.opUpdate(data.y);
-		}
-		console.log('paddleMove');
 	}
 	else if (data.type == 'ballMove')
 	{
@@ -99,7 +128,6 @@ socket.onmessage = function(event) {
 		ball.velocity.y = data.ball_velocity_y;
 		ball.radius = data.ball_radius;
 		ball.update();
-		console.log('ballMove');
 	}
 	else if (data.type == 'increaseScore')
 	{
@@ -107,23 +135,43 @@ socket.onmessage = function(event) {
 		{
 			myPad.score++;
 			if (playerNumber == id1)
-				document.getElementById("player2Score").innerHTML = myPad.score;
+			{
+				document.getElementById("player2Score").innerHTML = myPad.score
+			}
 			else
+			{
 				document.getElementById("player1Score").innerHTML = myPad.score;
+			}
 		}
 		else
 		{
 			opPad.score++;
 			if (playerNumber == id1)
+			{
 				document.getElementById("player1Score").innerHTML = opPad.score;
+			}
 			else
+			{
 				document.getElementById("player2Score").innerHTML = opPad.score;
+			}
 		}
-		console.log('increaseScore');
 	}
 	else if (data.type == 'startGame')
 	{
 		gameLoop();
+	}
+	else if (data.type == 'outPlayer')
+	{
+		if (data.out_player == playerNumber)
+		{
+			myPad.score = 0;
+			opPad.score = endScore;
+		}
+		else
+		{
+			myPad.score = endScore;
+			opPad.score = 0;
+		}
 	}
 }
 
@@ -185,6 +233,9 @@ function parseGameURL()
 		id1 = urlParams.get('id1');
 		id2 = urlParams.get('id2');
 	}
+
+	document.getElementById("player1Name").textContent = player1;
+	document.getElementById("player2Name").textContent = player2;
 }
 
 function gameLoop()
@@ -202,40 +253,37 @@ function gameLoop()
 function checkGameEnd()
 {
 	// 점수 설정
-	let endScore = 11;
 	if (myPad.score >= endScore || opPad.score >= endScore)
 	{
         let winner, loser;
         let winnerScore, loserScore;
 
-		if (myPad.score < opPad.score)
+		if (myPad.score < opPad.score) // 내가 졌을 때
 		{
-			// console.log("my");
-			if (playerNumber == id1)
-			{
-				winner = player1;
-				loser = player2;
-			}
-			else
+			if (playerNumber == id1) // 내가 player1 일 때
 			{
 				winner = player2;
 				loser = player1;
+			}
+			else //내가 player2 일 때
+			{
+				winner = player1;
+				loser = player2;
 			}
             winnerScore = opPad.score;
             loserScore = myPad.score;
 		}
-		else
+		else // 내가 이겼을 때
 		{
-			// console.log("op");
-			if (playerNumber == id1)
-			{
-				winner = player2;
-				loser = player1;
-			}
-			else
+			if (playerNumber == id1) // 내가 player1 일 때
 			{
 				winner = player1;
 				loser = player2;
+			}
+			else // 내가 player2 일 때
+			{
+				winner = player2;
+				loser = player1;
 			}
             winnerScore = myPad.score;
             loserScore = opPad.score;
@@ -324,12 +372,6 @@ function increaseScore(ball, paddle1, paddle2)
 		document.getElementById("player1Score").innerHTML = paddle1.score;
 		respawnBall(ball);
 	}
-
-	// socket.send(JSON.stringify({
-	// 	type: 'increaseScore',
-	// 	score1: paddle1.score,
-	// 	score2: paddle2.score
-	// }));
 }
 
 function Ball(pos, velocity, radius)

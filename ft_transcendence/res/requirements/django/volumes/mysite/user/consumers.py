@@ -7,7 +7,6 @@ from user.serializers import FriendSerializer
 class FriendStatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope["user"]
-        print(f"websocket: connect! nickname: {self.user.nickname}")
         if self.user.is_authenticated:
             await self.channel_layer.group_add(
                 f"user_{self.user.id}",
@@ -19,7 +18,6 @@ class FriendStatusConsumer(AsyncWebsocketConsumer):
             await self.close()
 
     async def disconnect(self, close_code):
-        print(f"websocket: disconnect... nickname: {self.user.nickname}")
         if self.user.is_authenticated:
             await self.save_user_status(False)
             await self.channel_layer.group_discard(

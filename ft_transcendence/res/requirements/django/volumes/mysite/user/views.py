@@ -19,7 +19,6 @@ from urllib.parse import urlencode
 import pyotp
 import qrcode
 import base64
-import sys
 from io import BytesIO
 
 from .models import User
@@ -96,7 +95,6 @@ def OauthCallback(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def Enable(request):
-    print("here")
     user = request.user
     user.otp_base32 = pyotp.random_base32()
     user.is_tfa_active = True
@@ -118,7 +116,6 @@ def Enable(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def Disable(request):
-    print("here")
     user = request.user
     user.is_tfa_active = False
     user.otp_base32 = ''
@@ -180,6 +177,7 @@ class UserAPI(APIView):
 
 # GET : 닉네임을 통해 유저 정보 확인
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def OtherUserInfo(request, nickname):
 	user = get_object_or_404(User, nickname=nickname) #일치하는 nickname이 없으면 404
 	serializer = UserSerializer(user)

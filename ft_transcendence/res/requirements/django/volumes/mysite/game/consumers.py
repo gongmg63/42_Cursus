@@ -10,6 +10,7 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from .signals import play_disconnect_signal
 import math
 import random
 
@@ -22,8 +23,8 @@ tournament_waiting_queue = []
 final_waiting_queue = []
 
 #     socket.send(JSON.stringify({
-#       type: "1vs1 or Tournament or final _match_request",
-#		gameType: "1vs1 or Tournament"
+#       type: "1vs1 or tournament or final_match_request",
+#		gameType: "1vs1 or tournament"
 #       id: "12345"
 #     }));
 
@@ -42,11 +43,11 @@ class MatchConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         if self.user in vs_waiting_queue:
-            vs_waiting_queue.remove(self.id)
+            vs_waiting_queue.remove(self.user)
         elif self.user in tournament_waiting_queue:
-            tournament_waiting_queue.remove(self.id)
+            tournament_waiting_queue.remove(self.user)
         elif self.user in final_waiting_queue:
-            final_waiting_queue.remove(self.id)
+            final_waiting_queue.remove(self.user)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -171,8 +172,6 @@ class MatchConsumer(AsyncWebsocketConsumer):
 # Ball ( pos(vec(200, 200)), velocity(vec(20, 20)), radius(20) )
 # Paddle ( pos(vec), velocity(vec(15, 15)), width (20), height (200), upKey, downKey )
 
-client = {}
-client_lock = asyncio.Lock()
 ball_group = {}
 
 class ball():
@@ -182,7 +181,9 @@ class ball():
     velocity_y = 15
     radius = 20
 
-ball()
+client = {}
+client_lock = asyncio.Lock()
+game_loop_dict = {}
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -193,15 +194,32 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.paddle_width = 20
         self.paddle_height = 200
         self.score = 0
-        
-        async with client_lock:
-            client[self.user.id] = False
-        
+        self.spawn = False
+        self.out_page = False
+
         await self.accept()
 
     async def disconnect(self, close_code):
-        print("disconnect")
-        self.client[self.user.id] = False
+        global client
+
+        client[self.user.id] = False
+        play_disconnect_signal.send(sender=self.__class__, instance=self)
+        if hasattr(self, 'game_loop_task') and not self.game_loop_task.done():
+            self.game_loop_task.cancel()
+            try: 
+                await self.game_loop_task
+            except:
+                print("Game loop task properly cancelled")
+            if self.player1 in game_loop_dict:
+                del game_loop_dict[self.player1]
+
+    async def play_disconnect(self, event):
+        if hasattr(self, 'game_loop_task') and not self.game_loop_task.done():
+            self.game_loop_task.cancel()
+            try: 
+                await self.game_loop_task
+            except:
+                print("Game loop task properly cancelled")
 
     async def receive(self, text_data):
         global client
@@ -211,6 +229,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             # 상대 정보를 기반으로 그룹 이름을 설정
             player1_id = data['player1_id']
             player2_id = data['player2_id']
+            self.player1 = player1_id
             if str(self.user.id) == str(player1_id):
                 self.pos = "left"
             else:
@@ -234,21 +253,50 @@ class GameConsumer(AsyncWebsocketConsumer):
                 ball_group[self.group_name] = ball()
             async with client_lock:
                 client[self.user.id] = True
-            await self.check_all_clients_ready(player1_id, player2_id)
+            await self.check_all_clients_ready(player1_id)
         elif message_type == 'paddleMove':
             #상대에게 패들 움직임 전송
             await self.paddle_move(data.get("id"), data.get("key"))
         elif message_type == 'increaseScore':
             # 양쪽 모두에게 점수 보내기
             await self.increase_score(data.get("score1"), data.get("score2"))
+        elif message_type == 'outPage':
+            await self.check_refresh_page(data)
 
-    async def check_all_clients_ready(self, p1, p2):
+    async def check_refresh_page(self, data):
+        out_player = data.get("id")
+        out_score = data.get("myScore")
+        op_score = data.get("opScore")
+        end_score = data.get("endScore")
+
+        if out_score != end_score and op_score != end_score:
+            print("data :", data)
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "outPlayer",
+                    "id": out_player
+                }
+            )
+        
+
+    async def outPlayer(self, event):
+        await self.send(json.dumps({
+            "type": "outPlayer",
+            "out_player": event["id"],
+        }))
+
+    async def check_all_clients_ready(self, player1_id):
         global client
+        global game_loop_dict
 
         async with client_lock:
             ready_clients = sum(1 for ready in client.values() if ready)
-        
         if ready_clients % 2 == 0 and ready_clients != 0:
+            self.ball = ball_group[self.group_name]
+            if player1_id not in game_loop_dict:
+                game_loop_dict[player1_id] = asyncio.create_task(self.game_loop())
+            self.game_loop_task = game_loop_dict[player1_id]
             await self.channel_layer.group_send(
                 self.group_name,
                 {
@@ -256,9 +304,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                     'message': 'All clients connected. Starting game...'
                 }
             )
-            self.ball = ball_group[self.group_name]
-            self.game_loop_task = asyncio.create_task(self.game_loop())
-
 
     async def startGame(self, event):
         message = event["message"]
@@ -302,9 +347,13 @@ class GameConsumer(AsyncWebsocketConsumer):
         }))
     
     async def game_loop(self):
-        while True:
-            await self.update_game_state()
-            await asyncio.sleep(0.02)  # 20ms 간격으로 업데이트 
+        try:
+            while True:
+                await self.update_game_state()
+                await asyncio.sleep(0.02)  # 20ms 간격으로 업데이트
+        except asyncio.CancelledError:
+            # 태스크가 취소될 때 필요한 정리 작업
+            print("Game loop cancelled")
 
     async def update_game_state(self):
         # 공 위치 업데이트
@@ -337,6 +386,18 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "type": "ballMove",
             }
         )
+
+    async def increaseScore(self, event):
+        winner = event['winner']
+
+        if self.pos == winner:
+            result = "win"
+        else:
+            result = "lose"
+        await self.send(json.dumps({
+            "type": "increaseScore",
+            "result": result
+        }))
 
     async def ballMove(self, event):
             # 패들 충돌 처리
@@ -371,26 +432,24 @@ class GameConsumer(AsyncWebsocketConsumer):
             "ball_radius": ball_group[self.group_name].radius
         }))
 
-    async def increaseScore(self, event):
-        winner = event['winner']
-
-        if self.pos == winner:
-            result = "win"
-        else:
-            result = "lose"
-        await self.send(json.dumps({
-            "type": "increaseScore",
-            "result": result
-        }))
-
     def respawn_ball(self):
         ball = ball_group[self.group_name]
-        if ball.velocity_x > 0:
-            ball.x = self.canvas_width - 150
-            ball.y = random.uniform(100, self.canvas_height - 100)
-        elif ball.velocity_x < 0:
-            ball.x = 150
-            ball.y = random.uniform(100, self.canvas_height - 100)
+        # if ball.velocity_x > 0:
+        #     ball.x = self.canvas_width - 150
+        #     ball.y = random.uniform(100, self.canvas_height - 100)
+        # elif ball.velocity_x < 0:
+        #     ball.x = 150
+        #     ball.y = random.uniform(100, self.canvas_height - 100)
 
-        ball.velocity_x *= -1
+        # ball.velocity_x *= -1
+        # ball.velocity_y *= -1
+        ball.x = self.canvas_width / 2
+        ball.y = random.uniform(self.canvas_height / 2 - 200, self.canvas_height / 2 + 200)
+        print(ball.y)
+        if self.spawn:
+            ball.velocity_x = -abs(ball.velocity_x)
+        else:
+            ball.velocity_x = abs(ball.velocity_x)
+        self.spawn = not self.spawn
         ball.velocity_y *= -1
+            

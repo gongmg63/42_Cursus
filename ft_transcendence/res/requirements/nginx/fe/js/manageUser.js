@@ -21,46 +21,45 @@ window.addEventListener('click', function(event) {
 	}
 });
 
-export function friend_websocket()
-{
-	return new Promise((resolve, reject) => {
-		const access_token = localStorage.getItem("access_token");
-		const websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/friend/status/?token=' + access_token);
-		// const websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/friend/status/?token=' + access_token);
+// export function friend_websocket()
+// {
+// 	return new Promise((resolve, reject) => {
+// 		const access_token = localStorage.getItem("access_token");
+// 		const websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/friend/status/?token=' + access_token);
         
 		
-        // 연결이 성공했을 때 호출
-        websocket.onopen = () => {
-            console.log("웹소켓 연결 완료");
-            resolve(websocket);  // 웹소켓 객체를 반환하여 다른 곳에서 사용 가능
-        };
+//         // 연결이 성공했을 때 호출
+//         websocket.onopen = () => {
+//             console.log("웹소켓 연결 완료");
+//             resolve(websocket);  // 웹소켓 객체를 반환하여 다른 곳에서 사용 가능
+//         };
 
-        // 메시지를 수신할 때 호출
-        websocket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-			if (data.type == 'friend_status_update')
-            {
-				console.log("서버로부터 받은 메시지:", data);
-				// populateFriendSelect();
-				updateFriendsList(data.friends);
-				// 여기에서 메시지에 따라 처리하는 로직을 추가
-			}
-			else if (data.type == 'friend_update')
-				setFriends(data.friends);
-        };
+//         // 메시지를 수신할 때 호출
+//         websocket.onmessage = (event) => {
+//             const data = JSON.parse(event.data);
+// 			if (data.type == 'friend_status_update')
+//             {
+// 				console.log("서버로부터 받은 메시지:", data);
+// 				// populateFriendSelect();
+// 				updateFriendsList(data.friends);
+// 				// 여기에서 메시지에 따라 처리하는 로직을 추가
+// 			}
+// 			else if (data.type == 'friend_update')
+// 				setFriends(data.friends);
+//         };
 
-        // 오류가 발생했을 때 호출
-        websocket.onerror = (error) => {
-            console.error("웹소켓 연결 오류:", error);
-            reject(error);  // 연결 실패 시 Promise를 거부
-        };
+//         // 오류가 발생했을 때 호출
+//         websocket.onerror = (error) => {
+//             console.error("웹소켓 연결 오류:", error);
+//             reject(error);  // 연결 실패 시 Promise를 거부
+//         };
 
-        // 연결이 종료되었을 때 호출
-        websocket.onclose = () => {
-            console.log("웹소켓 연결 종료");
-        };
-    });
-}
+//         // 연결이 종료되었을 때 호출
+//         websocket.onclose = () => {
+//             console.log("웹소켓 연결 종료");
+//         };
+//     });
+// }
 
 export function fetchUserData()
 {
@@ -169,72 +168,87 @@ function updateUserInfo(user)
 function updateRecentMatches(recentMatches)
 {
 	const matchHistoryContainer = document.querySelector('.match-history-container');
-	matchHistoryContainer.innerHTML = '';
-
 	// 최근 전적 중 5개만 가져오게
 
-	recentMatches.slice(0, 5).forEach(match => {
-		console.log(match);
-		const matchDiv = document.createElement('div');
-		const myNickname = localStorage.getItem("nickname");
-		const myProfile = localStorage.getItem("profile");
-		const opNickname = match.winner.nickname == myNickname ? match.loser.nickname : match.winner.nickname;
-		const opProfile = match.winner.nickname == myNickname ? match.loser.profile : match.winner.profile;
-		const myScore = match.winner.nickname == myNickname ? match.winner_score : match.loser_score;
-		const opScore = match.winner.nickname == myNickname ? match.loser_score : match.winner_score;
-		
-		matchDiv.classList.add('match');
+	// match.game_date - 연월일 가져오기
+	if(matchHistoryContainer)
+	{
+		matchHistoryContainer.innerHTML = '';
+		console.log(recentMatches);
+		recentMatches.slice(-5).forEach(match => {
+			const matchDiv = document.createElement('div');
+			const myNickname = localStorage.getItem("nickname");
+			const myProfile = localStorage.getItem("profile");
+			const opNickname = match.winner.nickname == myNickname ? match.loser.nickname : match.winner.nickname;
+			const opProfile = match.winner.nickname == myNickname ? match.loser.profile : match.winner.profile;
+			const myScore = match.winner.nickname == myNickname ? match.winner_score : match.loser_score;
+			const opScore = match.winner.nickname == myNickname ? match.loser_score : match.winner_score;
+			
+			// 날짜 포맷팅 (연-월-일 형식)
+			const gameDate = new Date(match.game_date);
+			const formattedDate = `${gameDate.getFullYear()}-${String(gameDate.getMonth() + 1).padStart(2, '0')}-${String(gameDate.getDate()).padStart(2, '0')}`;
 
-		const userAvatarContainer = document.createElement('div');
-		userAvatarContainer.classList.add('match-avatar-container');
-		const userAvatarImg = document.createElement('img');
-		userAvatarImg.src = `${myProfile}`;
-		userAvatarImg.alt = 'User Avatar';
-		userAvatarImg.classList.add('match-avatar');
-		const userNickname = document.createElement('p');
-		userNickname.classList.add('match-nickname');
+			matchDiv.classList.add('match');
+	
+			const userAvatarContainer = document.createElement('div');
+			userAvatarContainer.classList.add('match-avatar-container');
+			const userAvatarImg = document.createElement('img');
+			userAvatarImg.src = `${myProfile}`;
+			userAvatarImg.alt = 'User Avatar';
+			userAvatarImg.classList.add('match-avatar');
+			const userNickname = document.createElement('p');
+			userNickname.classList.add('match-nickname');
+	
+			userNickname.textContent = myNickname;
+	
+			userAvatarContainer.appendChild(userAvatarImg);
+			userAvatarContainer.appendChild(userNickname);
+	
+			const matchInfo = document.createElement('div');
+			matchInfo.classList.add('match-info');
+			
+			// 날짜 출력
+			const matchDate = document.createElement('p');
+			matchDate.classList.add('match-date');
+			matchDate.textContent = formattedDate;
 
-		userNickname.textContent = myNickname;
+			const matchScore = document.createElement('p');
+			matchScore.classList.add('match-score');
+			matchScore.textContent = `${myScore} - ${opScore}`;
+	
+			const matchResult = document.createElement('p');
+			matchResult.classList.add('match-result', match.result);
+	
+			if (match.winner.nickname == localStorage.getItem("nickname"))
+				matchResult.textContent = "WIN";
+			else
+				matchResult.textContent = "LOSE";
 
-		userAvatarContainer.appendChild(userAvatarImg);
-		userAvatarContainer.appendChild(userNickname);
-
-		const matchInfo = document.createElement('div');
-		matchInfo.classList.add('match-info');
-		const matchScore = document.createElement('p');
-		matchScore.classList.add('match-score');
-
-		matchScore.textContent = `${myScore} - ${opScore}`;
-		const matchResult = document.createElement('p');
-
-		matchResult.classList.add('match-result', match.result);
-		if (match.winner.nickname == localStorage.getItem("nickname"))
-			matchResult.textContent = "WIN";
-		else
-			matchResult.textContent = "LOSE";
-		matchInfo.appendChild(matchScore);
-		matchInfo.appendChild(matchResult);
-
-		const opponentAvatarContainer = document.createElement('div');
-		opponentAvatarContainer.classList.add('match-avatar-container');
-		const opponentAvatarImg = document.createElement('img');
-		opponentAvatarImg.src = `${opProfile}`;
-		opponentAvatarImg.alt = 'Opponent Avatar';
-		opponentAvatarImg.classList.add('match-avatar');
-		const opponentNickname = document.createElement('p');
-		opponentNickname.classList.add('match-nickname');
-
-		opponentNickname.textContent = opNickname;
-
-		opponentAvatarContainer.appendChild(opponentAvatarImg);
-		opponentAvatarContainer.appendChild(opponentNickname);
-
-		matchDiv.appendChild(userAvatarContainer);
-		matchDiv.appendChild(matchInfo);
-		matchDiv.appendChild(opponentAvatarContainer);
-
-		matchHistoryContainer.appendChild(matchDiv);
-	})
+			matchInfo.appendChild(matchDate); // 날짜 추가
+			matchInfo.appendChild(matchScore);
+			matchInfo.appendChild(matchResult);
+	
+			const opponentAvatarContainer = document.createElement('div');
+			opponentAvatarContainer.classList.add('match-avatar-container');
+			const opponentAvatarImg = document.createElement('img');
+			opponentAvatarImg.src = `${opProfile}`;
+			opponentAvatarImg.alt = 'Opponent Avatar';
+			opponentAvatarImg.classList.add('match-avatar');
+			const opponentNickname = document.createElement('p');
+			opponentNickname.classList.add('match-nickname');
+	
+			opponentNickname.textContent = opNickname;
+	
+			opponentAvatarContainer.appendChild(opponentAvatarImg);
+			opponentAvatarContainer.appendChild(opponentNickname);
+	
+			matchDiv.appendChild(userAvatarContainer);
+			matchDiv.appendChild(matchInfo);
+			matchDiv.appendChild(opponentAvatarContainer);
+	
+			matchHistoryContainer.appendChild(matchDiv);
+		})
+	}
 }
 
 export function editUser()
@@ -278,11 +292,13 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.querySelector('.avatar-container img').src = e.target.result;
+				localStorage.setItem('profile', e.target.result);
             };
             reader.readAsDataURL(avatarFile);
         }
         editUserModal.style.display = 'none';
-		editLocalStorage(nickname, avatarFile);
+		// editLocalStorage(nickname, avatarFile);
+		localStorage.setItem('nickname', nickname);
     })
     .catch(error => {
         console.error('Error updating profile:', error);

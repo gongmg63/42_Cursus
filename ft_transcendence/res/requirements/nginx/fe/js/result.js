@@ -1,4 +1,18 @@
 // import { handleError } from "./utils.js";
+import { friend_websocket } from "./friendWebsocket.js";
+import { checkAndRefreshToken } from "./jwtRefresh.js";
+
+sessionStorage.removeItem('pong_pageLoaded');
+
+checkAndRefreshToken().then(() => {
+	friend_websocket()
+		.then((websocket) => {
+			console.log("웹소켓이 연결되었습니다.");
+		})
+		.catch((error) => {
+			console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+		});
+})
 
 document.addEventListener('DOMContentLoaded', function() {
 	// single, 1 vs 1, tournament에 따라 결과 다르게 - gameType 설정.
@@ -22,7 +36,6 @@ function updateResult(winner)
     const nickname = localStorage.getItem('nickname');
 
     const resultMessage = document.getElementById('resultMessage');
-	console.log("winner: ", winner);
 	if (winner == nickname)
 	{
 		resultMessage.textContent = 'You Win!';
@@ -48,7 +61,8 @@ function resultToJson()
 	const winnerScore = urlParams.get('winnerScore');
 	const loserScore = urlParams.get('loserScore');
 	const gameType = urlParams.get('gameType');
-	const gameDate = new Date().toISOString();
+	const now = new Date();
+	const gameDate = new Date(now.getTime() + (9 * 60 * 60 * 1000)).toISOString();
 
 	// {
 	// 	"winner": "winnerUsername",
