@@ -434,12 +434,22 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     def respawn_ball(self):
         ball = ball_group[self.group_name]
-        if ball.velocity_x > 0:
-            ball.x = self.canvas_width - 150
-            ball.y = random.uniform(100, self.canvas_height - 100)
-        elif ball.velocity_x < 0:
-            ball.x = 150
-            ball.y = random.uniform(100, self.canvas_height - 100)
+        # if ball.velocity_x > 0:
+        #     ball.x = self.canvas_width - 150
+        #     ball.y = random.uniform(100, self.canvas_height - 100)
+        # elif ball.velocity_x < 0:
+        #     ball.x = 150
+        #     ball.y = random.uniform(100, self.canvas_height - 100)
 
-        ball.velocity_x *= -1
+        # ball.velocity_x *= -1
+        # ball.velocity_y *= -1
+        ball.x = self.canvas_width / 2
+        ball.y = random.uniform(self.canvas_height / 2 - 200, self.canvas_height / 2 + 200)
+        print(ball.y)
+        if self.spawn:
+            ball.velocity_x = -abs(ball.velocity_x)
+        else:
+            ball.velocity_x = abs(ball.velocity_x)
+        self.spawn = not self.spawn
         ball.velocity_y *= -1
+            
