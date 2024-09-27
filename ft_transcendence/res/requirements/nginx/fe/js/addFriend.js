@@ -2,28 +2,26 @@ import { handleError, updateFriendsList } from "./utils.js";
 import { friends, pushFriends } from "./index.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 
-const modal = document.getElementById("addFriendModal");
-const addFriendBtn = document.querySelector(".friends-controls .btn");
-const closeBtn = document.querySelector(".close");
 
-if (addFriendBtn)
-{
-	addFriendBtn.addEventListener("click", () => {
-		modal.style.display = "block";
-	});
-}
+// 상위 요소(body)에 이벤트 리스너 등록하여 이벤트 위임 적용
+document.body.addEventListener('click', function(event) {
 
-if (closeBtn)
-{
-	closeBtn.addEventListener("click", () => {
-		modal.style.display = "none";
-	});
-}
+	const modal = document.getElementById("addFriendModal");
+    // 친구 추가 버튼 클릭 시 모달 표시
+    if (event.target && event.target.matches('.friends-controls .btn:first-child')) {
+		modal.style.display = 'block';
+		console.log(modal.style.display);
+    }
 
-window.addEventListener("click", (event) => {
-	if (event.target === modal) {
-		modal.style.display = "none";
-	}
+    // 모달 닫기 버튼 클릭 시 모달 숨김
+    if (event.target && event.target.matches('.close')) {
+        modal.style.display = 'none';
+    }
+
+    // 모달 외부를 클릭하면 모달 닫기
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
 });
 
 export function addFriend()
@@ -39,6 +37,8 @@ export function addFriend()
 
 function postFriendAPI(data, access_token)
 {
+	const modal = document.getElementById("addFriendModal");
+
 	checkAndRefreshToken().then(() => {
 		console.log("data: ", data);
 		fetch('/api/user/friend/', {

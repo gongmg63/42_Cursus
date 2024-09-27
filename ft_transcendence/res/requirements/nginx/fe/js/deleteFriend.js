@@ -2,24 +2,25 @@ import { updateFriendsList, populateFriendSelect, handleError } from "./utils.js
 import { friends } from "./index.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 
-const removeModal = document.getElementById("removeFriendModal");
-const removeFriendBtn = document.querySelector(".friends-controls .btn:nth-child(2)"); // - 버튼
-const closeRemoveBtn = removeModal?.querySelector(".close");
 
-removeFriendBtn?.addEventListener("click", () => {
-	console.log(friends);
-	populateFriendSelect();
-	removeModal.style.display = "block";
-});
+document.body.addEventListener('click', function(event) {
+	
+	const removeModal = document.getElementById("removeFriendModal");
+    // 친구 제거 버튼 클릭 시 모달 표시
+    if (event.target && event.target.matches('.friends-controls .btn:nth-child(2)')) {
+        populateFriendSelect();
+        removeModal.style.display = 'block';
+    }
 
-closeRemoveBtn?.addEventListener("click", () => {
-	removeModal.style.display = "none";
-});
+    // 모달 닫기 버튼 클릭 시 모달 숨김
+    if (event.target && event.target.matches('#removeFriendModal .close')) {
+        removeModal.style.display = 'none';
+    }
 
-window.addEventListener("click", (event) => {
-	if (event.target === removeModal) {
-		removeModal.style.display = "none";
-	}
+    // 모달 외부를 클릭하면 모달 닫기
+    if (event.target === removeModal) {
+        removeModal.style.display = 'none';
+    }
 });
 
 export function deleteFriend()
@@ -34,6 +35,8 @@ export function deleteFriend()
 
 function deleteFriendAPI(data, access_token, selectedFriend)
 {
+	const removeModal = document.getElementById("removeFriendModal");
+
 	checkAndRefreshToken().then(() => {
 		fetch('/api/user/friend/', {
 			method: 'DELETE',

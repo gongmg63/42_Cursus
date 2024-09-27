@@ -1,5 +1,6 @@
 import { friend_websocket } from "./friendWebsocket.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { navigateTo } from "./transcendence.js";
 
 checkAndRefreshToken().then(() => {
 	friend_websocket()
@@ -8,6 +9,8 @@ checkAndRefreshToken().then(() => {
 		});
 })
 
+
+// 수정 필요할듯
 window.addEventListener("beforeunload", function (e) {
 	// e.returnValue = "refresh message";
 	
@@ -16,7 +19,7 @@ window.addEventListener("beforeunload", function (e) {
 		id: playerNumber,
 	});
 	socket.send(message);
-    window.location.href = "https://cx1r5s3.42seoul.kr/index.html";
+    // window.location.href = "https://cx1r5s3.42seoul.kr/index.html";
 });
 
 const canvas = document.getElementById('canvas');
@@ -284,7 +287,10 @@ function checkGameEnd()
             loserScore = opPad.score;
 		}
 		// game type에 따라 다르게 redirect - 1vs1, tournament
-        window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
+        // window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
+		// window.history.replaceState({}, document.title, window.location.pathname + `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
+		window.history.pushState(null, null, `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
+		navigateTo('/result');
 	}
 }
 

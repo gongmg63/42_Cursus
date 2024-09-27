@@ -3,63 +3,25 @@ import { friends, setFriends } from "./index.js";
 import { setTFA } from "./2FA.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 
-const editUserBtn = document.querySelector('.edit-user-btn');
-const editUserModal = document.getElementById('editUserModal');
-const closeButn = editUserModal?.querySelector('.close');
 
-editUserBtn?.addEventListener('click', function() {
-	editUserModal.style.display = 'block';
+document.body.addEventListener('click', function(event) {
+	// edit-user-btn 버튼 클릭 시 모달 열기
+	const editUserModal = document.getElementById('editUserModal');
+	
+    if (event.target && event.target.matches('.edit-user-btn')) {
+        editUserModal.style.display = 'block';
+    }
+
+    // 모달 닫기 버튼 클릭 시 모달 닫기
+    if (event.target && event.target.matches('#editUserModal .close')) {
+        editUserModal.style.display = 'none';
+    }
+
+    // 모달 외부를 클릭하면 모달 닫기
+    if (event.target === editUserModal) {
+        editUserModal.style.display = 'none';
+    }
 });
-
-closeButn?.addEventListener('click', function() {
-	editUserModal.style.display = 'none';
-});
-
-window.addEventListener('click', function(event) {
-	if (event.target === editUserModal) {
-		editUserModal.style.display = 'none';
-	}
-});
-
-// export function friend_websocket()
-// {
-// 	return new Promise((resolve, reject) => {
-// 		const access_token = localStorage.getItem("access_token");
-// 		const websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/friend/status/?token=' + access_token);
-        
-		
-//         // 연결이 성공했을 때 호출
-//         websocket.onopen = () => {
-//             console.log("웹소켓 연결 완료");
-//             resolve(websocket);  // 웹소켓 객체를 반환하여 다른 곳에서 사용 가능
-//         };
-
-//         // 메시지를 수신할 때 호출
-//         websocket.onmessage = (event) => {
-//             const data = JSON.parse(event.data);
-// 			if (data.type == 'friend_status_update')
-//             {
-// 				console.log("서버로부터 받은 메시지:", data);
-// 				// populateFriendSelect();
-// 				updateFriendsList(data.friends);
-// 				// 여기에서 메시지에 따라 처리하는 로직을 추가
-// 			}
-// 			else if (data.type == 'friend_update')
-// 				setFriends(data.friends);
-//         };
-
-//         // 오류가 발생했을 때 호출
-//         websocket.onerror = (error) => {
-//             console.error("웹소켓 연결 오류:", error);
-//             reject(error);  // 연결 실패 시 Promise를 거부
-//         };
-
-//         // 연결이 종료되었을 때 호출
-//         websocket.onclose = () => {
-//             console.log("웹소켓 연결 종료");
-//         };
-//     });
-// }
 
 export function fetchUserData()
 {
@@ -92,9 +54,6 @@ export function fetchUserData()
 			// 친구 목록 업데이트
 			setFriends(data.friends);
 			updateFriendsList(data.friends);
-		
-			// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
-			// updateRecentMatches(data.recentMatches);
 		})
 		.catch(error => {
 			console.error('Error fetching user data: ', error);
@@ -154,10 +113,6 @@ function updateUserInfo(user)
 	if (userStats)
 		userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;
 
-	// if (user.profile && user.profile.trim() !== "")
-	// 	userAvatar.src = user.profile.replace('/images', '');
-	// else
-	// 	userAvatar.src = '../images/Retriever.jpeg';
 	if (userAvatar)
 		userAvatar.src = user.profile;
 	setTFA(user.is_tfa_active);
