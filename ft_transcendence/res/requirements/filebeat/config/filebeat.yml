@@ -1,0 +1,53 @@
+# filebeat.autodiscover:
+#   providers:
+#     - type: docker
+#       hints.enabled: true
+#       templates:
+#         - condition.contains:
+#             docker.container.image: nginx
+#           config:
+#             - module: nginx
+#               access.input:
+#                 type: docker
+#                 containers:
+#                   ids: "${data.docker.container.id}"
+#                   stream: "stdout"
+#               error.input:
+#                 type: docker
+#                 containers:
+#                   ids: "${data.docker.container.id}"
+#                   stream: "stderr"
+
+# filebeat.autodiscover:
+#   providers:
+#     - type: docker
+#       hints.enabled: true
+#       templates:
+#         - config:
+#             - type: docker
+#               containers.ids:
+#                 - "*"
+
+filebeat:
+  autodiscover:
+    providers:
+    - hints.default_config:
+        paths:
+        - /var/lib/docker/containers/${data.container.id}/*.log
+        type: container
+      hints.enabled: true
+      type: docker
+
+processors:
+- add_docker_metadata: ~
+
+setup.kibana:
+  host: ${KIBANA_HOSTS}
+  username: ${ELASTIC_USER}
+  password: ${ELASTIC_PASSWORD} 
+
+output.logstash:
+  hosts: logstash:5044
+  ssl:
+    enabled: true
+    certificate_authorities: "/usr/share/filebeat/certs/ca/ca.crt"

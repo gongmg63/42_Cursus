@@ -1,8 +1,7 @@
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+import { navigateTo } from "./transcendence.js";
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+let canvas;
+let ctx;
 
 const keyPressed = [];
 const KEY_UP = "w";
@@ -10,30 +9,57 @@ const KEY_DOWN = "s";
 const KEY_ARROWUP = "ArrowUp";
 const KEY_ARROWDOWN = "ArrowDown";
 
-window.addEventListener('keydown', function(e) {
-	// 한글은 안되잖아
-	keyPressed[e.key] = true;
-})
-
-window.addEventListener('keyup', function(e) {
-	keyPressed[e.key] = false;
-})
+let animationFrameId;
 
 let ballX = 200;
 let ballY = 200;
 let ballRadius = 20;
 let ballVelocityX = 20;
 let ballVelocityY = 15;
-
-const ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ballRadius);
-const paddle1 = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_UP, KEY_DOWN);
-const paddle2 = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
-
-
-// game 시작 전에 player 1, 2 이름, game type 파싱.
 let player1, player2, gameType;
-parseGameURL();
-gameLoop();
+
+let ball;
+let paddle1;
+let paddle2;
+
+function handleKeyUp(e)
+{
+	keyPressed[e.key] = false;
+}
+
+function handleKeyDown(e) {
+	keyPressed[e.key] = true;
+}
+
+window.startPong = function()
+{
+	console.log("start pong");
+	
+	setUpPong();
+	parseGameURL();
+	gameLoop();
+}
+
+function setUpPong()
+{
+	canvas = document.getElementById('canvas');
+	ctx = canvas.getContext('2d');	
+
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+
+	// keyPressed.length = 0;
+
+    // window.removeEventListener('keydown', handleKeyDown);
+    // window.removeEventListener('keyup', handleKeyUp);
+
+	window.addEventListener('keydown', handleKeyDown);
+	window.addEventListener('keyup', handleKeyUp);
+
+	ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ballRadius);
+	paddle1 = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200, KEY_UP, KEY_DOWN);
+	paddle2 = new Paddle(vec2(canvas.width - 20, 30), vec2(15, 15), 20, 200, KEY_ARROWUP, KEY_ARROWDOWN);
+}
 
 function drawGameScene()
 {
@@ -76,19 +102,12 @@ function drawGameScene()
 
 function parseGameURL()
 {
-	const urlParams = new URLSearchParams(window.location.search);
-	gameType = urlParams.get('gameType');
+	const hash = window.location.hash;
+    const queryParams = new URLSearchParams(hash.split('?')[1]);  // ?gameType= 이후의 파라미터만 추출
+    gameType = queryParams.get('gameType');
 
-	if (gameType == 'single')
-	{
-		player1 = localStorage.getItem('nickname');
-		player2 = player1;
-	}
-	else if (gameType == 'multi' || gameType == 'tournament')
-	{
-		player1 = urlParams.get('player1');
-		player2 = urlParams.get('player2');
-	}
+	player1 = localStorage.getItem('nickname');
+	player2 = player1;
 }
 
 function gameLoop()
@@ -96,11 +115,27 @@ function gameLoop()
 	// ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	window.requestAnimationFrame(gameLoop);	
+	animationFrameId = window.requestAnimationFrame(gameLoop);
 
 	checkGameEnd();
 	gameUpdate();
 	gameDraw();
+}
+
+window.cleanUpPong = function()
+{
+	// 애니메이션 프레임 중단
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);  // 게임 루프 중지
+    }
+
+    // 이벤트 리스너 제거
+    // window.removeEventListener('keydown', handleKeyDown);
+    // window.removeEventListener('keyup', handleKeyUp);
+
+	// keyPressed.length = 0;
+
+    console.log("Pong 게임이 정리되었습니다.");
 }
 
 function checkGameEnd()
@@ -125,7 +160,8 @@ function checkGameEnd()
             loserScore = paddle1.score;
         }
 		// game type도 추가.
-        window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
+		window.history.pushState(null, null, `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
+		navigateTo('/result');
 	}
 }
 
@@ -287,19 +323,6 @@ function ballCollisionWithEdges(ball)
 
 function ballPaddleCollision(ball, paddle)
 {
-	// let dx = Math.abs(ball.pos.x - paddle.getCenter().x);
-	// let dy = Math.abs(ball.pos.y - paddle.getCenter().y);
-
-	// if (dx <= (ball.radius + paddle.getHalfWidth()) && dy <= (paddle.getHalfHeight() + ball.radius))
-	// {
-	// 	if (dy + 3 > paddle.getHalfHeight())
-	// 	{
-	// 		ball.velocity.x *= -1;
-	// 		ball.velocity.y *= -1;
-	// 	}
-	// 	else
-	// 		ball.velocity.x *= -1;
-	// }
 	return (ball.pos.x < paddle.pos.x + paddle.width && ball.pos.x + ball.radius > paddle.pos.x &&
 		ball.pos.y < paddle.pos.y + paddle.height && ball.pos.y + ball.radius > paddle.pos.y);
 }

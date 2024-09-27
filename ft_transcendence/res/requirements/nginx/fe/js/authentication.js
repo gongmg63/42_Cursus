@@ -1,4 +1,5 @@
 import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { navigateTo } from "./transcendence.js";
 
 const inputs = document.querySelectorAll('.auth-input');
 
@@ -7,7 +8,8 @@ inputs.forEach((input) => {
     input.addEventListener('keydown', handleBackspace);
 });
 
-window.addEventListener('load', function() {
+window.authToken = function()
+{
 	const urlParams = new URLSearchParams(window.location.search);
 	const accessToken = urlParams.get('access_token');
 	const refreshToken = urlParams.get('refresh_token');
@@ -22,12 +24,13 @@ window.addEventListener('load', function() {
 	{
 		console.log('fuck you');
 	}
-})
+}
 
-document.getElementById('verifyBtn').addEventListener('click', () => {
-	postAuthCodeAPI();
+document.body.addEventListener('click', function(event) {
+    if (event.target && event.target.matches('#verifyBtn')) {
+        postAuthCodeAPI();
+    }
 });
-
 function handleInput(e) {
 	const input = e.target;
 	const nextInput = document.getElementById(input.dataset.next);
@@ -58,7 +61,6 @@ function postAuthCodeAPI()
 	const data = { code: code };
 
 	checkAndRefreshToken().then(() => {
-		//#region code fetch API
 		fetch('/api/user/verify/', {
 			method: 'POST',
 			headers: {
@@ -77,12 +79,12 @@ function postAuthCodeAPI()
 			return response.json();
 		})
 		.then(data => {
-			window.location.href = "/index.html";
+			window.history.pushState(null, null, '#/index');
+			navigateTo('/index');
 		})
 		.catch(error => {
 			console.error('Error fetching user data: ', error);
 			handleError(error);
 		});
 	})
-	//#endregion
 }

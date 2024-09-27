@@ -3,22 +3,24 @@ import { friends, setFriends } from "./index.js";
 import { setTFA } from "./2FA.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 
-const editUserBtn = document.querySelector('.edit-user-btn');
-const editUserModal = document.getElementById('editUserModal');
-const closeButn = editUserModal?.querySelector('.close');
 
-editUserBtn?.addEventListener('click', function() {
-	editUserModal.style.display = 'block';
-});
+document.body.addEventListener('click', function(event) {
+	// edit-user-btn 버튼 클릭 시 모달 열기
+	const editUserModal = document.getElementById('editUserModal');
+	
+    if (event.target && event.target.matches('.edit-user-btn')) {
+        editUserModal.style.display = 'block';
+    }
 
-closeButn?.addEventListener('click', function() {
-	editUserModal.style.display = 'none';
-});
+    // 모달 닫기 버튼 클릭 시 모달 닫기
+    if (event.target && event.target.matches('#editUserModal .close')) {
+        editUserModal.style.display = 'none';
+    }
 
-window.addEventListener('click', function(event) {
-	if (event.target === editUserModal) {
-		editUserModal.style.display = 'none';
-	}
+    // 모달 외부를 클릭하면 모달 닫기
+    if (event.target === editUserModal) {
+        editUserModal.style.display = 'none';
+    }
 });
 
 export function fetchUserData()
@@ -52,9 +54,6 @@ export function fetchUserData()
 			// 친구 목록 업데이트
 			setFriends(data.friends);
 			updateFriendsList(data.friends);
-		
-			// 최근 경기 기록 업데이트 - user 말고 다른 테이블에서 조회
-			// updateRecentMatches(data.recentMatches);
 		})
 		.catch(error => {
 			console.error('Error fetching user data: ', error);
@@ -114,10 +113,6 @@ function updateUserInfo(user)
 	if (userStats)
 		userStats.textContent = `Total Stats: ${user.wins || 0}W ${user.losses || 0}L`;
 
-	// if (user.profile && user.profile.trim() !== "")
-	// 	userAvatar.src = user.profile.replace('/images', '');
-	// else
-	// 	userAvatar.src = '../images/Retriever.jpeg';
 	if (userAvatar)
 		userAvatar.src = user.profile;
 	setTFA(user.is_tfa_active);
