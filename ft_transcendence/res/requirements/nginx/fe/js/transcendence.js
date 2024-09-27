@@ -97,6 +97,7 @@ window.addEventListener('hashchange', () => {
 console.log('초기 로딩');
 
 let currentPath = window.location.hash.slice(1) || '/';
+
 if (currentPath.includes('?')) {
 	currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
 }

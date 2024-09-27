@@ -26,6 +26,7 @@ checkAndRefreshToken().then(() => {
 			const access_token = localStorage.getItem("access_token");
 			// wss://cx1r5s2.42seoul.kr/ws/game/match/?token=
 			const socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
+			// const socket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/match/?token=' + access_token);
 			
 			socket.onopen = function(event) {
 				console.log("WebSocket 연결 성공:", event);
