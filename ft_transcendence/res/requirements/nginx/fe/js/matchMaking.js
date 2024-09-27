@@ -1,19 +1,24 @@
 import { friend_websocket } from "./friendWebsocket.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { navigateTo } from "./transcendence.js";
 
+// hash 로 수정.
 const urlParams = new URLSearchParams(window.location.search);
 const type = urlParams.get("gameType");
 const nick = urlParams.get("nickname");
 
-document.addEventListener('DOMContentLoaded', function() {
+window.loadMessage = function()
+{
 	let loadingDots = 0;
 	const loadingMessage = document.getElementById('loadingMessage');
 	
+	console.log("load message");
+
 	const loadingInterval = setInterval(() => {
 		loadingDots = (loadingDots + 1) % 4;
 		loadingMessage.textContent = 'Loading' + '.'.repeat(loadingDots);
 	}, 500);
-});
+}
 
 checkAndRefreshToken().then(() => {
 	friend_websocket()
@@ -22,21 +27,17 @@ checkAndRefreshToken().then(() => {
 			// wss://cx1r5s3.42seoul.kr/ws/game/match/?token=
 			const socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
 			
-			// WebSocket 연결이 열렸을 때 실행
 			socket.onopen = function(event) {
 				console.log("WebSocket 연결 성공:", event);
-				// 서버에 메시지를 보내는 예시 (매칭 요청)
 				socket.send(JSON.stringify({
 					type: type
 				}));
 			};
 			
-			// 서버로부터 메시지를 받을 때 실행
 			socket.onmessage = function(event) {
 				const data = JSON.parse(event.data);
 				console.log("서버로부터 받은 메시지:", data);
 			
-				// 매치 성공 메시지인 경우 처리
 				if (data.type === "match_found") {
 					console.log("매칭 성공! 상대방은:", data.opponent);
 				}
@@ -44,19 +45,16 @@ checkAndRefreshToken().then(() => {
 				setTimeout(() => startPongGame(data), 2000);
 			};
 			
-			// WebSocket 연결이 닫혔을 때 실행
 			socket.onclose = function(event) {
 				console.log("WebSocket 연결 종료:", event);
 			};
 			
-			// WebSocket 에러 발생 시 실행
 			socket.onerror = function(error) {
 				console.error("WebSocket 에러:", error);
 			};
 			
 			function updateMatchInfo(matchData) {
 				
-				// game type이 multi 이면 1 vs 1 화면
 				if (matchData.gameType == "1vs1")
 				{
 					// 로딩 메시지 숨기기
@@ -79,8 +77,10 @@ checkAndRefreshToken().then(() => {
 				// game type이 tournament이면 tournament 매치 화면
 				else if (matchData.gameType == "tournament")
 				{
-					
-					window.location.href = `/tournament.html?round=1`;
+					// window.location.href = `/tournament.html?round=1`;
+					// window.history.replaceState({}, document.title, window.location.pathname + `#/tournament?round=1`);
+					window.history.pushState(null, null, '#/tournament?round=1');
+					navigateTo('/tournament');
 				}
 			}
 			
@@ -92,8 +92,15 @@ checkAndRefreshToken().then(() => {
 				const id1 = matchData.player1.id;
 				const id2 = matchData.player2.id;
 				
-				window.location.href = `/multiPong.html?player1=${player1}&id1=${id1}\
-				&player2=${player2}&id2=${id2}&gameType=${gameType}`;
+				// window.location.href = `/multiPong.html?player1=${player1}&id1=${id1}\
+				// &player2=${player2}&id2=${id2}&gameType=${gameType}`;
+				
+				window.history.pushState(null, null, `#/multiPong?player1=${player1}&id1=${id1}\
+				&player2=${player2}&id2=${id2}&gameType=${gameType}`);
+
+				// window.history.replaceState({}, document.title, window.location.pathname + `#/multiPong?player1=${player1}&id1=${id1}\
+				// &player2=${player2}&id2=${id2}&gameType=${gameType}`);
+				navigateTo('/multiPong');
 			}
 		})
 		.catch((error) => {

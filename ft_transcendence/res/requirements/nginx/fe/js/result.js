@@ -1,6 +1,6 @@
-// import { handleError } from "./utils.js";
 import { friend_websocket } from "./friendWebsocket.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { navigateTo } from "./transcendence.js";
 
 sessionStorage.removeItem('pong_pageLoaded');
 
@@ -14,20 +14,24 @@ checkAndRefreshToken().then(() => {
 		});
 })
 
-document.addEventListener('DOMContentLoaded', function() {
-	// single, 1 vs 1, tournament에 따라 결과 다르게 - gameType 설정.
+window.loadResult = function ()
+{
 	const result = resultToJson();
 	
 	console.log(result);
+	cleanUpPong();
 
     updateResult(result.winner);
 
 	postMatchAPI(result);
-});
+}
 
-document.getElementById('continueBtn').addEventListener('click', function(event) {
-	event.preventDefault();
-    window.location.href = '/index.html';
+document.body.addEventListener('click', function(event) {
+    if (event.target && event.target.matches('#continueBtn')) {
+        event.preventDefault();
+        window.history.pushState(null, null, '#/index');
+        navigateTo('/index');
+    }
 });
 
 function updateResult(winner)
@@ -55,23 +59,16 @@ function updateResult(winner)
 
 function resultToJson()
 {
-	const urlParams = new URLSearchParams(window.location.search);
-	const winner = urlParams.get('winner');
-	const loser = urlParams.get('loser');
-	const winnerScore = urlParams.get('winnerScore');
-	const loserScore = urlParams.get('loserScore');
-	const gameType = urlParams.get('gameType');
+	const hash = window.location.hash;
+    const queryParams = new URLSearchParams(hash.split('?')[1]);
+
+	const winner = queryParams.get('winner');
+	const loser = queryParams.get('loser');
+	const winnerScore = queryParams.get('winnerScore');
+	const loserScore = queryParams.get('loserScore');
+	const gameType = queryParams.get('gameType');
 	const now = new Date();
 	const gameDate = new Date(now.getTime() + (9 * 60 * 60 * 1000)).toISOString();
-
-	// {
-	// 	"winner": "winnerUsername",
-	// 	"loser": "loserUsername",
-	// 	"winner_score": 100,
-	// 	"loser_score": 80,
-	// 	"game_type": "1VS1 or Tournament",
-	// 	"game_date": "2024-09-01T12:00:00Z"
-	// }
 
 	return {
         winner: winner,
@@ -85,7 +82,7 @@ function resultToJson()
 
 function postMatchAPI(result)
 {
-	if (result.gameType == 'single')
+	if (result.game_type == 'single')
 		return ;
 	const access_token = localStorage.getItem("access_token");
 	fetch('/api/game/result/add/', {
@@ -110,6 +107,5 @@ function postMatchAPI(result)
 	})
 	.catch(error => {
         console.error('Error updating match:', error);
-		// handleError(error);
     });
 }
