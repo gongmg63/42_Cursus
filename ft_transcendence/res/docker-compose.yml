@@ -50,6 +50,10 @@ services:
     depends_on:
       - postgres
       - django
+    labels:
+      co.elastic.logs/module: nginx
+      co.elastic.logs/fileset.stdout: access
+      co.elastic.logs/fileset.stderr: error
     volumes:
       - media:/images
       - frontend:/usr/share/nginx/html
