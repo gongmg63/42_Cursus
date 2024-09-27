@@ -1,5 +1,6 @@
 import { friend_websocket } from "./friendWebsocket.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { navigateTo } from "./transcendence.js";
 
 checkAndRefreshToken().then(() => {
 	friend_websocket()
@@ -227,7 +228,7 @@ function parseGameURL()
 		player1 = localStorage.getItem('nickname');
 		player2 = player1;
 	}
-	else if (gameType == '1vs1' || gameType == 'tournament')
+	else
 	{
 		player1 = urlParams.get('player1');
 		player2 = urlParams.get('player2');
@@ -290,7 +291,10 @@ function checkGameEnd()
             loserScore = opPad.score;
 		}
 		// game type에 따라 다르게 redirect - 1vs1, tournament
-        window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
+        // window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
+		// window.history.replaceState({}, document.title, window.location.pathname + `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
+		window.history.pushState(null, null, `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
+		navigateTo('/result');
 	}
 }
 

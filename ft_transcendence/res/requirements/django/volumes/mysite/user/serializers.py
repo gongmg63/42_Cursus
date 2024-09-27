@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.conf import settings
 from .utils import CustomValidationError
 from .models import User
-import os
+import re
 
 class FriendSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,6 +34,11 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'oauthid', 'wins', 'losses']
     
+    def validate_nickname(self, nickname):
+        if not re.match(r'^[A-Za-z0-9]+$', nickname):
+            raise CustomValidationError('Nickname must contain only English letters and numbers, and cannot contain spaces.', code=400)
+        return nickname
+
     def update(self, instance, validated_data):
         profile = validated_data.get('profile', None)
         
@@ -44,7 +49,6 @@ class UserSerializer(serializers.ModelSerializer):
             else:
                 # 이전 파일 삭제
                 instance.profile.delete(save=False)
-        
         return super().update(instance, validated_data)
     
 class AddFriendSerializer(serializers.Serializer):
@@ -54,7 +58,7 @@ class AddFriendSerializer(serializers.Serializer):
         try:
             friend = User.objects.get(nickname=data['nickname'])
         except User.DoesNotExist:
-            raise CustomValidationError("해당 정보를 가진 사용자가 존재하지 않습니다.", code=404)  # HTTP 404 Not Found
+            raise CustomValidationError("No user exists with that information.", code=404)  # HTTP 404 Not Found
         
         data['friend'] = friend
         return data
@@ -63,10 +67,10 @@ class AddFriendSerializer(serializers.Serializer):
         friend = validated_data['friend']
         
         if friend.id == instance.id:
-            raise CustomValidationError("자기 자신을 친구로 추가할 수 없습니다.", code=400)  # HTTP 400 Bad Request
+            raise CustomValidationError("You can't add yourself as a friend.", code=400)  # HTTP 400 Bad Request
         
         if friend in instance.friends.all():
-            raise CustomValidationError("이미 친구로 등록된 사용자입니다.", code=400)  # HTTP 400 Bad Request
+            raise CustomValidationError("You are already registered as a friend.", code=400)  # HTTP 400 Bad Request
         
         # 친구 추가 로직을 구현하세요
         instance.friends.add(friend)
