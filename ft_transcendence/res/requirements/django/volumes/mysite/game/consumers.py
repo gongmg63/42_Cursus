@@ -26,8 +26,6 @@ final_waiting_queue = []
 #       type: "1vs1 or tournament or final",
 #     }));
 
-#	data race...?
-
 class MatchConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope["user"]
@@ -35,7 +33,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        # 연결 해제 시 대기열에서 제거
+        # 연결 성공 시 대기열에서 제거
+        print("매칭 웹소켓 연결 종료")
         await self.channel_layer.group_discard(
             self.group_name,
             self.channel_name
@@ -51,6 +50,7 @@ class MatchConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_type = data.get("type")
 
+        print("매칭 데이터:", data)
         if message_type == "1vs1":
             self.group_name = "1vs1_group"
             await self.channel_layer.group_add(
@@ -298,6 +298,7 @@ game_loop_dict = {}
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        print("게임 웹소켓 연결")
         global client
         self.user = self.scope["user"]
         self.paddle_velocity_x = 25
@@ -312,7 +313,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         global client
-
+        print("게임 웹소켓 연결 종료")
         client[self.user.id] = False
         play_disconnect_signal.send(sender=self.__class__, instance=self)
         if hasattr(self, 'game_loop_task') and not self.game_loop_task.done():

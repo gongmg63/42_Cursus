@@ -1,13 +1,20 @@
 import { setFriends } from "./index.js";
 import { updateFriendsList } from "./utils.js";
 
+let websocket = null;
+
 export function friend_websocket()
 {
 	return new Promise((resolve, reject) => {
-		const access_token = localStorage.getItem("access_token");
-		const websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/friend/status/?token=' + access_token);
-		// const websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/friend/status/?token=' + access_token);
+        if (websocket && websocket.readyState === WebSocket.OPEN) {
+            console.log("친구 웹소켓이 이미 연결되어 있습니다.");
+            resolve(websocket);  // 기존의 웹소켓 객체 반환
+            return;
+        }
         
+        const access_token = localStorage.getItem("access_token");
+		websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/friend/status/?token=' + access_token);
+		// const websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/friend/status/?token=' + access_token);
 		
         // 연결이 성공했을 때 호출
         websocket.onopen = () => {

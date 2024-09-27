@@ -1,3 +1,7 @@
+import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { friend_websocket } from "./friendWebsocket.js";
+import { match_websocket } from "./matchWebsocket.js";
+
 const routes = {
 	'/': { page: 'login.html', css: 'styles.css', js: [{ file: 'login.js', type: 'module' }] },
 	'/index': { page: 'index.html', css: 'index.css', js: [{ file: 'index.js', type: 'module'}, { file: '2FA.js', type: 'module'}] },
@@ -24,6 +28,7 @@ export async function navigateTo(url) {
 	const content = await res.text();
 	app.innerHTML = content;
 
+	console.log("url: ", url);
 	// CSS 파일을 동적으로 로드
 	if (route.css) {
 		dynamicCSS.setAttribute('href', `/css/${route.css}`);
@@ -59,6 +64,8 @@ export async function navigateTo(url) {
 					authToken();
 				else if (js.file === 'pong.js')
 					startPong();
+				else if (js.file === 'multiPong.js')
+					startMultiPong();
 			};
 			document.body.appendChild(script);
 			currentScripts.push(script);
@@ -67,6 +74,22 @@ export async function navigateTo(url) {
 		if (url !== '/pong') {
 			if (typeof cleanupPong === 'function')
 				cleanupPong();  // 게임 관련 리소스 정리
+		}
+		if (url !== '/')
+		{
+			checkAndRefreshToken().then(() => {
+				friend_websocket()
+					.then((websocket) => {
+					})
+					.catch((error) => {
+						console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+					});
+			});
+		}
+		if (url !== '/multiPong')
+		{
+			if (typeof cleanUpMultiPong === 'function')
+				cleanUpMultiPong();
 		}
 	}
 }
@@ -81,6 +104,7 @@ window.addEventListener('hashchange', () => {
     if (currentPath !== '/pong')
 	{ 
 		// 게임 관련 리소스 정리
+		console.log('hashchange pong');
 		if (typeof cleanupPong === 'function')
 			cleanupPong(); 
     }
@@ -89,6 +113,14 @@ window.addEventListener('hashchange', () => {
 		console.log("hashchange start pong");
 		startPong();
 	}
+
+	if (currentPath !== '/multiPong')
+	{
+		console.log('hashchange multipong')
+		if (typeof cleanUpMultiPong === 'function')
+			cleanUpMultiPong();
+	}
+	currentPath = match_websocket(currentPath, null);
 	console.log("hashchange: ", currentPath);
 	navigateTo(currentPath);
 });
