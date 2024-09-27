@@ -21,46 +21,6 @@ window.addEventListener('click', function(event) {
 	}
 });
 
-// export function friend_websocket()
-// {
-// 	return new Promise((resolve, reject) => {
-// 		const access_token = localStorage.getItem("access_token");
-// 		const websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/friend/status/?token=' + access_token);
-        
-		
-//         // 연결이 성공했을 때 호출
-//         websocket.onopen = () => {
-//             console.log("웹소켓 연결 완료");
-//             resolve(websocket);  // 웹소켓 객체를 반환하여 다른 곳에서 사용 가능
-//         };
-
-//         // 메시지를 수신할 때 호출
-//         websocket.onmessage = (event) => {
-//             const data = JSON.parse(event.data);
-// 			if (data.type == 'friend_status_update')
-//             {
-// 				console.log("서버로부터 받은 메시지:", data);
-// 				// populateFriendSelect();
-// 				updateFriendsList(data.friends);
-// 				// 여기에서 메시지에 따라 처리하는 로직을 추가
-// 			}
-// 			else if (data.type == 'friend_update')
-// 				setFriends(data.friends);
-//         };
-
-//         // 오류가 발생했을 때 호출
-//         websocket.onerror = (error) => {
-//             console.error("웹소켓 연결 오류:", error);
-//             reject(error);  // 연결 실패 시 Promise를 거부
-//         };
-
-//         // 연결이 종료되었을 때 호출
-//         websocket.onclose = () => {
-//             console.log("웹소켓 연결 종료");
-//         };
-//     });
-// }
-
 export function fetchUserData()
 {
 	checkAndRefreshToken().then(()=> {
@@ -80,7 +40,7 @@ export function fetchUserData()
 			else if (!response.ok)
 			{
 				return response.json().then(errData => {
-					throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+					throw new Error(`Error (${response.status}): ${errData.detail || 'Unknown error'}`);
 				});
 			}
 			return response.json();
@@ -282,7 +242,11 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
 		else if (response.status == 500)
 			throw new Error('Server error (500)')
 		else if (!response.ok)
-			throw new Error(`Unexpected error: ${response.status}`);
+		{
+			return response.json().then(errData => {
+				throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+			});
+		}
 		return response.json();
     })
     .then(data => {

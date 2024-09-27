@@ -54,8 +54,12 @@ function postFriendAPI(data, access_token)
 				throw new Error('User data not found (404)');
 			else if (response.status == 500)
 				throw new Error('Server error (500)')
-			else if (!response.ok)
-				throw new Error(`Unexpected error: ${response.status}`);
+				else if (!response.ok)
+				{
+					return response.json().then(errData => {
+						throw new Error(`Error (${response.status}): ${errData.detail || 'Unknown error'}`);
+					});
+				}
 			return response.json();
 		})
 		.then(data => {

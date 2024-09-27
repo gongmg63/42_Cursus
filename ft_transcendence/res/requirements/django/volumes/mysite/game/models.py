@@ -7,6 +7,7 @@ class GameResult(models.Model):
     GAME_TYPE_CHOICES = [
         ('1vs1', '1VS1'),
         ('tournament', 'Tournament'),
+        ('final', 'Final'),
         # 필요한 다른 게임 종류 추가
     ]
 

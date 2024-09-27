@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     pvpBtn.addEventListener('click', function() {
         console.log('1 vs 1 mode selected');
 		// 매치 메이킹 페이지
-		gameType = "1vs1_match_request";
+		gameType = "1vs1";
 		window.location.href = `/matchmaking.html?gameType=${gameType}`;
     });
 
@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
     startTournamentBtn.addEventListener('click', function() {
         const nickname = document.getElementById('nickname').value.trim();
         if (nickname) {
-			gameType = "tournament_match_request";
-            window.location.href = `/matchmaking.html?gameType=${Tournament}&nickname=${nickname}`;
+			gameType = "tournament";
+            window.location.href = `/matchmaking.html?gameType=${gameType}&nickname=${nickname}`;
         } else {
             alert('Please enter a nickname.');
         }

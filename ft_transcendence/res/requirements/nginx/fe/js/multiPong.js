@@ -226,7 +226,7 @@ function parseGameURL()
 		player1 = localStorage.getItem('nickname');
 		player2 = player1;
 	}
-	else if (gameType == '1vs1' || gameType == 'tournament')
+	else
 	{
 		player1 = urlParams.get('player1');
 		player2 = urlParams.get('player2');

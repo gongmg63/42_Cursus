@@ -7,6 +7,7 @@ class User(AbstractUser):
 	oauthid = models.IntegerField(default = 0, unique=True, verbose_name='OAuth2.0')
 	nickname = models.CharField(max_length=20, unique=True, verbose_name='닉네임')
 	t_nickname = models.CharField(max_length=20, null=True, verbose_name='토너먼트 닉네임')
+	t_loser = models.CharField(max_length=20, null=True, verbose_name='토너먼트 패배자')
 	wins = models.PositiveIntegerField(default=0, verbose_name='승')
 	losses = models.PositiveIntegerField(default=0, verbose_name='패')
 	profile = models.ImageField(blank=True, upload_to=uuid_name_upload_to)

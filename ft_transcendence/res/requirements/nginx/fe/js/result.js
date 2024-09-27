@@ -85,7 +85,7 @@ function resultToJson()
 
 function postMatchAPI(result)
 {
-	if (result.gameType == 'single')
+	if (result.game_type == 'single' || result.game_type == 'tournament1' || result.game_type == 'tournament2' || result.gameType == 'final')
 		return ;
 	const access_token = localStorage.getItem("access_token");
 	fetch('/api/game/result/add/', {

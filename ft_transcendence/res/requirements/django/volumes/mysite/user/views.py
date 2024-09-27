@@ -14,13 +14,14 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework import serializers, status
 from urllib.parse import urlencode
 import pyotp
 import qrcode
 import base64
 from io import BytesIO
 
+from .utils import CustomValidationError
 from .models import User
 from .signals import friend_delete_signal
 from .serializers import UserSerializer, AddFriendSerializer, FriendSerializer
@@ -168,10 +169,20 @@ class UserAPI(APIView):
     def patch(self, request):
         user = request.user
         serializer = UserSerializer(user, data=request.data, partial=True)  # 부분 업데이트를 허용
-        if serializer.is_valid():
-            serializer.save()  # 정보 저장
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except serializers.ValidationError as e:
+            error_message = str(e)
+            print('???????', error_message)
+            if 'exists' in error_message:
+                raise CustomValidationError('Nickname already exists.', code=409)  # HTTP 404 Not Found
+            elif 'blank' in error_message or 'contain' in error_message:
+                raise CustomValidationError('Nickname can\'t be blank.', code=400)  # HTTP 404 Not Found
+            elif "20" in str(serializer.errors):
+                raise CustomValidationError("Nickname has no more than 20 characters.", code=400)  # HTTP 404 Not Found
+            raise CustomValidationError(error_message, code=400)
     
 	# DELETE : 내 계정 삭제
     def delete(self, request):
@@ -206,7 +217,11 @@ class FriendAPIView(APIView):
                 "message": "친구가 성공적으로 추가되었습니다.",
                 "friend": friend_serializer.data # 추가된 친구 정보
             }, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if "20" in str(serializer.errors):
+            raise CustomValidationError("Nickname has no more than 20 characters.", code=400)  # HTTP 404 Not Found
+        elif "blank" in str(serializer.errors):
+            raise CustomValidationError("Nickname can't be blank.", code=400)  # HTTP 404 Not Found
+        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
     # DELETE : 친구 삭제
     def delete(self, request):
