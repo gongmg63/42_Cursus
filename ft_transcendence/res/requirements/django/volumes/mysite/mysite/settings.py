@@ -34,7 +34,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 ACCESS_URL = 'https://' + env('ACCESS_URL')
-TFA_URL = 'https://' + env('ACCESS_URL') + '/authentication.html'
+TFA_URL = 'https://' + env('ACCESS_URL') + '/#/authentication'
 CSRF_TRUSTED_ORIGINS = [ACCESS_URL, 'https://127.0.0.1', 'https://localhost']
 
 
@@ -59,7 +59,6 @@ INSTALLED_APPS = [
 
 INTRA_42_CLIENT_ID = 'u-s4t2ud-a991aa69f5866fee60773246fd85a925d581cc6b802b9a326424b96733b4b5ac'
 INTRA_42_CLIENT_SECRET = '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'
-# INTRA_42_REDIRECT_CALLBACK_URI = 'https://127.0.0.1/api/user/oauth/callback'
 INTRA_42_REDIRECT_CALLBACK_URI = 'https://' + env('ACCESS_URL') + '/api/user/oauth/callback'
 
 REST_FRAMEWORK = {

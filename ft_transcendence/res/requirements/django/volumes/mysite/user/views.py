@@ -131,7 +131,7 @@ class TFAView(APIView):
         # 사용자 닉네임과 코드 가져오기
         nickname = request.data.get('nickname')
         code = request.data.get('code')
-
+        print(nickname)
         if not nickname or not code:
             return Response({"detail": "User nickname and code are required."}, status=status.HTTP_400_BAD_REQUEST)
 
