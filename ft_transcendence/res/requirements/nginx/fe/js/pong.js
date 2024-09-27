@@ -48,11 +48,6 @@ function setUpPong()
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	// keyPressed.length = 0;
-
-    // window.removeEventListener('keydown', handleKeyDown);
-    // window.removeEventListener('keyup', handleKeyUp);
-
 	window.addEventListener('keydown', handleKeyDown);
 	window.addEventListener('keyup', handleKeyUp);
 
