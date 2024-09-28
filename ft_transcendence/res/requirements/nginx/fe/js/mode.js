@@ -21,7 +21,7 @@ function handleClickEvent(event)
 
 	if (event.target && event.target.matches('#pvp')) {
 		console.log('1 vs 1 mode selected');
-		gameType = "1vs1_match_request";
+		gameType = "1vs1";
 		window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
 		navigateTo('/matchmaking');
 	}
@@ -42,7 +42,7 @@ function handleClickEvent(event)
 	if (event.target && event.target.matches('#start-tournament')) {
 		const nickname = document.getElementById('nickname').value.trim();
 		if (nickname) {
-			gameType = "tournament_match_request";
+			gameType = "tournament";
 			window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
 			navigateTo('/matchmaking');
 		} else {

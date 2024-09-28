@@ -32,6 +32,14 @@ class AddGameResultView(APIView):
             
             return Response({
                 'message': 'Game result added successfully',
+                'game_result': {
+                    'winner': game_result.winner.username,
+                    'loser': game_result.loser.username,
+                    'winner_score': game_result.winner_score,
+                    'loser_score': game_result.loser_score,
+                    'game_type': game_result.game_type,
+                    'game_date': game_result.game_date,
+                }
             }, status=status.HTTP_201_CREATED)
         
         # 유효성 검사가 실패하면 오류 반환

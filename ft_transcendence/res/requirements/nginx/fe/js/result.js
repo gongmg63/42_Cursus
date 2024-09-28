@@ -1,25 +1,18 @@
-import { friend_websocket } from "./friendWebsocket.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { navigateTo } from "./transcendence.js";
 
 sessionStorage.removeItem('pong_pageLoaded');
 
 checkAndRefreshToken().then(() => {
-	friend_websocket()
-		.then((websocket) => {
-			console.log("웹소켓이 연결되었습니다.");
-		})
-		.catch((error) => {
-			console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
-		});
 })
 
 window.loadResult = function ()
 {
+
 	const result = resultToJson();
 	
 	console.log(result);
-	cleanUpPong();
+	// cleanUpPong();
 
     updateResult(result.winner);
 
@@ -82,7 +75,7 @@ function resultToJson()
 
 function postMatchAPI(result)
 {
-	if (result.game_type == 'single')
+	if (result.game_type == 'single' || result.game_type == 'tournament1' || result.game_type == 'tournament2' || result.gameType == 'final')
 		return ;
 	const access_token = localStorage.getItem("access_token");
 	fetch('/api/game/result/add/', {

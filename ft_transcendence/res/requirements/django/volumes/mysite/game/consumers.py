@@ -3,6 +3,7 @@ import asyncio
 
 
 from user.serializers import UserSerializer
+from user.models import User
 from django.contrib.auth import get_user_model
 
 from channels.db import database_sync_to_async
@@ -11,7 +12,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .signals import play_disconnect_signal
-import math
 import random
 
 # player1 / player2 / gameType 
@@ -23,12 +23,8 @@ tournament_waiting_queue = []
 final_waiting_queue = []
 
 #     socket.send(JSON.stringify({
-#       type: "1vs1 or tournament or final_match_request",
-#		gameType: "1vs1 or tournament"
-#       id: "12345"
+#       type: "1vs1 or tournament or final",
 #     }));
-
-#	data race...?
 
 class MatchConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -37,7 +33,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        # 연결 해제 시 대기열에서 제거
+        # 연결 성공 시 대기열에서 제거
+        print("매칭 웹소켓 연결 종료")
         await self.channel_layer.group_discard(
             self.group_name,
             self.channel_name
@@ -53,27 +50,35 @@ class MatchConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_type = data.get("type")
 
-        if message_type == "1vs1_match_request":
+        print("매칭 데이터:", data)
+        if message_type == "1vs1":
             self.group_name = "1vs1_group"
             await self.channel_layer.group_add(
                 self.group_name,  # 그룹 이름
                 self.channel_name  # 현재 연결된 채널의 이름
             )
-            await self.handle_match_request("1vs1")
-        elif message_type == "tournament_match_request":
+            await self.handle_match_request(message_type)
+        elif message_type == "tournament":
             self.group_name = "tournament_group"
             await self.channel_layer.group_add(
                 self.group_name,  # 그룹 이름
                 self.channel_name  # 현재 연결된 채널의 이름
             )
-            await self.handle_match_request("tournament")
-        elif message_type == "final_match_request":
+            await self.handle_match_request(message_type)
+        elif message_type == "final":
             self.group_name = "final_group"
             await self.channel_layer.group_add(
                 self.group_name,  # 그룹 이름
                 self.channel_name  # 현재 연결된 채널의 이름
             )
-            await self.handle_match_request("final")
+            self.save_user_status(data.get("loser"))
+            await self.handle_match_request(message_type)
+
+    @database_sync_to_async
+    def save_user_status(self, loser):
+        user = User.objects.get(id=self.user.id)
+        user.t_loser = loser
+        user.save()
 
     async def handle_match_request(self, gametype):
         global vs_waiting_queue
@@ -83,29 +88,24 @@ class MatchConsumer(AsyncWebsocketConsumer):
         if gametype == "1vs1" and self.user not in vs_waiting_queue:
             vs_waiting_queue.append(self.user)
             if len(vs_waiting_queue) >= 2:
-                player1 = vs_waiting_queue.pop(0)
-                player2 = vs_waiting_queue.pop(0)
         	    # 두 유저에게 매칭 정보를 전송
-                await self.send_to_user(player1, player2, gametype)
+                await self.send_to_user(gametype)
         # tournament 매칭
         elif gametype == "tournament" and self.user not in tournament_waiting_queue:
             tournament_waiting_queue.append(self.user)
             if len(tournament_waiting_queue) >= 4:
-                player1 = tournament_waiting_queue.pop(0)
-                player2 = tournament_waiting_queue.pop(0)
-                await self.send_to_user(player1, player2, gametype)
-                player3 = tournament_waiting_queue.pop(0)
-                player4 = tournament_waiting_queue.pop(0)
-                await self.send_to_user(player3, player4, gametype)
+                await self.send_to_tourtnament_user(gametype)
         # final 매칭
         elif gametype == "final" and self.user not in final_waiting_queue:
             final_waiting_queue.append(self.user)
             if len(final_waiting_queue) >= 2:
-                player1 = final_waiting_queue.pop(0)
-                player2 = final_waiting_queue.pop(0)
-                await self.send_to_uer(player1, player2, gametype)
+                await self.send_to_final_user(gametype)
 
-    async def send_to_user(self, player1, player2, gametype):
+    async def send_to_user(self, gametype):
+        global tournament_waiting_queue
+
+        player1 = vs_waiting_queue.pop(0)
+        player2 = vs_waiting_queue.pop(0)
         player1_user = await database_sync_to_async(get_user_model().objects.get)(id=player1.id)
         player2_user = await database_sync_to_async(get_user_model().objects.get)(id=player2.id)
 		
@@ -123,25 +123,136 @@ class MatchConsumer(AsyncWebsocketConsumer):
             }
         )
 
+    async def send_to_tourtnament_user(self, gametype):
+        global tournament_waiting_queue
+
+        player1 = tournament_waiting_queue.pop(0)
+        player2 = tournament_waiting_queue.pop(0)
+        player3 = tournament_waiting_queue.pop(0)
+        player4 = tournament_waiting_queue.pop(0)
+        
+        player1_user = await database_sync_to_async(get_user_model().objects.get)(id=player1.id)
+        player2_user = await database_sync_to_async(get_user_model().objects.get)(id=player2.id)
+        player3_user = await database_sync_to_async(get_user_model().objects.get)(id=player3.id)
+        player4_user = await database_sync_to_async(get_user_model().objects.get)(id=player4.id)
+		
+        # 직렬화
+        player1_data = UserSerializer(player1_user).data
+        player2_data = UserSerializer(player2_user).data
+        player3_data = UserSerializer(player3_user).data
+        player4_data = UserSerializer(player4_user).data
+        
+        if self.id == player1.id or self.id == player2.id:
+            gametype += '1'
+
+        else:
+            gametype += '2'
+
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                "type": "match_found",
+                "gameType": gametype,
+                "player1": player1_data,
+                "player2": player2_data,
+                "player3": player3_data,
+                "player4": player4_data,
+            }
+        )
+
+    async def send_to_final_user(self, gametype):
+        global final_waiting_queue
+
+        winner1 = final_waiting_queue.pop(0)
+        winner2 = final_waiting_queue.pop(0)
+
+        winner1_user = await database_sync_to_async(get_user_model().objects.get)(id=winner1.id)
+        winner2_user = await database_sync_to_async(get_user_model().objects.get)(id=winner2.id)
+
+        #직렬화
+        winner1_data = UserSerializer(winner1_user).data
+        winner2_data = UserSerializer(winner2_user).data
+
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                "type": "match_found",
+                "gameType": gametype,
+                "winner1": winner1_data,
+                "winner2": winner2_data,
+            }
+        )
+
     async def match_found(self, event):
         game_type = event["gameType"]
-        player1 = event["player1"]
-        player2 = event["player2"]
+        if game_type == "1vs1":
+            player1 = event["player1"]
+            player2 = event["player2"]
 
-        # sender와 비교해 상대방 정보를 설정
-        if self.scope["user"].nickname == player1['nickname']:
-            opponent = player2['nickname']
+            # sender와 비교해 상대방 정보를 설정
+            # if self.user.nickname == player1['nickname']:
+            #     opponent = player2['nickname']
+            # else:
+            #     opponent = player1['nickname']
+
+            # 클라이언트에 메시지 전송
+            await self.send(json.dumps({
+                "type": "match_found",
+                "gameType": game_type,
+                "player1": player1,
+                "player2": player2,
+                # "opponent": opponent  # 상대방 정보 전송
+            }))
+        elif game_type == "tournament1" or game_type == "tournament2":
+            player1 = event["player1"]
+            player2 = event["player2"]
+            player3 = event["player3"]
+            player4 = event["player4"]
+
+            # sender와 비교해 상대방 정보를 설정
+            # if self.user.nickname == player1['nickname']:
+            #     opponent = player2['nickname']
+            # elif self.user.nickname == player2['nickname']:
+            #     opponent = player1['nickname']
+            # elif self.user.nickname == player3['nickname']:
+            #     opponent = player4['nickname']
+            # else:
+            #     opponent = player3['nickname']
+
+            # 클라이언트에 메시지 전송
+            await self.send(json.dumps({
+                "type": "match_found",
+                "gameType": game_type,
+                "player1": player1,
+                "player2": player2,
+                "player3": player3,
+                "player4": player4,
+                # "myTNickname": self.user.t_nickname,
+                # "opponent": opponent  # 상대방 정보 전송
+            }))
         else:
-            opponent = player1['nickname']
+            winner1 = event["winner1"]
+            winner2 = event["winner2"]
 
-        # 클라이언트에 메시지 전송
-        await self.send(json.dumps({
-            "type": "match_found",
-            "gameType": game_type,
-            "player1": player1,
-            "player2": player2,
-            "opponent": opponent  # 상대방 정보 전송
-        }))
+            # if self.user.nickname == winner1['nickname']:
+            #     myinfo = winner1
+            #     opponent = winner2
+            # else:
+            #     myinfo = winner2
+            #     opponent = winner1
+
+            await self.send(json.dumps({
+                "type": "match_found",
+                "gameType": game_type,
+                "player1": winner1,
+                "player2": winner1['t_loser'],
+                "player3": winner2,
+                "player4": winner2['t_loser'],
+                # "myinfo": myinfo,
+                # "opponent": opponent
+            }))
+            
+
 
 
 #     socket.send(JSON.stringify({
@@ -187,6 +298,7 @@ game_loop_dict = {}
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        print("게임 웹소켓 연결")
         global client
         self.user = self.scope["user"]
         self.paddle_velocity_x = 25
@@ -201,7 +313,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         global client
-
+        print("게임 웹소켓 연결 종료")
         client[self.user.id] = False
         play_disconnect_signal.send(sender=self.__class__, instance=self)
         if hasattr(self, 'game_loop_task') and not self.game_loop_task.done():

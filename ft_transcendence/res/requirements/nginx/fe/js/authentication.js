@@ -1,9 +1,12 @@
-import { checkAndRefreshToken } from "./jwtRefresh.js";
+// import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { navigateTo } from "./transcendence.js";
 
 const inputs = document.querySelectorAll('.auth-input');
 
 inputs.forEach((input) => {
+    input.removeEventListener('input', handleInput);
+    input.removeEventListener('keydown', handleBackspace);
+
     input.addEventListener('input', handleInput);
     input.addEventListener('keydown', handleBackspace);
 });
@@ -57,34 +60,39 @@ function isAllFilled() {
 function postAuthCodeAPI()
 {
 	const code = Array.from(inputs).map(input => input.value).join('');
-	const access_token = localStorage.getItem("access_token");
-	const data = { code: code };
+	// const access_token = localStorage.getItem("n");
+	const hash = window.location.hash;
+    const queryParams = new URLSearchParams(hash.split('?')[1]);
+	const nickname = queryParams.get('nickname');
+	const data = { nickname: nickname, code: code };
 
-	checkAndRefreshToken().then(() => {
-		fetch('/api/user/verify/', {
-			method: 'POST',
-			headers: {
-				'Authorization': `Bearer ${access_token}`,
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(data)
-		})
-		.then(response => {
-			if (response.status == 404)
-				throw new Error('User data not found (404)');
-			else if (response.status == 500)
-				throw new Error('Server error (500)')
-			else if (!response.ok)
-				throw new Error(`Unexpected error: ${response.status}`);
-			return response.json();
-		})
-		.then(data => {
-			window.history.pushState(null, null, '#/index');
-			navigateTo('/index');
-		})
-		.catch(error => {
-			console.error('Error fetching user data: ', error);
-			handleError(error);
-		});
+	fetch('/api/user/verify/', {
+		method: 'POST',
+		headers: {
+			'nickname': nickname,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(data)
 	})
+	.then(response => {
+		if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+			throw new Error(`Unexpected error: ${response.status}`);
+		return response.json();
+	})
+	.then(data => {
+		console.log(data.accessToken);
+		localStorage.setItem('access_token', data.access_token);
+		localStorage.setItem('refresh_token', data.refresh_token);
+		console.log('Token stored successfully');
+		window.history.pushState(null, null, '#/index');
+		navigateTo('/index');
+	})
+	.catch(error => {
+		console.error('Error fetching user data: ', error);
+		handleError(error);
+	});
 }

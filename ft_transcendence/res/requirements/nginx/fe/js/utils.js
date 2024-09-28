@@ -72,9 +72,9 @@ export function editLocalStorage(nickname, avatar)
 export function handleError(error)
 {
 	if (error.message.includes('404')) 
-		alert('User data not found. Please check the user information.');
+		alert('Error (404):User data not found. Please check the user information.');
 	else if (error.message.includes('500'))
-		alert('Server error. Please try again later.');
+		alert('Error (500):Server error. Please try again later.');
 	else
-		alert('An unexpected error occurred.');
+		alert(error.message);
 }

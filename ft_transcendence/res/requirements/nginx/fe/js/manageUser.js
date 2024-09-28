@@ -42,7 +42,7 @@ export function fetchUserData()
 			else if (!response.ok)
 			{
 				return response.json().then(errData => {
-					throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+					throw new Error(`Error (${response.status}): ${errData.detail || 'Unknown error'}`);
 				});
 			}
 			return response.json();
@@ -237,7 +237,11 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
 		else if (response.status == 500)
 			throw new Error('Server error (500)')
 		else if (!response.ok)
-			throw new Error(`Unexpected error: ${response.status}`);
+		{
+			return response.json().then(errData => {
+				throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+			});
+		}
 		return response.json();
     })
     .then(data => {

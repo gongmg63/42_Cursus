@@ -51,4 +51,42 @@ echo "Waiting for Elasticsearch availability";
 until curl -s --cacert config/certs/ca/ca.crt https://elasticsearch:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
 echo "Setting kibana_system password";
 until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+# lifecycle policy setup
+curl -X PUT --cacert config/certs/ca/ca.crt -u "elastic:hihello" https://elasticsearch:9200/_ilm/policy/my-policy -H "Content-Type: application/json" -d '
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "actions": {
+          "rollover": {
+            "max_size": "50gb",
+            "max_age": "7d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "30d",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
+  }
+}';
+# index template setup
+curl -X PUT --cacert config/certs/ca/ca.crt -u "elastic:hihello" https://elasticsearch:9200/_index_template/my-template -H "Content-Type: application/json" -d '
+{
+  "index_patterns": ["logstash-*"],
+  "template": {
+    "settings": {
+      "index.lifecycle.name": "my-policy",
+      "index.lifecycle.rollover_alias": "logstash-alias",
+      "number_of_shards": 1,
+      "number_of_replicas": 1
+    }
+  }
+}';
+
+
+
 echo "All done!";

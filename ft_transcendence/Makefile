@@ -10,6 +10,10 @@ down    :
 	cd ./res && docker compose down
 	@rm -rf $(NAME)
 
+downv    : 
+	cd ./res && docker compose down -v
+	@rm -rf $(NAME)
+
 restart    : 
 	cd ./res && docker compose restart
 clean   :
