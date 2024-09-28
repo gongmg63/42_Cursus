@@ -2,12 +2,12 @@ import { friend_websocket } from "./friendWebsocket.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { navigateTo } from "./transcendence.js";
 
-checkAndRefreshToken().then(() => {
-	friend_websocket()
-		.catch((error) => {
-			console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
-		});
-})
+// checkAndRefreshToken().then(() => {
+// 	friend_websocket()
+// 		.catch((error) => {
+// 			console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+// 		});
+// })
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -176,8 +176,6 @@ socket.onmessage = function(event) {
 	}
 }
 
-
-
 function drawGameScene()
 {
 	ctx.strokeStyle = "#ffff00";
@@ -219,21 +217,14 @@ function drawGameScene()
 
 function parseGameURL()
 {
-	const urlParams = new URLSearchParams(window.location.search);
-	gameType = urlParams.get('gameType');
+	const hash = window.location.hash;
+    const queryParams = new URLSearchParams(hash.split('?')[1]);  // ?gameType= 이후의 파라미터만 추출
+    gameType = queryParams.get('gameType');
 
-	if (gameType == 'single')
-	{
-		player1 = localStorage.getItem('nickname');
-		player2 = player1;
-	}
-	else if (gameType == '1vs1' || gameType == 'tournament')
-	{
-		player1 = urlParams.get('player1');
-		player2 = urlParams.get('player2');
-		id1 = urlParams.get('id1');
-		id2 = urlParams.get('id2');
-	}
+	player1 = queryParams.get('player1');
+	player2 = queryParams.get('player2');
+	id1 = queryParams.get('id1');
+	id2 = queryParams.get('id2');
 
 	document.getElementById("player1Name").textContent = player1;
 	document.getElementById("player2Name").textContent = player2;
@@ -244,10 +235,9 @@ function gameLoop()
 	// ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	window.requestAnimationFrame(gameLoop);	
+	window.requestAnimationFrame(gameLoop);
 
 	checkGameEnd();
-	gameUpdate();
 	gameDraw();
 }
 
@@ -290,45 +280,9 @@ function checkGameEnd()
             loserScore = opPad.score;
 		}
 		// game type에 따라 다르게 redirect - 1vs1, tournament
-        // window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
-		// window.history.replaceState({}, document.title, window.location.pathname + `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
 		window.history.pushState(null, null, `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
 		navigateTo('/result');
 	}
-}
-
-function gameUpdate()
-{
-	// ball.update();
-	// myPad.update();
-	// opPad.opUpdate();
-	// paddleCollisionWithEdges(myPad);
-	// paddleCollisionWithEdges(opPad);
-	// ballCollisionWithEdges(ball);
-	// if (ballPaddleCollision(ball, myPad))
-	// {
-	// 	ball.velocity.x *= -1;
-	// 	ball.pos.x = myPad.pos.x + myPad.width;
-	// }
-	// if(ballPaddleCollision(ball, opPad))
-	// {
-	// 	ball.velocity.x *= -1;
-	// 	ball.pos.x = opPad.pos.x - ball.radius;
-	// }
-	// increaseScore(ball, myPad, opPad);
-
-	// paddle 위치
-	// socket.send(JSON.stringify({
-	// 	type: 'paddleMove',
-	// 	id: playerNumber,
-	// 	y: myPad.pos.y
-	// }));
-
-	// 공 위치
-	// socket.send(JSON.stringify({
-	// 	type: 'ballMove',
-	// 	ball
-	// }));
 }
 
 function gameDraw()
