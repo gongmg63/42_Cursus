@@ -1,6 +1,7 @@
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { friend_websocket } from "./friendWebsocket.js";
 import { match_websocket } from "./matchWebsocket.js";
+import { game_play_websocket } from "./multiPong.js";
 
 const routes = {
 	'/': { page: 'login.html', css: 'styles.css', js: [{ file: 'login.js', type: 'module' }] },
@@ -133,7 +134,8 @@ window.addEventListener('hashchange', () => {
 		if (typeof cleanUpMultiPong === 'function')
 			cleanUpMultiPong();
 	}
-	currentPath = match_websocket(currentPath, null);
+	game_play_websocket(currentPath, null);
+	match_websocket(currentPath, null);
 	console.log("hashchange: ", currentPath);
 	navigateTo(currentPath);
 });
@@ -145,5 +147,6 @@ export function render(hash)
 	window.history.pushState(null, null, hash);
 	if (path.includes('?'))
 		path = path.split('?')[0];
+	console.log("render:", path);
 	navigateTo(path);
 }
