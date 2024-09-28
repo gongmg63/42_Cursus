@@ -15,10 +15,11 @@ export function match_websocket(currentPath, type)
 		// window.history.pushState(null, null, '#/mode');
 		// navigateTo('/mode');
 		render('#/mode');
+		return ;
 	}
 
 	const access_token = localStorage.getItem("access_token");
-	websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
+	websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
 
 	websocket.onopen = function(event) {
 		console.log("매칭 웹소켓 연결");

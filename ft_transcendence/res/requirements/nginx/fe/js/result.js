@@ -16,7 +16,7 @@ window.loadResult = function ()
 
     updateResult(result.winner);
 
-	postMatchAPI(result);
+	// postMatchAPI(result);
 }
 
 document.body.addEventListener('click', function(event) {

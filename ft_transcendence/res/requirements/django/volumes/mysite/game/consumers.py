@@ -1,30 +1,21 @@
 import json
+import random
 import asyncio
-
 
 from user.serializers import UserSerializer
 from user.models import User
 from django.contrib.auth import get_user_model
-
 from channels.db import database_sync_to_async
-
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .signals import play_disconnect_signal
-import random
-
-# player1 / player2 / gameType 
-
+from .models import GameResult
 
 # 메모리 내 대기열
 vs_waiting_queue = []
 tournament_waiting_queue = []
 final_waiting_queue = []
-
-#     socket.send(JSON.stringify({
-#       type: "1vs1 or tournament or final",
-#     }));
 
 class MatchConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -374,6 +365,47 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.increase_score(data.get("score1"), data.get("score2"))
         elif message_type == 'outPage':
             await self.check_refresh_page(data)
+        elif message_type == 'endGame':
+            await self.save_result(data)
+    
+    async def save_result(self, data):
+        game_type = data.get('gameType')
+        check_winner = data.get('checkWinner')
+        if game_type != '1vs1' or check_winner == 'false':
+            return
+        winner = data.get('winner')
+        loser = data.get('loser')
+        winner_score = data.get('winnerScore')
+        loser_score = data.get('loserScore')
+
+        User = get_user_model()
+
+        try:
+            # 승자와 패자를 데이터베이스에서 가져옴
+            winner_user = User.objects.get(nickname=winner)
+            loser_user = User.objects.get(nickname=loser)
+
+            # GameResult 모델에 결과 저장
+            GameResult.objects.create(
+                winner=winner_user,
+                loser=loser_user,
+                winner_score=winner_score,
+                loser_score=loser_score,
+                game_type=game_type
+            )
+            print("게임 결과 저장 완료")
+            # 성공적으로 저장되면 클라이언트에게 응답
+            self.send(json.dumps({
+                'status': 'success',
+                'message': 'Game result has been saved successfully.'
+            }))
+        except User.DoesNotExist:
+            # 사용자가 없을 때 예외 처리
+            self.send(json.dumps({
+                'status': 'error',
+                'message': 'Invalid winner or loser ID.'
+            }))
+
 
     async def check_refresh_page(self, data):
         out_player = data.get("id")
@@ -391,7 +423,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
         
-
     async def outPlayer(self, event):
         await self.send(json.dumps({
             "type": "outPlayer",
@@ -472,7 +503,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         ball_group[self.group_name].x += ball_group[self.group_name].velocity_x
         ball_group[self.group_name].y += ball_group[self.group_name].velocity_y
 
-        # 벽 충돌 처리
+        # 위 아래 벽 충돌 처리
         if ball_group[self.group_name].y - ball_group[self.group_name].radius <= 0 \
             or ball_group[self.group_name].y + ball_group[self.group_name].radius >= self.canvas_height:
             ball_group[self.group_name].velocity_y *= -1
@@ -480,9 +511,9 @@ class GameConsumer(AsyncWebsocketConsumer):
         if ball_group[self.group_name].x <= -ball_group[self.group_name].radius or ball_group[self.group_name].x >= self.canvas_width + ball_group[self.group_name].radius:
             ball_group[self.group_name].velocity_x *= -1
             if ball_group[self.group_name].x <= ball_group[self.group_name].radius:
-                winner = "left"
-            else:
                 winner = "right"
+            else:
+                winner = "left"
             await self.channel_layer.group_send(
                 self.group_name,
                 {
