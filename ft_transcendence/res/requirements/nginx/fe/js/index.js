@@ -1,7 +1,7 @@
 import { fetchUserData, editUser, fetchRecentMatch } from "./manageUser.js";
 import { addFriend } from "./addFriend.js";
 import { deleteFriend } from "./deleteFriend.js";
-import { navigateTo } from "./transcendence.js";
+import { render } from "./transcendence.js";
 
 export let friends = [];
 
@@ -15,8 +15,9 @@ window.getUser = function()
 document.body.addEventListener('click', function(event) {
     if (event.target && event.target.matches('.game-start-btn')) {
         event.preventDefault();
-        window.history.pushState(null, null, '#/mode');
-        navigateTo('/mode');
+        // window.history.pushState(null, null, '#/mode');
+        // navigateTo('/mode');
+		render('#/mode');
     }
 });
 

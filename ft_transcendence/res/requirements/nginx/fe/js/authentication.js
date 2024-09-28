@@ -1,5 +1,5 @@
 // import { checkAndRefreshToken } from "./jwtRefresh.js";
-import { navigateTo } from "./transcendence.js";
+import { render } from "./transcendence.js";
 
 const inputs = document.querySelectorAll('.auth-input');
 
@@ -88,8 +88,9 @@ function postAuthCodeAPI()
 		localStorage.setItem('access_token', data.access_token);
 		localStorage.setItem('refresh_token', data.refresh_token);
 		console.log('Token stored successfully');
-		window.history.pushState(null, null, '#/index');
-		navigateTo('/index');
+		// window.history.pushState(null, null, '#/index');
+		// navigateTo('/index');
+		render('#/index');
 	})
 	.catch(error => {
 		console.error('Error fetching user data: ', error);

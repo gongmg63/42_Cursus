@@ -1,5 +1,5 @@
 import { checkAndRefreshToken } from "./jwtRefresh.js";
-import { navigateTo } from "./transcendence.js";
+import { render } from "./transcendence.js";
 
 let is2FAEnabled;
 
@@ -67,8 +67,9 @@ document.body.addEventListener('click', function(event) {
 
     if (event.target && event.target.matches('#nextStepBtn')) {
         const nickname = localStorage.getItem("nickname");
-        window.history.pushState(null, null, `#/authentication?nickname=${nickname}`);
-        navigateTo('/authentication');
+        // window.history.pushState(null, null, `#/authentication?nickname=${nickname}`);
+        // navigateTo('/authentication');
+		render(`#/authentication?nickname=${nickname}`);
     }
 });
 
@@ -147,6 +148,10 @@ function disable2FA() {
         })
         .then(data => {
             alert('2FA가 비활성화되었습니다.');
+			const securityModal = document.getElementById('securityModal');
+			const change2faModal = document.getElementById('change2faModal');
+			securityModal.style.display = 'none';
+			change2faModal.style.display = 'none';
             update2FAStatus();
         })
         .catch(error => {

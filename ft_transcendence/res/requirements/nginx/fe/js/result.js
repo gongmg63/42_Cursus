@@ -1,5 +1,5 @@
 import { checkAndRefreshToken } from "./jwtRefresh.js";
-import { navigateTo } from "./transcendence.js";
+import { navigateTo, render } from "./transcendence.js";
 
 sessionStorage.removeItem('pong_pageLoaded');
 
@@ -22,8 +22,9 @@ window.loadResult = function ()
 document.body.addEventListener('click', function(event) {
     if (event.target && event.target.matches('#continueBtn')) {
         event.preventDefault();
-        window.history.pushState(null, null, '#/index');
-        navigateTo('/index');
+        // window.history.pushState(null, null, '#/index');
+        // navigateTo('/index');
+		render('#/index');
     }
 });
 

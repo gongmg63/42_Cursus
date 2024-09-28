@@ -1,5 +1,5 @@
 import { checkAndRefreshToken } from "./jwtRefresh.js";
-import { navigateTo } from "./transcendence.js";
+import { render } from "./transcendence.js";
 
 checkAndRefreshToken().then(() => {
 })
@@ -41,7 +41,7 @@ window.startMultiPong = function()
 function game_play_websocket()
 {
 	access_token = localStorage.getItem("access_token");
-	socket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
+	socket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
 // const socket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/play/?token=' + access_token);
 
 	socket.onopen = function() {
@@ -306,11 +306,10 @@ function checkGameEnd()
             loserScore = opPad.score;
 		}
 		// game type에 따라 다르게 redirect - 1vs1, tournament
-        // window.location.href = `/result.html?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`;
-		// window.history.replaceState({}, document.title, window.location.pathname + `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
 		console.log(winner, winnerScore, loser, loserScore, gameType);
-		window.history.pushState(null, null, `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
-		navigateTo('/result');
+		// window.history.pushState(null, null, `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
+		// navigateTo('/result');
+		render(`#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
 	}
 }
 

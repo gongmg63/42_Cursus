@@ -1,4 +1,4 @@
-import { navigateTo } from "./transcendence.js";
+import { render } from "./transcendence.js";
 
 window.selectMode = function() {
 
@@ -9,21 +9,27 @@ window.selectMode = function() {
 function handleClickEvent(event)
 {
     const modal = document.getElementById('tournament-modal');
-
 	let gameType;
 
+	if (modal === null)
+	{
+		console.log("modal is null");
+		return ;
+	}
 	if (event.target && event.target.matches('#single')) {
 		console.log('Single mode selected');
 		gameType = "single";
-		window.history.pushState(null, null, `#/pong?gameType=${gameType}`);
-		navigateTo('/pong');
+		// window.history.pushState(null, null, `#/pong?gameType=${gameType}`);
+		// navigateTo('/pong');
+		render(`#/pong?gameType=${gameType}`);
 	}
 
 	if (event.target && event.target.matches('#pvp')) {
 		console.log('1 vs 1 mode selected');
 		gameType = "1vs1";
-		window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
-		navigateTo('/matchmaking');
+		// window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
+		// navigateTo('/matchmaking');
+		render(`#/matchmaking?gameType=${gameType}`);
 	}
 
 	if (event.target && event.target.matches('#tournament')) {
@@ -43,8 +49,9 @@ function handleClickEvent(event)
 		const nickname = document.getElementById('nickname').value.trim();
 		if (nickname) {
 			gameType = "tournament";
-			window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
-			navigateTo('/matchmaking');
+			// window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
+			// navigateTo('/matchmaking');
+			render(`#/matchmaking?gameType=${gameType}`);
 		} else {
 			alert('Please enter a nickname.');
 		}

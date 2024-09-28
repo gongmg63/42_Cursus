@@ -22,6 +22,19 @@ document.querySelectorAll('nav a').forEach(link => {
     link.style.display = 'none';  // 모든 링크를 숨김
 })
 
+// 초기 로딩
+console.log('초기 로딩');
+
+let currentPath = window.location.hash.slice(1) || '/';
+
+if (currentPath.includes('?')) {
+	currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
+}
+
+// 경우에 따라 나눠야 할듯 - 초기 로딩
+navigateTo(currentPath);
+
+
 export async function navigateTo(url) {
 	const route = routes[url] || routes['/'];
 	const res = await fetch(route.page);
@@ -125,16 +138,12 @@ window.addEventListener('hashchange', () => {
 	navigateTo(currentPath);
 });
 
-// 초기 로딩
-console.log('초기 로딩');
+export function render(hash)
+{
+	let path = hash.slice(1);
 
-let currentPath = window.location.hash.slice(1) || '/';
-
-if (currentPath.includes('?')) {
-	currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
+	window.history.pushState(null, null, hash);
+	if (path.includes('?'))
+		path = path.split('?')[0];
+	navigateTo(path);
 }
-
-// 경우에 따라 나눠야 할듯 - 초기 로딩
-navigateTo(currentPath);
-
-

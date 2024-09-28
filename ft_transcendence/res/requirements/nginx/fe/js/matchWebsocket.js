@@ -1,4 +1,4 @@
-import { navigateTo } from "./transcendence.js";
+import { navigateTo, render } from "./transcendence.js";
 
 let websocket = null;
 
@@ -12,12 +12,13 @@ export function match_websocket(currentPath, type)
 	}
 	if (currentPath === '/matchmaking' && type === null)
 	{
-		window.history.pushState(null, null, '#/mode');
-		navigateTo('/mode');
+		// window.history.pushState(null, null, '#/mode');
+		// navigateTo('/mode');
+		render('#/mode');
 	}
 
 	const access_token = localStorage.getItem("access_token");
-	websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
+	websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
 
 	websocket.onopen = function(event) {
 		console.log("매칭 웹소켓 연결");
@@ -72,14 +73,12 @@ function updateMatchInfo(matchData) {
 	// game type이 tournament이면 tournament 매치 화면
 	else if (matchData.gameType == "tournament1")
 	{
-		// window.location.href = `/tournament.html?round=1`;
-		// window.history.replaceState({}, document.title, window.location.pathname + `#/tournament?round=1`);
-		window.history.pushState(null, null, '#/tournament?round=1');
-		navigateTo('/tournament');
+		// window.history.pushState(null, null, '#/tournament?round=1');
+		// navigateTo('/tournament');
+		render('#/tournament?round=1');
 		document.querySelector('.loading-container').style.display = 'none';
 		const tournament = document.querySelector('.tournament');
 		tournament.style.display = 'flex';
-		// window.location.href = `/tournament.html?round=1`;
 		// player 1 2 3 4 지정
 	}
 	else if (matchData.gameType == "tournament2")
@@ -87,7 +86,6 @@ function updateMatchInfo(matchData) {
 		document.querySelector('.loading-container').style.display = 'none';
 		const tournament = document.querySelector('.tournament');
 		tournament.style.display = 'flex';
-		// window.location.href = `/tournament.html?round=1`;
 		// player 1 2 3 4 지정
 	}
 	else // gameType == final
@@ -110,9 +108,12 @@ function startPongGame(matchData)
 		const id1 = matchData.player1.id;
 		const id2 = matchData.player2.id;
 		
-		window.history.pushState(null, null, `#/multiPong?player1=${player1}&id1=${id1}\
+		// window.history.pushState(null, null, `#/multiPong?player1=${player1}&id1=${id1}\
+		// &player2=${player2}&id2=${id2}&gameType=${gameType}`);
+		// navigateTo('/multiPong');
+
+		render(`#/multiPong?player1=${player1}&id1=${id1}\
 		&player2=${player2}&id2=${id2}&gameType=${gameType}`);
-		navigateTo('/multiPong');
 	}
 	else if (gameType == 'tournament2')
 	{
@@ -128,18 +129,4 @@ function startPongGame(matchData)
 		const id1 = matchData.player1.id;
 		const id2 = matchData.player3.id;
 	}
-	// window.location.href = `/multiPong?player1=${player1}&id1=${id1}\
-	// &player2=${player2}&id2=${id2}&gameType=${gameType}`;
-	// const id1 = matchData.player1.id;
-	// const id2 = matchData.player2.id;
-	
-	// window.location.href = `/multiPong.html?player1=${player1}&id1=${id1}\
-	// &player2=${player2}&id2=${id2}&gameType=${gameType}`;
-	
-	// window.history.pushState(null, null, `#/multiPong?player1=${player1}&id1=${id1}\
-	// &player2=${player2}&id2=${id2}&gameType=${gameType}`);
-	
-	// window.history.replaceState({}, document.title, window.location.pathname + `#/multiPong?player1=${player1}&id1=${id1}\
-	// &player2=${player2}&id2=${id2}&gameType=${gameType}`);
-	// navigateTo('/multiPong');
 }
