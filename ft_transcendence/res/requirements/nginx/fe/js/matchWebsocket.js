@@ -1,14 +1,25 @@
-import { navigateTo, render } from "./transcendence.js";
+import { render } from "./transcendence.js";
 
 let websocket = null;
 
+// 매칭 중 뒤로가기 시 checkCancel 플래그를 true로 바꿔 startPongGame이 실행되는걸 방지
+// 남아있는 사람에게는 matchingOut 메시지를 보내 그 사람 역시 startPongGame이 실행되는 걸 방지
+// 뒤로 가기, 앞으로 가기 시에는 웹소켓이 끊기지 않는 걸 이용
+let checkCancel; 
+
 export function match_websocket(currentPath, type)
 {
+	checkCancel = false;
 	if (currentPath !== '/matchmaking')
 	{
 		if (websocket && websocket.readyState === WebSocket.OPEN)
+		{
+			websocket.send(JSON.stringify({
+				type: 'matchingOut'
+			}));
 			websocket.close();
-		return currentPath;
+		}
+		return ;
 	}
 	if (currentPath === '/matchmaking' && type === null)
 	{
@@ -24,9 +35,12 @@ export function match_websocket(currentPath, type)
 	websocket.onopen = function(event) {
 		console.log("매칭 웹소켓 연결");
 		console.log("게임 타입", type);
-		websocket.send(JSON.stringify({
-			type: type
-		}));
+		if (websocket.readyState === WebSocket.OPEN)
+		{
+			websocket.send(JSON.stringify({
+				type: type
+			}));
+		}
 	};
 
 	websocket.onmessage = function(event) {
@@ -36,12 +50,23 @@ export function match_websocket(currentPath, type)
 		// 매치 성공 메시지인 경우 처리
 		if (data.type === "match_found") {
 			updateMatchInfo(data);
-			setTimeout(() => startPongGame(data), 2000);
+			setTimeout(() => {
+				if (!checkCancel)
+				{
+					startPongGame(data);
+				}
+			}, 2000);
+		}
+		else if (data.type === "match_cancel")
+		{
 			websocket.close();
+			checkCancel = true;
+			render('#/mode');
 		}
 	};
 
 	websocket.onclose = function(event) {
+		checkCancel = true;
 		console.log("매칭 웹소켓 연결 종료");
 	};
 	
@@ -113,6 +138,7 @@ function startPongGame(matchData)
 		// &player2=${player2}&id2=${id2}&gameType=${gameType}`);
 		// navigateTo('/multiPong');
 
+		// 쿼리에 전달하는 내용 백엔드로 이동 필요!! mkong
 		render(`#/multiPong?player1=${player1}&id1=${id1}\
 		&player2=${player2}&id2=${id2}&gameType=${gameType}`);
 	}

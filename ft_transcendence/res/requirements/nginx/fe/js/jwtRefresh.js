@@ -44,16 +44,15 @@ export function refreshToken() {
 export function checkAndRefreshToken() {
     return new Promise((resolve, reject) => {
         const accessToken = localStorage.getItem('access_token');
-
         if (isTokenExpired(accessToken)) {
             refreshToken()
-                .then(() => {
-                    resolve(); // 토큰 갱신 완료 후 resolve
-                })
-                .catch(error => {
-                    console.error(error.message);
-                    reject(error); // 오류 발생 시 reject
-                });
+            .then(() => {
+                resolve(); // 토큰 갱신 완료 후 resolve
+            })
+            .catch(error => {
+                console.error(error.message);
+                reject(error); // 오류 발생 시 reject
+            });
         } else {
             resolve(); // 토큰이 유효할 경우 resolve
         }

@@ -88,8 +88,6 @@ function postAuthCodeAPI()
 		localStorage.setItem('access_token', data.access_token);
 		localStorage.setItem('refresh_token', data.refresh_token);
 		console.log('Token stored successfully');
-		// window.history.pushState(null, null, '#/index');
-		// navigateTo('/index');
 		render('#/index');
 	})
 	.catch(error => {

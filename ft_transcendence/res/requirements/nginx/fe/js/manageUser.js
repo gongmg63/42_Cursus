@@ -1,5 +1,5 @@
-import { editLocalStorage, handleError, populateFriendSelect, updateFriendsList } from "./utils.js";
-import { friends, setFriends } from "./index.js";
+import { editLocalStorage, handleError, updateFriendsList } from "./utils.js";
+import { setFriends } from "./index.js";
 import { setTFA } from "./2FA.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 

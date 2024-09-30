@@ -54,15 +54,13 @@ class GetGameResultView(APIView):
         # 사용자가 플레이한 모든 게임을 winner 또는 loser로 조회
         game_results = GameResult.objects.filter(winner=user).union(
             GameResult.objects.filter(loser=user)
-        )
-        # game_results = list(GameResult.objects.filter(winner=user)) + list(GameResult.objects.filter(loser=user))
-
+        ).order_by('-game_date')[:5]
 
         # 시리얼라이저를 사용하여 결과 직렬화
         serializer = GameResultSerializer(game_results, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
 class GetGameResultByNicknameView(APIView):
     permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능
 

@@ -1,21 +1,15 @@
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { navigateTo, render } from "./transcendence.js";
 
-sessionStorage.removeItem('pong_pageLoaded');
-
 checkAndRefreshToken().then(() => {
 })
 
 window.loadResult = function ()
 {
-
-	const result = resultToJson();
-	
-	console.log(result);
+    updateResult();
+	// const result = resultToJson();
+	// console.log(result);
 	// cleanUpPong();
-
-    updateResult(result.winner);
-
 	// postMatchAPI(result);
 }
 
@@ -28,27 +22,55 @@ document.body.addEventListener('click', function(event) {
     }
 });
 
-function updateResult(winner)
+function updateResult()
 {
-    const avatarUrl = localStorage.getItem('profile');
-    const nickname = localStorage.getItem('nickname');
-
-    const resultMessage = document.getElementById('resultMessage');
-	if (winner == nickname)
-	{
-		resultMessage.textContent = 'You Win!';
-        resultMessage.classList.add('win');
-	}
-	else 
-	{
-		resultMessage.textContent = 'You Lose!';
-        resultMessage.classList.add('lose');
-	}
-
-    const userAvatar = document.getElementById('userAvatar');
-    const userNickname = document.getElementById('userNickname');
-    userAvatar.src = avatarUrl;
-    userNickname.textContent = nickname;
+	checkAndRefreshToken().then(()=> {
+		const access_token = localStorage.getItem("access_token");
+		fetch('/api/game/result/me', {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${access_token}`,
+				'Content-Type': 'application/json'
+			},
+		})
+		.then(response => {
+			if (response.status == 404)
+				throw new Error('User data not found (404)');
+			else if (response.status == 500)
+				throw new Error('Server error (500)')
+			else if (!response.ok)
+			{
+				return response.json().then(errData => {
+					throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+				});
+			}
+			return response.json();
+		})
+		.then(data => {
+			const avatarUrl = localStorage.getItem('profile');
+			const nickname = localStorage.getItem('nickname');
+			const resultMessage = document.getElementById('resultMessage');
+			const recentMatch = data[0];
+			if (recentMatch.winner.nickname == nickname)
+			{
+				resultMessage.textContent = 'You Win!';
+				resultMessage.classList.add('win');
+			}
+			else
+			{
+				resultMessage.textContent = 'You Lose!';
+				resultMessage.classList.add('lose');
+			}
+			const userAvatar = document.getElementById('userAvatar');
+			const userNickname = document.getElementById('userNickname');
+			userAvatar.src = avatarUrl;
+			userNickname.textContent = nickname;
+			console.log(recentMatch.winner.nickname, recentMatch.winner_score, recentMatch.loser.nickname, recentMatch.loser_score, recentMatch.game_date);
+		})
+		.catch(error => {
+			console.error('Error fetching user data: ', error);
+		});
+	});
 }
 
 function resultToJson()
