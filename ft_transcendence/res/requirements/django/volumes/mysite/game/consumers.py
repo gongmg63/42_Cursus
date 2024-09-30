@@ -26,10 +26,11 @@ class MatchConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         # 연결 성공 시 대기열에서 제거
         print("매칭 웹소켓 연결 종료")
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name
-        )
+        if hasattr(self, 'group_name'):
+            await self.channel_layer.group_discard(
+                self.group_name,
+                self.channel_name
+            )
         if self.user in vs_waiting_queue:
             vs_waiting_queue.remove(self.user)
         elif self.user in tournament_waiting_queue:
@@ -64,6 +65,27 @@ class MatchConsumer(AsyncWebsocketConsumer):
             )
             self.save_user_status(data.get("loser"))
             await self.handle_match_request(message_type)
+        elif message_type == 'matchingOut':
+            if hasattr(self, 'group_name'):
+                await self.matching_out()
+        
+    async def matching_out(self):
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
+        # 그룹 내 다른 사용자들에게 disconnect 메시지 보내기
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                'type': 'matchingOut',
+            }
+        )
+    
+    async def matchingOut(self, event):
+        await self.send(json.dumps({
+            "type": "match_cancel",
+        }))
 
     @database_sync_to_async
     def save_user_status(self, loser):
@@ -305,6 +327,18 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         global client
         print("게임 웹소켓 연결 종료")
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
+
+        # 그룹 내 다른 사용자들에게 disconnect 메시지 보내기
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                'type': 'userDisconnected',
+            }
+        )
         client[self.user.id] = False
         play_disconnect_signal.send(sender=self.__class__, instance=self)
         if hasattr(self, 'game_loop_task') and not self.game_loop_task.done():
@@ -316,8 +350,14 @@ class GameConsumer(AsyncWebsocketConsumer):
             if self.player1 in game_loop_dict:
                 del game_loop_dict[self.player1]
 
+    async def userDisconnected(self, event):
+        await self.send(json.dumps({
+            "type": "checkGameEnd",
+            "message": "Other player disconnected. Check game end."
+        }))
+
     async def play_disconnect(self, event):
-        if hasattr(self, 'game_loop_task') and not self.game_loop_task.done():
+        if hasattr(self, "game_loop_task") and not self.game_loop_task.done():
             self.game_loop_task.cancel()
             try: 
                 await self.game_loop_task
@@ -395,13 +435,13 @@ class GameConsumer(AsyncWebsocketConsumer):
             )
             print("게임 결과 저장 완료")
             # 성공적으로 저장되면 클라이언트에게 응답
-            self.send(json.dumps({
+            await self.send(json.dumps({
                 'status': 'success',
                 'message': 'Game result has been saved successfully.'
             }))
         except User.DoesNotExist:
             # 사용자가 없을 때 예외 처리
-            self.send(json.dumps({
+            await self.send(json.dumps({
                 'status': 'error',
                 'message': 'Invalid winner or loser ID.'
             }))

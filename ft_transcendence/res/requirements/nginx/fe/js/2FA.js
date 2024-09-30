@@ -67,8 +67,6 @@ document.body.addEventListener('click', function(event) {
 
     if (event.target && event.target.matches('#nextStepBtn')) {
         const nickname = localStorage.getItem("nickname");
-        // window.history.pushState(null, null, `#/authentication?nickname=${nickname}`);
-        // navigateTo('/authentication');
 		render(`#/authentication?nickname=${nickname}`);
     }
 });

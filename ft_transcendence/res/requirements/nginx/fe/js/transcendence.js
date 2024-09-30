@@ -32,21 +32,34 @@ if (currentPath.includes('?')) {
 	currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
 }
 
+// console.log(currentPath);
+
+if (currentPath === '/multiPong')
+{
+	render('#/mode');
+}
+else if (currentPath === '/matchmaking')
+{
+}
+else
+{
+	navigateTo(currentPath);
+}
+
 // 경우에 따라 나눠야 할듯 - 초기 로딩
-navigateTo(currentPath);
 
-
+// 페이지 이동 시 실행됨
 export async function navigateTo(url) {
 	const route = routes[url] || routes['/'];
 	const res = await fetch(route.page);
 	const content = await res.text();
 	app.innerHTML = content;
 
-	console.log("url: ", url);
+	// console.log("url: ", url);
 	// CSS 파일을 동적으로 로드
 	if (route.css) {
 		dynamicCSS.setAttribute('href', `/css/${route.css}`);
-		console.log("css: ", route.css);
+		// console.log("css: ", route.css);
 	} else {
 		dynamicCSS.removeAttribute('href'); // CSS가 없으면 제거
 	}
@@ -61,7 +74,7 @@ export async function navigateTo(url) {
 			const script = document.createElement('script');
 			script.src = `/js/${js.file}`;
 			script.type = js.type || 'text/javascript';
-			console.log("js: ", js.file);
+			// console.log("js: ", js.file);
 			script.defer = true;
 			script.onload = () => {
 				if (js.file === 'login.js')
@@ -108,6 +121,7 @@ export async function navigateTo(url) {
 	}
 }
 
+// 뒤로가기, 앞으로 가기 시 실행됨
 window.addEventListener('hashchange', () => {
 	let currentPath = window.location.hash.slice(1) || '/';
 
@@ -143,8 +157,10 @@ window.addEventListener('hashchange', () => {
 export function render(hash)
 {
 	let path = hash.slice(1);
-
+	
 	window.history.pushState(null, null, hash);
+	match_websocket(path, null);
+	game_play_websocket(path, null);
 	if (path.includes('?'))
 		path = path.split('?')[0];
 	console.log("render:", path);

@@ -25,7 +25,7 @@ function handleClickEvent(event)
 	}
 
 	if (event.target && event.target.matches('#pvp')) {
-		console.log('1 vs 1 mode selected');
+		// console.log('1 vs 1 mode selected');
 		gameType = "1vs1";
 		// window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
 		// navigateTo('/matchmaking');

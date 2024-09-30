@@ -28,6 +28,7 @@ let id1, id2;
 
 let access_token;
 let websocket = null;
+let checkEnd;
 
 window.startMultiPong = function()
 {
@@ -58,6 +59,7 @@ function parseGameURL()
 
 function setUpMultiPong()
 {
+	checkEnd = false;
 	canvas = document.getElementById('canvas');
 	ctx = canvas.getContext('2d');
 
@@ -84,8 +86,17 @@ export function game_play_websocket(currentPath, type)
 	if (currentPath !== '/multiPong')
 	{
 		if (websocket && websocket.readyState === WebSocket.OPEN)
+		{
+			websocket.send(JSON.stringify({
+				"type": 'outPage',
+				"id": playerNumber,
+				"myScore": myPad.score,
+				"opScore": opPad.score,
+				"endScore": endScore
+			}));
 			websocket.close();
-		return currentPath;
+		}
+		return ;
 	}
 	console.log("multipong:", type);
 	if (currentPath === '/multiPong' && type == null)
@@ -100,13 +111,16 @@ export function game_play_websocket(currentPath, type)
 	websocket.onopen = function() {
 		// 서버로 플레이어 정보와 게임 타입을 보냄
 		console.log("게임 웹소켓 연결")
-		websocket.send(JSON.stringify({
-			type: "initMatch",
-			player1_id: id1,
-			player2_id: id2,
-			canvas_width: canvas.width,
-			canvas_height: canvas.height,
-		}));
+		if (websocket.readyState === WebSocket.OPEN)
+		{
+			websocket.send(JSON.stringify({
+				type: "initMatch",
+				player1_id: id1,
+				player2_id: id2,
+				canvas_width: canvas.width,
+				canvas_height: canvas.height,
+			}));
+		}
 	};
 
 	websocket.onclose = function() {
@@ -117,12 +131,12 @@ export function game_play_websocket(currentPath, type)
 		// console.log(data)
 		if (data.type == 'paddleMove')
 		{
-			if (playerNumber == data.id)
+			if (playerNumber === data.id)
 				myPad.update(data.y)
 			else
 				opPad.opUpdate(data.y);
 		}
-		else if (data.type == 'ballMove')
+		else if (data.type === 'ballMove')
 		{
 			ball.pos.x = data.ball_pos_x;
 			ball.pos.y = data.ball_pos_y;
@@ -131,12 +145,12 @@ export function game_play_websocket(currentPath, type)
 			ball.radius = data.ball_radius;
 			ball.update();
 		}
-		else if (data.type == 'increaseScore')
+		else if (data.type === 'increaseScore')
 		{
-			if (data.result == "win")
+			if (data.result === "win")
 			{
 				myPad.score++;
-				if (playerNumber == id1)
+				if (playerNumber === id1)
 					document.getElementById("player1Score").innerHTML = myPad.score
 				else
 					document.getElementById("player2Score").innerHTML = myPad.score;
@@ -144,17 +158,17 @@ export function game_play_websocket(currentPath, type)
 			else
 			{
 				opPad.score++;
-				if (playerNumber == id1)
+				if (playerNumber === id1)
 					document.getElementById("player2Score").innerHTML = opPad.score;
 				else
 					document.getElementById("player1Score").innerHTML = opPad.score;
 			}
 		}
-		else if (data.type == 'startGame')
+		else if (data.type === 'startGame')
 			gameLoop();
-		else if (data.type == 'outPlayer')
+		else if (data.type === 'outPlayer')
 		{
-			if (data.out_player == playerNumber)
+			if (data.out_player === playerNumber)
 			{
 				myPad.score = 0;
 				opPad.score = endScore;
@@ -165,19 +179,24 @@ export function game_play_websocket(currentPath, type)
 				opPad.score = 0;
 			}
 		}
+		else if (data.type === 'checkGameEnd')
+		{
+			if (!checkEnd)
+			{
+				websocket.send(JSON.stringify({
+					"type": 'outPage',
+					"id": playerNumber === id1 ? id2 : id1,
+					"myScore": myPad.score,
+					"opScore": opPad.score,
+					"endScore": endScore
+				}));
+			}
+		}
 	}
 }
 
 // window.addEventListener("beforeunload", function (e) {
 // 	// e.returnValue = "refresh message";
-// 	const message = JSON.stringify({
-// 		"type": 'outPage',
-// 		"id": playerNumber,
-// 		"myScore": myPad.score,
-// 		"opScore": opPad.score,
-// 		"endScore": endScore
-// 	});
-// 	socket.send(message);
 // });
 
 // window.onload = function() {
@@ -200,20 +219,18 @@ window.addEventListener('keydown', function(e) {
 	if (websocket && websocket.readyState === WebSocket.OPEN)
 	{
 		if (e.key === KEY_ARROWDOWN) { // 이미 눌린 키에 대해 처리하지 않음
-			const message = JSON.stringify({
+			websocket.send(JSON.stringify({
 				type: 'paddleMove',
 				id: playerNumber,
 				key: 'down'
-			});
-			websocket.send(message);
+			}));
 		}
 		else if (e.key === KEY_ARROWUP) {
-			const message = JSON.stringify({
+			websocket.send(JSON.stringify({
 				type: 'paddleMove',
 				id: playerNumber,
 				key: 'up'
-			});
-			websocket.send(message);
+			}));
 		}
 	}
 });
@@ -223,7 +240,7 @@ window.cleanUpMultiPong = function()
 	if (animationFrameId)
 		cancelAnimationFrame(animationFrameId);
 
-	console.log("Multi Pong 게임이 정리되었습니다.");
+	// console.log("Multi Pong 게임이 정리되었습니다.");
 }
 
 function gameLoop()
@@ -233,7 +250,8 @@ function gameLoop()
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	animationFrameId = window.requestAnimationFrame(gameLoop);	
 
-	checkGameEnd();
+	if (!checkEnd)
+		checkGameEnd();
 	gameDraw();
 }
 
@@ -242,8 +260,8 @@ function checkGameEnd()
 	// 점수 설정
 	if (myPad.score >= endScore || opPad.score >= endScore)
 	{
-		//소켓 연결 종료
-		
+		checkEnd = true;
+	
         let winner, loser;
         let winnerScore, loserScore;
 		let checkWinner = 'false';
@@ -275,10 +293,13 @@ function checkGameEnd()
 		// game type에 따라 다르게 redirect - 1vs1, tournament
 		console.log(playerNumber, id1, id2, myPad.score, opPad.score, gameType);
 		// console.log(winner, winnerScore, loser, loserScore, gameType);
-		render(`#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
+		// render(`#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
 		setTimeout(() => {
+			render('#/result');
 			websocket.close();
 		}, 100); 
+		// setTimeout(() => {
+		// }, 100);
 	}
 }
 

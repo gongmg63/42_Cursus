@@ -1,4 +1,3 @@
-from mysite.utils import uuid_name_upload_to
 from django.utils import timezone
 from django.conf import settings
 from django.db import models
