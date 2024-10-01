@@ -51,13 +51,37 @@ class GetGameResultView(APIView):
     def get(self, request):
         user = request.user  # 현재 인증된 사용자
 
-        # 사용자가 플레이한 모든 게임을 winner 또는 loser로 조회
-        game_results = GameResult.objects.filter(winner=user).union(
-            GameResult.objects.filter(loser=user)
+        # 사용자가 플레이한 1vs1 게임만 winner 또는 loser로 조회
+        game_results = GameResult.objects.filter(
+            game_type='1vs1'
+        ).filter(
+            winner=user
+        ).union(
+            GameResult.objects.filter(game_type='1vs1', loser=user)
         ).order_by('-game_date')[:5]
 
-        # 시리얼라이저를 사용하여 결과 직렬화
+            # 시리얼라이저를 사용하여 결과 직렬화
         serializer = GameResultSerializer(game_results, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class GetRecentGameResultView(APIView):
+    permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능
+
+    def get(self, request):
+        user = request.user  # 현재 인증된 사용자
+
+        # 사용자가 플레이한 1vs1 게임만 winner 또는 loser로 조회
+        game_result = GameResult.objects.filter(
+            winner=user
+        ).union(
+            GameResult.objects.filter(loser=user)
+        ).order_by('-game_date').first()  # 가장 최근 게임 하나
+
+        if game_result:
+            # 시리얼라이저를 사용하여 결과 직렬화
+            serializer = GameResultSerializer(game_result)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
 
