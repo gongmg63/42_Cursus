@@ -34,31 +34,10 @@ window.startMultiPong = function()
 {
 	console.log("Start multi pong");
 
-	parseGameURL();
-	setUpMultiPong();
-	console.log("multpong type:", gameType);
-	game_play_websocket('/multiPong', gameType);
-}
-
-
-function parseGameURL()
-{
 	const hash = window.location.hash;
-    const queryParams = new URLSearchParams(hash.split('?')[1]);  // ?gameType= 이후의 파라미터만 추출
-    gameType = queryParams.get('gameType');
+	const queryParams = new URLSearchParams(hash.split('?')[1]);  // ?gameType= 이후의 파라미터만 추출
+	gameType = queryParams.get('gameType');
 
-	player1 = queryParams.get('player1');
-	player2 = queryParams.get('player2');
-	id1 = queryParams.get('id1');
-	id2 = queryParams.get('id2');
-
-	document.getElementById("player1Name").textContent = player1;
-	document.getElementById("player2Name").textContent = player2;
-	// console.log(player1, player2, id1, id2);
-}
-
-function setUpMultiPong()
-{
 	checkEnd = false;
 	canvas = document.getElementById('canvas');
 	ctx = canvas.getContext('2d');
@@ -67,7 +46,34 @@ function setUpMultiPong()
 	canvas.height = window.innerHeight;
 
 	ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ballRadius);
+	// parseGameURL();
+	// setUpMultiPong();
+	console.log("multpong type:", gameType);
+	game_play_websocket('/multiPong', gameType);
+}
 
+
+function parseGameURL(data)
+{
+    console.log(data);
+
+	// gameType = data.gameType;
+	player1 = data.player1;
+	player2 = data.player2;
+	id1 = data.id1;
+	id2 = data.id2;
+	// player1 = queryParams.get('player1');
+	// player2 = queryParams.get('player2');
+	// id1 = queryParams.get('id1');
+	// id2 = queryParams.get('id2');
+
+	document.getElementById("player1Name").textContent = player1;
+	document.getElementById("player2Name").textContent = player2;
+	// console.log(player1, player2, id1, id2);
+}
+
+function setUpMultiPong()
+{
 	if (player1 == localStorage.getItem('nickname'))
 	{
 		myPad = new Paddle(vec2(0, 50), vec2(15, 15), 20, 200);
@@ -115,8 +121,8 @@ export function game_play_websocket(currentPath, type)
 		{
 			websocket.send(JSON.stringify({
 				type: "initMatch",
-				player1_id: id1,
-				player2_id: id2,
+				// player1_id: id1,
+				// player2_id: id2,
 				canvas_width: canvas.width,
 				canvas_height: canvas.height,
 			}));
@@ -129,7 +135,12 @@ export function game_play_websocket(currentPath, type)
 	websocket.onmessage = function(event) {
 		const data = JSON.parse(event.data);
 		// console.log(data)
-		if (data.type == 'paddleMove')
+		if (data.type === 'parseGameData')
+		{
+			parseGameURL(data);
+			setUpMultiPong();
+		}
+		else if (data.type === 'paddleMove')
 		{
 			if (playerNumber === data.id)
 				myPad.update(data.y)
@@ -295,9 +306,9 @@ function checkGameEnd()
 		// console.log(winner, winnerScore, loser, loserScore, gameType);
 		// render(`#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
 		setTimeout(() => {
-			render('#/result');
+			render(`#/result?gameType=${gameType}`);
 			websocket.close();
-		}, 100); 
+		}, 100);
 		// setTimeout(() => {
 		// }, 100);
 	}

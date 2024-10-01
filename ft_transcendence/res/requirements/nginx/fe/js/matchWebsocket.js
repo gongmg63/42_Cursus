@@ -139,8 +139,9 @@ function startPongGame(matchData)
 		// navigateTo('/multiPong');
 
 		// 쿼리에 전달하는 내용 백엔드로 이동 필요!! mkong
-		render(`#/multiPong?player1=${player1}&id1=${id1}\
-		&player2=${player2}&id2=${id2}&gameType=${gameType}`);
+		// render(`#/multiPong?player1=${player1}&id1=${id1}\
+		// &player2=${player2}&id2=${id2}&gameType=${gameType}`);
+		render(`#/multiPong?gameType=${gameType}`);
 	}
 	else if (gameType == 'tournament2')
 	{
