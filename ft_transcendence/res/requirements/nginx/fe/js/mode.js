@@ -12,23 +12,16 @@ function handleClickEvent(event)
 	let gameType;
 
 	if (modal === null)
-	{
-		console.log("modal is null");
 		return ;
-	}
 	if (event.target && event.target.matches('#single')) {
 		console.log('Single mode selected');
 		gameType = "single";
-		// window.history.pushState(null, null, `#/pong?gameType=${gameType}`);
-		// navigateTo('/pong');
 		render(`#/pong?gameType=${gameType}`);
 	}
 
 	if (event.target && event.target.matches('#pvp')) {
 		// console.log('1 vs 1 mode selected');
 		gameType = "1vs1";
-		// window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
-		// navigateTo('/matchmaking');
 		render(`#/matchmaking?gameType=${gameType}`);
 	}
 
@@ -49,61 +42,44 @@ function handleClickEvent(event)
 		const nickname = document.getElementById('nickname').value.trim();
 		if (nickname) {
 			gameType = "tournament";
-			// window.history.pushState(null, null, `#/matchmaking?gameType=${gameType}`);
-			// navigateTo('/matchmaking');
-			render(`#/matchmaking?gameType=${gameType}`);
+			patchTempUserAPI(nickname, gameType);
 		} else {
 			alert('Please enter a nickname.');
 		}
 	}
 }
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     const singleBtn = document.getElementById('single');
-//     const pvpBtn = document.getElementById('pvp');
-//     const tournamentBtn = document.getElementById('tournament');
+function patchTempUserAPI(nickname, gameType)
+{
+	const formData = new FormData();
+	const access_token = localStorage.getItem("access_token");
+	formData.append('t_nickname', nickname);
 
-//     const modal = document.getElementById('tournament-modal');
-//     const closeModal = document.querySelector('.close');
-//     const startTournamentBtn = document.getElementById('start-tournament');
-// 	let gameType;
-
-//     singleBtn.addEventListener('click', function() {
-//         console.log('Single mode selected');
-// 		// player 1, 2 이름, game type이 포함된 url로 redirect
-// 		gameType = "single";
-// 		window.location.href = `/pong.html?gameType=${gameType}`;
-//     });
-
-//     pvpBtn.addEventListener('click', function() {
-//         console.log('1 vs 1 mode selected');
-// 		// 매치 메이킹 페이지
-// 		gameType = "1vs1_match_request";
-// 		window.location.href = `/matchmaking.html?gameType=${gameType}`;
-//     });
-
-//     tournamentBtn.addEventListener('click', function() {
-//         console.log('Tournament mode selected');
-// 		modal.style.display = "block";
-//     });
-
-//     closeModal.addEventListener('click', function() {
-//         modal.style.display = "none";
-//     });
-
-//     window.addEventListener('click', function(event) {
-//         if (event.target == modal) {
-//             modal.style.display = "none";
-//         }
-//     });
-
-//     startTournamentBtn.addEventListener('click', function() {
-//         const nickname = document.getElementById('nickname').value.trim();
-//         if (nickname) {
-// 			gameType = "tournament_match_request";
-//             window.location.href = `/matchmaking.html?gameType=${Tournament}&nickname=${nickname}`;
-//         } else {
-//             alert('Please enter a nickname.');
-//         }
-//     });
-// });
+	fetch('/api/user/me', {
+        method: 'PATCH',
+		headers: {
+			'Authorization': `Bearer ${access_token}`,
+		},
+		body: formData
+    })
+    .then(response => {
+        if (response.status == 404)
+			throw new Error('User data not found (404)');
+		else if (response.status == 500)
+			throw new Error('Server error (500)')
+		else if (!response.ok)
+		{
+			return response.json().then(errData => {
+				throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+			});
+		}
+		return response.json();
+    })
+    .then(data => {
+		render(`#/matchmaking?gameType=${gameType}`);
+    })
+    .catch(error => {
+        console.error('Error updating profile:', error);
+		handleError(error);
+    });
+}
