@@ -117,6 +117,22 @@ function gameLoop()
 	gameDraw();
 }
 
+// export function cleanUpPong()
+// {
+// 	// 애니메이션 프레임 중단
+//     if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId);  // 게임 루프 중지
+//     }
+
+//     // 이벤트 리스너 제거
+//     // window.removeEventListener('keydown', handleKeyDown);
+//     // window.removeEventListener('keyup', handleKeyUp);
+
+// 	// keyPressed.length = 0;
+
+//     console.log("Pong 게임이 정리되었습니다.");
+// }
+
 window.cleanUpPong = function()
 {
 	// 애니메이션 프레임 중단
