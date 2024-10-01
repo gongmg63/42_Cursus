@@ -33,6 +33,10 @@ if (currentPath.includes('?')) {
 }
 
 // console.log(currentPath);
+// if (currentPath !== '/pong')
+// {
+// 	cleanUpPong();
+// }
 
 if (currentPath === '/multiPong')
 {
@@ -55,7 +59,7 @@ export async function navigateTo(url) {
 	const content = await res.text();
 	app.innerHTML = content;
 
-	// console.log("url: ", url);
+	console.log("navigate To url: ", url);
 	// CSS 파일을 동적으로 로드
 	if (route.css) {
 		dynamicCSS.setAttribute('href', `/css/${route.css}`);
@@ -74,7 +78,6 @@ export async function navigateTo(url) {
 			const script = document.createElement('script');
 			script.src = `/js/${js.file}`;
 			script.type = js.type || 'text/javascript';
-			// console.log("js: ", js.file);
 			script.defer = true;
 			script.onload = () => {
 				if (js.file === 'login.js')
@@ -98,11 +101,10 @@ export async function navigateTo(url) {
 			currentScripts.push(script);
 		});
 		
-		if (url !== '/pong') {
-			if (typeof cleanupPong === 'function')
-				cleanupPong();  // 게임 관련 리소스 정리
+		if (url === '/result') {
+			cleanUpPong();
 		}
-		if (url !== '/')
+		else if (url !== '/')
 		{
 			checkAndRefreshToken().then(() => {
 				friend_websocket()
@@ -113,7 +115,7 @@ export async function navigateTo(url) {
 					});
 			});
 		}
-		if (url !== '/multiPong')
+		else if (url !== '/multiPong')
 		{
 			if (typeof cleanUpMultiPong === 'function')
 				cleanUpMultiPong();
