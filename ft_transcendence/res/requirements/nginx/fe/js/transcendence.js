@@ -42,9 +42,10 @@ if (currentPath === '/multiPong')
 {
 	render('#/mode');
 }
-else if (currentPath === '/matchmaking')
-{
-}
+// else if (currentPath === '/matchmaking')
+// {
+
+// }
 else
 {
 	navigateTo(currentPath);

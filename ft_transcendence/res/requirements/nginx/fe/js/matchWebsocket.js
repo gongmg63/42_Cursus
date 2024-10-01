@@ -5,18 +5,20 @@ let websocket = null;
 // 매칭 중 뒤로가기 시 checkCancel 플래그를 true로 바꿔 startPongGame이 실행되는걸 방지
 // 남아있는 사람에게는 matchingOut 메시지를 보내 그 사람 역시 startPongGame이 실행되는 걸 방지
 // 뒤로 가기, 앞으로 가기 시에는 웹소켓이 끊기지 않는 걸 이용
-let checkCancel; 
+let checkCancel;
+let matchTimer = null; // 2초안에 다시 들어오는 걸 방지
 
 export function match_websocket(currentPath, type)
 {
 	checkCancel = false;
+
 	if (currentPath !== '/matchmaking')
 	{
 		if (websocket && websocket.readyState === WebSocket.OPEN)
 		{
-			websocket.send(JSON.stringify({
-				type: 'matchingOut'
-			}));
+			// websocket.send(JSON.stringify({
+			// 	type: 'matchingOut'
+			// }));
 			websocket.close();
 		}
 		return ;
@@ -51,15 +53,23 @@ export function match_websocket(currentPath, type)
 		// 매치 성공 메시지인 경우 처리
 		if (data.type === "match_found") {
 			updateMatchInfo(data);
-			setTimeout(() => {
-				if (!checkCancel)
-				{
+			if (matchTimer) {
+				clearTimeout(matchTimer);
+			}
+
+			matchTimer = setTimeout(() => {
+				if (!checkCancel) {
 					startPongGame(data);
 				}
 			}, 2000);
 		}
 		else if (data.type === "match_cancel")
 		{
+			if (matchTimer) {
+				clearTimeout(matchTimer);
+				matchTimer = null;
+			}
+
 			websocket.close();
 			checkCancel = true;
 			render('#/mode');
@@ -68,6 +78,10 @@ export function match_websocket(currentPath, type)
 
 	websocket.onclose = function(event) {
 		checkCancel = true;
+		if (matchTimer) {
+			clearTimeout(matchTimer);
+			matchTimer = null;
+		}
 		console.log("매칭 웹소켓 연결 종료");
 	};
 	
