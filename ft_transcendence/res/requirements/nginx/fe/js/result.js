@@ -1,14 +1,14 @@
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { navigateTo, render } from "./transcendence.js";
 
-checkAndRefreshToken().then(() => {
-})
+let gameType = null;
 
 window.loadResult = function ()
 {
 	const hash = window.location.hash;
 	const queryParams = new URLSearchParams(hash.split('?')[1]);
-	const gameType = queryParams.get('gameType');
+	gameType = queryParams.get('gameType');
+	
 	console.log("result gameType : ", gameType);
 	if (gameType === "single")
 	{
@@ -16,7 +16,7 @@ window.loadResult = function ()
 	}
 	else
 	{
-		updateResult();
+		updateResult(gameType);
 	}
 	// console.log(result);
 	// cleanUpPong();
@@ -28,7 +28,10 @@ document.body.addEventListener('click', function(event) {
         event.preventDefault();
         // window.history.pushState(null, null, '#/index');
         // navigateTo('/index');
-		render('#/index');
+		if (gameType == 'tournament')
+			render('#/matchmaking?gameType=final');
+		else
+			render('#/index');
     }
 });
 
@@ -47,11 +50,11 @@ function singleResult()
 	resultMessage.classList.add('win');
 }
 
-function updateResult()
+function updateResult(gameType)
 {
 	checkAndRefreshToken().then(()=> {
 		const access_token = localStorage.getItem("access_token");
-		fetch('/api/game/result/me', {
+		fetch('/api/game/result/me/recent', {
 			method: 'GET',
 			headers: {
 				'Authorization': `Bearer ${access_token}`,
@@ -59,9 +62,9 @@ function updateResult()
 			},
 		})
 		.then(response => {
-			if (response.status == 404)
+			if (response.status === 404)
 				throw new Error('User data not found (404)');
-			else if (response.status == 500)
+			else if (response.status === 500)
 				throw new Error('Server error (500)')
 			else if (!response.ok)
 			{
@@ -82,11 +85,17 @@ function updateResult()
 			userAvatar.src = avatarUrl;
 			
 			const resultMessage = document.getElementById('resultMessage');
-			const recentMatch = data[0];
-			if (recentMatch.winner.nickname == nickname)
+			const recentMatch = data;
+			if (recentMatch.winner.nickname === nickname)
 			{
 				resultMessage.textContent = 'You Win!';
 				resultMessage.classList.add('win');
+				if (gameType === "tournament")
+				{
+					matchTimer = setTimeout(() => {
+						render('#/matchmaking?gameType=final');
+					}, 2000);
+				}
 			}
 			else
 			{
@@ -127,7 +136,7 @@ function resultToJson()
 
 function postMatchAPI(result)
 {
-	if (result.game_type == 'single' || result.game_type == 'tournament1' || result.game_type == 'tournament2' || result.gameType == 'final')
+	if (result.game_type === 'single' || result.game_type === 'tournament1' || result.game_type === 'tournament2' || result.gameType === 'final')
 		return ;
 	const access_token = localStorage.getItem("access_token");
 	fetch('/api/game/result/add/', {
@@ -139,9 +148,9 @@ function postMatchAPI(result)
 		body: JSON.stringify(result)
 	})
 	.then(response => {
-		if (response.status == 404)
+		if (response.status === 404)
 			throw new Error('User data not found (404)');
-		else if (response.status == 500)
+		else if (response.status === 500)
 			throw new Error('Server error (500)')
 		else if (!response.ok)
 			throw new Error(`Unexpected error: ${response.status}`);

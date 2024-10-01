@@ -76,6 +76,7 @@ function patchTempUserAPI(nickname, gameType)
 		return response.json();
     })
     .then(data => {
+		console.log("tournament patch : ",data);
 		render(`#/matchmaking?gameType=${gameType}`);
     })
     .catch(error => {
