@@ -6,8 +6,18 @@ checkAndRefreshToken().then(() => {
 
 window.loadResult = function ()
 {
-    updateResult();
-	// const result = resultToJson();
+	const hash = window.location.hash;
+	const queryParams = new URLSearchParams(hash.split('?')[1]);
+	const gameType = queryParams.get('gameType');
+	console.log("result gameType : ", gameType);
+	if (gameType === "single")
+	{
+		singleResult()
+	}
+	else
+	{
+		updateResult();
+	}
 	// console.log(result);
 	// cleanUpPong();
 	// postMatchAPI(result);
@@ -21,6 +31,21 @@ document.body.addEventListener('click', function(event) {
 		render('#/index');
     }
 });
+
+function singleResult()
+{
+	const nickname = localStorage.getItem('nickname');
+	const userNickname = document.getElementById('userNickname');
+	userNickname.textContent = nickname;
+
+	const avatarUrl = localStorage.getItem('profile');
+	const userAvatar = document.getElementById('userAvatar');
+	userAvatar.src = avatarUrl;
+
+	const resultMessage = document.getElementById('resultMessage');
+	resultMessage.textContent = 'You Win!';
+	resultMessage.classList.add('win');
+}
 
 function updateResult()
 {
@@ -49,6 +74,13 @@ function updateResult()
 		.then(data => {
 			const avatarUrl = localStorage.getItem('profile');
 			const nickname = localStorage.getItem('nickname');
+			
+			const userNickname = document.getElementById('userNickname');
+			userNickname.textContent = nickname;
+			
+			const userAvatar = document.getElementById('userAvatar');
+			userAvatar.src = avatarUrl;
+			
 			const resultMessage = document.getElementById('resultMessage');
 			const recentMatch = data[0];
 			if (recentMatch.winner.nickname == nickname)
@@ -61,10 +93,7 @@ function updateResult()
 				resultMessage.textContent = 'You Lose!';
 				resultMessage.classList.add('lose');
 			}
-			const userAvatar = document.getElementById('userAvatar');
-			const userNickname = document.getElementById('userNickname');
-			userAvatar.src = avatarUrl;
-			userNickname.textContent = nickname;
+			
 			console.log(recentMatch.winner.nickname, recentMatch.winner_score, recentMatch.loser.nickname, recentMatch.loser_score, recentMatch.game_date);
 		})
 		.catch(error => {

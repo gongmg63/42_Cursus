@@ -16,21 +16,18 @@ from .models import GameResult
 vs_waiting_queue = []
 tournament_waiting_queue = []
 final_waiting_queue = []
+match_data = {}
 
 class MatchConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope["user"]
-        self.id = self.scope["user"].id 
         await self.accept()
 
     async def disconnect(self, close_code):
         # 연결 성공 시 대기열에서 제거
         print("매칭 웹소켓 연결 종료")
         if hasattr(self, 'group_name'):
-            await self.channel_layer.group_discard(
-                self.group_name,
-                self.channel_name
-            )
+            await self.matching_out()
         if self.user in vs_waiting_queue:
             vs_waiting_queue.remove(self.user)
         elif self.user in tournament_waiting_queue:
@@ -70,6 +67,7 @@ class MatchConsumer(AsyncWebsocketConsumer):
                 await self.matching_out()
         
     async def matching_out(self):
+        print("matching out", self.user.nickname)
         await self.channel_layer.group_discard(
             self.group_name,
             self.channel_name
@@ -125,7 +123,6 @@ class MatchConsumer(AsyncWebsocketConsumer):
         # 직렬화
         player1_data = UserSerializer(player1_user).data
         player2_data = UserSerializer(player2_user).data
-        # 그룹에 player1에게 메시지 전송
         await self.channel_layer.group_send(
             self.group_name,
             {
@@ -155,7 +152,7 @@ class MatchConsumer(AsyncWebsocketConsumer):
         player3_data = UserSerializer(player3_user).data
         player4_data = UserSerializer(player4_user).data
         
-        if self.id == player1.id or self.id == player2.id:
+        if self.user.id == player1.id or self.user.id == player2.id:
             gametype += '1'
 
         else:
@@ -201,7 +198,11 @@ class MatchConsumer(AsyncWebsocketConsumer):
         if game_type == "1vs1":
             player1 = event["player1"]
             player2 = event["player2"]
-
+            match_data[self.user.id] = {
+                "gameType": game_type,
+                "player1": player1,
+                "player2": player2
+            }
             # sender와 비교해 상대방 정보를 설정
             # if self.user.nickname == player1['nickname']:
             #     opponent = player2['nickname']
@@ -370,8 +371,18 @@ class GameConsumer(AsyncWebsocketConsumer):
         message_type = data.get("type")
         if message_type == 'initMatch':
             # 상대 정보를 기반으로 그룹 이름을 설정
-            player1_id = data['player1_id']
-            player2_id = data['player2_id']
+            await self.send(json.dumps({
+                "type": "parseGameData",
+                "gameType": match_data[self.user.id]["gameType"],
+                "player1": match_data[self.user.id]["player1"]["nickname"],
+                "player2": match_data[self.user.id]["player2"]["nickname"],
+                "id1": match_data[self.user.id]["player1"]["id"],
+                "id2": match_data[self.user.id]["player2"]["id"],
+            }))
+            player1_id = match_data[self.user.id]["player1"]["id"]
+            player2_id = match_data[self.user.id]["player2"]["id"]
+            # player1_id = data['player1_id']
+            # player2_id = data['player2_id']
             self.player1 = player1_id
             if str(self.user.id) == str(player1_id):
                 self.pos = "left"
