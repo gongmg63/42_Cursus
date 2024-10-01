@@ -105,8 +105,8 @@ export function game_play_websocket(currentPath, type)
 		return ;
 	}
 	access_token = localStorage.getItem("access_token");
-	websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
-	// websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
+	// websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
+	websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
 // const socket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/play/?token=' + access_token);
 
 	websocket.onopen = function() {
