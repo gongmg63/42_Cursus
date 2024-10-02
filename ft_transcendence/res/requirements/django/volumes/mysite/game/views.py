@@ -78,12 +78,12 @@ class GetRecentGameResultView(APIView):
             GameResult.objects.filter(loser=user)
         ).order_by('-game_date').first()  # 가장 최근 게임 하나
 
-        if game_result:
-            # 시리얼라이저를 사용하여 결과 직렬화
-            serializer = GameResultSerializer(game_result)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
+        serializer = GameResultSerializer(game_result)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        # if game_result:
+        #     # 시리얼라이저를 사용하여 결과 직렬화
+        #     serializer = GameResultSerializer(game_result)
+        #     return Response(serializer.data, status=status.HTTP_200_OK)
 
 class GetGameResultByNicknameView(APIView):
     permission_classes = [IsAuthenticated]  # JWT 인증된 사용자만 접근 가능

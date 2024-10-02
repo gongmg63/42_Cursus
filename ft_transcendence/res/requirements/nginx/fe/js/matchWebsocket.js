@@ -161,7 +161,7 @@ function updateTournamentUI(matchData)
 	gameTop1.textContent = `${matchData.player1.t_nickname} `;
 	gameBottom1.textContent = `${matchData.player2.t_nickname} `;
 
-	const gameTop2 = document.querySelector('.round-1 .nth-child(6)');
+	const gameTop2 = document.querySelector('.round-1 .game-top:nth-child(6)');
 	const gameBottom2 = document.querySelector('.round-1 .game-bottom:nth-child(8)');
 
 	gameTop2.textContent = `${matchData.player3.t_nickname} `;
@@ -170,13 +170,13 @@ function updateTournamentUI(matchData)
 
 function updateFinalUI(matchData) {
 	const gameTop1 = document.querySelector('.round-1 .game-top:nth-child(2)');
-	const gameBottom1 = document.querySelector('.round-1 .game-bottom:nth-child(4))');
+	const gameBottom1 = document.querySelector('.round-1 .game-bottom:nth-child(4)');
 	
 	gameTop1.textContent = `${matchData.player1.t_nickname} `;
 	gameBottom1.textContent = `${matchData.player2} `;
 	
-	const gameTop2 = document.querySelector('.round-1 .nth-child(6)');
-	const gameBottom2 = document.querySelector('.round-1 .game-bottom:nth-child(8))');
+	const gameTop2 = document.querySelector('.round-1 .game-top:nth-child(6)');
+	const gameBottom2 = document.querySelector('.round-1 .game-bottom:nth-child(8)');
 	
 	gameTop2.textContent = `${matchData.player3.t_nickname} `;
 	gameBottom2.textContent = `${matchData.player4} `;

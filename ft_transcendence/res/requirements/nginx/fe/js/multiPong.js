@@ -193,16 +193,16 @@ export function game_play_websocket(currentPath, type)
 		}
 		else if (data.type === 'checkGameEnd')
 		{
-			if (!checkEnd)
-			{
-				websocket.send(JSON.stringify({
-					"type": 'outPage',
-					"id": playerNumber === id1 ? id2 : id1,
-					"myScore": myPad.score,
-					"opScore": opPad.score,
-					"endScore": endScore
-				}));
-			}
+			// if (!checkEnd)
+			// {
+			websocket.send(JSON.stringify({
+				"type": 'outPage',
+				"id": playerNumber === id1 ? id2 : id1,
+				"myScore": myPad.score,
+				"opScore": opPad.score,
+				"endScore": endScore
+			}));
+			// }
 		}
 	}
 }

@@ -26,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'nickname',
             't_nickname',
+            't_loser',
             'wins', 
             'losses', 
             'profile',
