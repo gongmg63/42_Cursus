@@ -16,7 +16,7 @@ const routes = {
 };
 const forbiddenHashTo = {
 	'/authentication':true,
-	'/result':true,
+	// '/result':true,
 };
 
 const forbiddenHashFrom = {
@@ -110,10 +110,10 @@ export async function navigateTo(url) {
 			currentScripts.push(script);
 		});
 		
-		if (url === '/result' || url === '/mode') {
-			cleanUpPong();
-		}
-		else if (url !== '/' && url !== '/authentication')
+		// if (url === '/result' || url === '/mode') {
+		// 	cleanUpPong();
+		// }
+		if (url !== '/' && url !== '/authentication')
 		{
 			checkAndRefreshToken().then(() => {
 				friend_websocket()
@@ -124,10 +124,10 @@ export async function navigateTo(url) {
 					});
 			});
 		}
-		else if (url !== '/multiPong')
+		if (url !== '/multiPong')
 		{
-			if (typeof cleanUpMultiPong === 'function')
-				cleanUpMultiPong();
+			// if (typeof cleanUpMultiPong === 'function')
+			cleanUpMultiPong();
 		}
 	}
 }
@@ -154,9 +154,8 @@ window.addEventListener('hashchange', () => {
 
 	if (currentPath !== '/multiPong')
 	{
-		console.log('hashchange multipong')
-		if (typeof cleanUpMultiPong === 'function')
-			cleanUpMultiPong();
+		console.log('hashchange multipong');
+		cleanUpMultiPong();
 	}
 	game_play_websocket(currentPath, null);
 	match_websocket(currentPath, null);
