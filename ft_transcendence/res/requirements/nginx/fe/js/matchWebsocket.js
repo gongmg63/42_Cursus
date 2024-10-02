@@ -151,13 +151,13 @@ function updateTournamentUI(matchData)
 {
 	// player 1, player 2, player 3, player 4
 	const gameTop1 = document.querySelector('.round-1 .game-top:nth-child(2)');
-	const gameBottom1 = document.querySelector('.round-1 .game-bottom:nth-child(4))');
+	const gameBottom1 = document.querySelector('.round-1 .game-bottom:nth-child(4)');
 
 	gameTop1.textContent = `${matchData.player1.nickname} `;
 	gameBottom1.textContent = `${matchData.player2.nickname} `;
 
 	const gameTop2 = document.querySelector('.round-1 .nth-child(6)');
-	const gameBottom2 = document.querySelector('.round-1 .game-bottom:nth-child(8))');
+	const gameBottom2 = document.querySelector('.round-1 .game-bottom:nth-child(8)');
 
 	gameTop2.textContent = `${matchData.player3.nickname} `;
 	gameBottom2.textContent = `${matchData.player4.nickname} `;

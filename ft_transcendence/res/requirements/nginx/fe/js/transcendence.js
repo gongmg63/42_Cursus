@@ -44,6 +44,7 @@ if (currentPath === '/multiPong')
 }
 else if (currentPath === '/matchmaking')
 {
+	render('#/');
 }
 else
 {
@@ -101,7 +102,7 @@ export async function navigateTo(url) {
 			currentScripts.push(script);
 		});
 		
-		if (url === '/result') {
+		if (url === '/result' || url === '/mode') {
 			cleanUpPong();
 		}
 		else if (url !== '/')
