@@ -5,33 +5,29 @@ let websocket = null;
 // 매칭 중 뒤로가기 시 checkCancel 플래그를 true로 바꿔 startPongGame이 실행되는걸 방지
 // 남아있는 사람에게는 matchingOut 메시지를 보내 그 사람 역시 startPongGame이 실행되는 걸 방지
 // 뒤로 가기, 앞으로 가기 시에는 웹소켓이 끊기지 않는 걸 이용
-let checkCancel; 
+let checkCancel;
+let matchTimer = null; // 2초안에 다시 들어오는 걸 방지
 
 export function match_websocket(currentPath, type)
 {
 	checkCancel = false;
+
 	if (currentPath !== '/matchmaking')
 	{
 		if (websocket && websocket.readyState === WebSocket.OPEN)
-		{
-			websocket.send(JSON.stringify({
-				type: 'matchingOut'
-			}));
 			websocket.close();
-		}
 		return ;
 	}
 	if (currentPath === '/matchmaking' && type === null)
 	{
-		// window.history.pushState(null, null, '#/mode');
-		// navigateTo('/mode');
 		render('#/mode');
 		return ;
 	}
 
 	const access_token = localStorage.getItem("access_token");
-	// websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
-	websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
+	websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
+	// websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
+	// websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/match/?token=' + access_token);
 
 	websocket.onopen = function(event) {
 		console.log("매칭 웹소켓 연결");
@@ -51,15 +47,23 @@ export function match_websocket(currentPath, type)
 		// 매치 성공 메시지인 경우 처리
 		if (data.type === "match_found") {
 			updateMatchInfo(data);
-			setTimeout(() => {
-				if (!checkCancel)
-				{
+			if (matchTimer) {
+				clearTimeout(matchTimer);
+			}
+
+			matchTimer = setTimeout(() => {
+				if (!checkCancel) {
 					startPongGame(data);
 				}
 			}, 2000);
 		}
 		else if (data.type === "match_cancel")
 		{
+			if (matchTimer) {
+				clearTimeout(matchTimer);
+				matchTimer = null;
+			}
+
 			websocket.close();
 			checkCancel = true;
 			render('#/mode');
@@ -68,6 +72,10 @@ export function match_websocket(currentPath, type)
 
 	websocket.onclose = function(event) {
 		checkCancel = true;
+		if (matchTimer) {
+			clearTimeout(matchTimer);
+			matchTimer = null;
+		}
 		console.log("매칭 웹소켓 연결 종료");
 	};
 	
@@ -125,7 +133,6 @@ function startPongGame(matchData)
 		player2 = matchData.player2.nickname;
 		id1 = matchData.player1.id;
 		id2 = matchData.player2.id;
-
 	}
 	else if (gameType == 'tournament2')
 	{
@@ -142,9 +149,7 @@ function startPongGame(matchData)
 		id2 = matchData.player3.id;
 	}
 	
-	// 쿼리에 전달하는 내용 백엔드로 이동 필요!! mkong
-	render(`#/multiPong?player1=${player1}&id1=${id1}\
-	&player2=${player2}&id2=${id2}&gameType=${gameType}`);
+	render(`#/multiPong?gameType=${gameType}`);
 }
 
 function updateTournamentUI(matchData)
@@ -153,20 +158,32 @@ function updateTournamentUI(matchData)
 	const gameTop1 = document.querySelector('.round-1 .game-top:nth-child(2)');
 	const gameBottom1 = document.querySelector('.round-1 .game-bottom:nth-child(4)');
 
-	gameTop1.textContent = `${matchData.player1.nickname} `;
-	gameBottom1.textContent = `${matchData.player2.nickname} `;
+	gameTop1.textContent = `${matchData.player1.t_nickname} `;
+	gameBottom1.textContent = `${matchData.player2.t_nickname} `;
 
 	const gameTop2 = document.querySelector('.round-1 .nth-child(6)');
 	const gameBottom2 = document.querySelector('.round-1 .game-bottom:nth-child(8)');
 
-	gameTop2.textContent = `${matchData.player3.nickname} `;
-	gameBottom2.textContent = `${matchData.player4.nickname} `;
+	gameTop2.textContent = `${matchData.player3.t_nickname} `;
+	gameBottom2.textContent = `${matchData.player4.t_nickname} `;
 }
 
 function updateFinalUI(matchData) {
+	const gameTop1 = document.querySelector('.round-1 .game-top:nth-child(2)');
+	const gameBottom1 = document.querySelector('.round-1 .game-bottom:nth-child(4))');
+	
+	gameTop1.textContent = `${matchData.player1.t_nickname} `;
+	gameBottom1.textContent = `${matchData.player2} `;
+	
+	const gameTop2 = document.querySelector('.round-1 .nth-child(6)');
+	const gameBottom2 = document.querySelector('.round-1 .game-bottom:nth-child(8))');
+	
+	gameTop2.textContent = `${matchData.player3.t_nickname} `;
+	gameBottom2.textContent = `${matchData.player4} `;
+
     const finalTop = document.querySelector('.round-2 .game-top:nth-child(2)');
     const finalBottom = document.querySelector('.round-2 .game-bottom:nth-child(4)');
     
-    finalTop.querySelector('span').textContent = matchData.player1.nickname;
-    finalBottom.querySelector('span').textContent = matchData.player3.nickname;
+    finalTop.querySelector('span').textContent = matchData.player1.t_nickname;
+    finalBottom.querySelector('span').textContent = matchData.player3.t_nickname;
 }

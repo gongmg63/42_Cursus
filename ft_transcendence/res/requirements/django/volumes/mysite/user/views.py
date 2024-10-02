@@ -98,7 +98,7 @@ def OauthCallback(request):
 def Enable(request):
     user = request.user
     user.otp_base32 = pyotp.random_base32()
-    user.is_tfa_active = True
+    user.is_tfa_setting = True
 
     totp = pyotp.TOTP(user.otp_base32)    
     qr_uri = totp.provisioning_uri(
@@ -141,16 +141,20 @@ class TFAView(APIView):
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         # OTP 검증
-        totp = pyotp.TOTP(user.otp_base32)
-        if str(code) == str(totp.now()):
-            refresh = RefreshToken.for_user(user)
-            data = {
-                "detail": "Verification successful.",
-                'access_token': str(refresh.access_token),
-                'refresh_token': str(refresh),
-                'nickname': user.nickname,
-            }
-            return JsonResponse(data, status=status.HTTP_200_OK)
+        if (user.is_tfa_active or user.is_tfa_setting):
+            totp = pyotp.TOTP(user.otp_base32)
+            if str(code) == str(totp.now()):
+                user.is_tfa_active = True
+                user.is_tfa_setting = False
+                user.save()
+                refresh = RefreshToken.for_user(user)
+                data = {
+                    "detail": "Verification successful.",
+                    'access_token': str(refresh.access_token),
+                    'refresh_token': str(refresh),
+                    'nickname': user.nickname,
+                }
+                return JsonResponse(data, status=status.HTTP_200_OK)
         return Response({"detail": "Invalid code."}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserAPI(APIView):
@@ -171,7 +175,6 @@ class UserAPI(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except serializers.ValidationError as e:
             error_message = str(e)
-            print('???????', error_message)
             if 'exists' in error_message:
                 raise CustomValidationError('Nickname already exists.', code=409)  # HTTP 404 Not Found
             elif 'blank' in error_message or 'contain' in error_message:

@@ -25,6 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
             'oauthid',
             'email',
             'nickname',
+            't_nickname',
             'wins', 
             'losses', 
             'profile',
@@ -38,7 +39,12 @@ class UserSerializer(serializers.ModelSerializer):
         if not re.match(r'^[A-Za-z0-9]+$', nickname):
             raise CustomValidationError('Nickname must contain only English letters and numbers, and cannot contain spaces.', code=400)
         return nickname
-
+    
+    def validate_t_nickname(self, t_nickname):
+        if not re.match(r'^[A-Za-z0-9]+$', t_nickname):
+            raise CustomValidationError('T_nickname must contain only English letters and numbers, and cannot contain spaces.', code=400)
+        return t_nickname
+    
     def update(self, instance, validated_data):
         profile = validated_data.get('profile', None)
         
@@ -49,6 +55,11 @@ class UserSerializer(serializers.ModelSerializer):
             else:
                 # 이전 파일 삭제
                 instance.profile.delete(save=False)
+        
+        t_nickname = validated_data.get('t_nickname', None)
+        if t_nickname:
+            instance.t_nickname = t_nickname
+
         return super().update(instance, validated_data)
     
 class AddFriendSerializer(serializers.Serializer):

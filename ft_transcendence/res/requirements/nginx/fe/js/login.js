@@ -38,7 +38,7 @@ window.initializeLogin = function() {
         localStorage.setItem('refresh_token', refreshToken);
         console.log('Token stored successfully');
 
-		window.history.pushState(null, null, window.location.pathname + '#/index');
+		window.history.pushState({ page : '/index' }, null, window.location.pathname + '#/index');
 		navigateTo('/index');
     } else {
         console.log('Tokens not found');
