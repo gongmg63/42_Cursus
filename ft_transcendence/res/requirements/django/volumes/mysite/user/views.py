@@ -175,7 +175,6 @@ class UserAPI(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except serializers.ValidationError as e:
             error_message = str(e)
-            print('???????', error_message)
             if 'exists' in error_message:
                 raise CustomValidationError('Nickname already exists.', code=409)  # HTTP 404 Not Found
             elif 'blank' in error_message or 'contain' in error_message:
