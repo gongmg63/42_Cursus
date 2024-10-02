@@ -135,7 +135,6 @@ export async function navigateTo(url) {
 // 뒤로가기, 앞으로 가기 시 실행됨
 window.addEventListener('hashchange', () => {
 	let currentPath = window.location.hash.slice(1) || '/';
-
 	if (currentPath.includes('?')) {
 		currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
     }
@@ -178,15 +177,21 @@ export function render(hash)
 	navigateTo(pathwithoutparam);
 }
 
+// 뒤로가기, 앞으로가기 버튼을 눌렀을 시 호출되는 함수
+// pushState 함수의 첫번째 인자로 페이지의 해시 정보를 넣어주면 event.state 에서 조회가능.
+// hashchange 함수는 pushState 의 세번쨰 인자인 url의 변경을 감지하고 실행된다.
 window.onpopstate = function(event) {
-	console.log("page to:", event.state);
+
+	let pathFrom = previousPath.split('?')[0];
+
+	console.log("[onpopstate]: page from", pathFrom);
+	console.log("[onpopstate]: page to:", event.state);
+
 	if (event.state && event.state.page in forbiddenHashTo)
 	{
 		alert("이 페이지로 이동 할 수 없습니다.");
 		render('#/index');
 	}
-	let pathFrom = previousPath.split('?')[0];
-	console.log("page from", pathFrom);
 	if (pathFrom in forbiddenHashFrom)
 	{
 		alert("이 페이지에서는 이동 할 수 없습니다.");

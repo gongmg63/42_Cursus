@@ -10,7 +10,9 @@
 			"losses": 5,
 			"profile": "/images/Jobs.png",
 			"active": true,
-			"friends": []
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "7JPDNKTGUGS3BJZ6OWXPFFL33JOJPNN2"
 		}
 	},
 	{
@@ -24,7 +26,9 @@
 			"losses": 15,
 			"profile": "/images/Huang.png",
 			"active": true,
-			"friends": []
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "7JPDNKTGUGS3BJZ6OWXPFFL33JOJPNN2"
 		}
 	},
 	{
@@ -38,7 +42,9 @@
 			"losses": 7,
 			"profile": "/images/Page.png",
 			"active": true,
-			"friends": []
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "7JPDNKTGUGS3BJZ6OWXPFFL33JOJPNN2"
 		}
 	},
 	{
