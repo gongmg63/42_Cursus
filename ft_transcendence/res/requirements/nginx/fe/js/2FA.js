@@ -26,8 +26,10 @@ document.body.addEventListener('click', function(event) {
     if (event.target && event.target.matches('.close')) {
         const securityModal = document.getElementById('securityModal');
         const change2faModal = document.getElementById('change2faModal');
-        securityModal.style.display = 'none';
-        change2faModal.style.display = 'none';
+		if (securityModal === null || change2faModal === null)
+			return ;
+		securityModal.style.display = 'none';
+		change2faModal.style.display = 'none';
     }
 
     // 2FA 변경 버튼 클릭
