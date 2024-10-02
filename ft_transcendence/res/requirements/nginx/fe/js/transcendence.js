@@ -14,6 +14,13 @@ const routes = {
 	'/mode': { page: 'mode.html', css: 'mode.css', js: [{ file: 'mode.js', type: 'module'}] },
 	'/authentication': { page: 'authentication.html', css: 'authentication.css', js: [{file: 'authentication.js', type: 'module'}] }
 };
+const forbiddenHashTo = {
+	'/authentication':true,
+	'/result':true,
+};
+
+const forbiddenHashFrom = {
+};
 
 const app = document.getElementById('app');
 const dynamicCSS = document.getElementById('dynamicCSS');
@@ -27,6 +34,7 @@ document.querySelectorAll('nav a').forEach(link => {
 console.log('초기 로딩');
 
 let currentPath = window.location.hash.slice(1) || '/';
+let previousPath = window.location.hash.slice(1) || '/';
 
 if (currentPath.includes('?')) {
 	currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
@@ -105,7 +113,7 @@ export async function navigateTo(url) {
 		if (url === '/result') {
 			cleanUpPong();
 		}
-		else if (url !== '/')
+		else if (url !== '/' && url !== '/authentication')
 		{
 			checkAndRefreshToken().then(() => {
 				friend_websocket()
@@ -157,15 +165,31 @@ window.addEventListener('hashchange', () => {
 	navigateTo(currentPath);
 });
 
+
 export function render(hash)
 {
 	let path = hash.slice(1);
-	
-	window.history.pushState(null, null, hash);
+	let pathwithoutparam = path.split('?')[0];
+	previousPath = path;
+	window.history.pushState({ page: pathwithoutparam }, null, hash);
 	match_websocket(path, null);
 	game_play_websocket(path, null);
-	if (path.includes('?'))
-		path = path.split('?')[0];
-	console.log("render:", path);
-	navigateTo(path);
+	console.log("render:", pathwithoutparam);
+	navigateTo(pathwithoutparam);
 }
+
+window.onpopstate = function(event) {
+	console.log("page to:", event.state);
+	if (event.state && event.state.page in forbiddenHashTo)
+	{
+		alert("이 페이지로 이동 할 수 없습니다.");
+		render('#/index');
+	}
+	let pathFrom = previousPath.split('?')[0];
+	console.log("page from", pathFrom);
+	if (pathFrom in forbiddenHashFrom)
+	{
+		alert("이 페이지에서는 이동 할 수 없습니다.");
+		render('#/index');
+	}
+};
