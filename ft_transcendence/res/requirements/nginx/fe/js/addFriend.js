@@ -7,6 +7,8 @@ import { checkAndRefreshToken } from "./jwtRefresh.js";
 document.body.addEventListener('click', function(event) {
 
 	const modal = document.getElementById("addFriendModal");
+	if (modal === null)
+		return ;
     // 친구 추가 버튼 클릭 시 모달 표시
     if (event.target && event.target.matches('.friends-controls .btn:first-child')) {
 		modal.style.display = 'block';

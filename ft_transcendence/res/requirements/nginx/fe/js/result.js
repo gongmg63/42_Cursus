@@ -28,10 +28,10 @@ document.body.addEventListener('click', function(event) {
         event.preventDefault();
         // window.history.pushState(null, null, '#/index');
         // navigateTo('/index');
-		if (gameType == 'tournament')
-			render('#/matchmaking?gameType=final');
-		else
-			render('#/index');
+		// if (gameType == 'tournament1' || gameType == "tournament2")
+		// 	render('#/matchmaking?gameType=final');
+		// else
+		render('#/index');
     }
 });
 
@@ -90,7 +90,7 @@ function updateResult(gameType)
 			{
 				resultMessage.textContent = 'You Win!';
 				resultMessage.classList.add('win');
-				if (gameType === "tournament")
+				if (gameType === "tournament1" || gameType === "tournament2")
 				{
 					matchTimer = setTimeout(() => {
 						render('#/matchmaking?gameType=final');
