@@ -46,8 +46,6 @@ window.startMultiPong = function()
 	canvas.height = window.innerHeight;
 
 	ball = new Ball(vec2(ballX, ballY), vec2(ballVelocityX, ballVelocityY), ballRadius);
-	// parseGameURL();
-	// setUpMultiPong();
 	console.log("multpong type:", gameType);
 	game_play_websocket('/multiPong', gameType);
 }
@@ -55,21 +53,21 @@ window.startMultiPong = function()
 
 function parseGameURL(data)
 {
-    console.log(data);
-
-	// gameType = data.gameType;
 	player1 = data.player1;
 	player2 = data.player2;
 	id1 = data.id1;
 	id2 = data.id2;
-	// player1 = queryParams.get('player1');
-	// player2 = queryParams.get('player2');
-	// id1 = queryParams.get('id1');
-	// id2 = queryParams.get('id2');
 
-	document.getElementById("player1Name").textContent = player1;
-	document.getElementById("player2Name").textContent = player2;
-	// console.log(player1, player2, id1, id2);
+	if (gameType === "1vs1")
+	{
+		document.getElementById("player1Name").textContent = player1;
+		document.getElementById("player2Name").textContent = player2;
+	}
+	else
+	{
+		document.getElementById("player1Name").textContent = data.player1_t;
+		document.getElementById("player2Name").textContent = data.player2_t;	
+	}
 }
 
 function setUpMultiPong()
@@ -104,7 +102,6 @@ export function game_play_websocket(currentPath, type)
 		}
 		return ;
 	}
-	console.log("multipong:", type);
 	if (currentPath === '/multiPong' && type == null)
 	{
 		render('#/mode');
@@ -122,8 +119,6 @@ export function game_play_websocket(currentPath, type)
 		{
 			websocket.send(JSON.stringify({
 				type: "initMatch",
-				// player1_id: id1,
-				// player2_id: id2,
 				canvas_width: canvas.width,
 				canvas_height: canvas.height,
 			}));
@@ -135,7 +130,6 @@ export function game_play_websocket(currentPath, type)
 	}
 	websocket.onmessage = function(event) {
 		const data = JSON.parse(event.data);
-		// console.log(data)
 		if (data.type === 'parseGameData')
 		{
 			parseGameURL(data);
@@ -193,39 +187,19 @@ export function game_play_websocket(currentPath, type)
 		}
 		else if (data.type === 'checkGameEnd')
 		{
-			// if (!checkEnd)
-			// {
-			websocket.send(JSON.stringify({
-				"type": 'outPage',
-				"id": playerNumber === id1 ? id2 : id1,
-				"myScore": myPad.score,
-				"opScore": opPad.score,
-				"endScore": endScore
-			}));
-			// }
+			if (!checkEnd)
+			{
+				websocket.send(JSON.stringify({
+					"type": 'outPage',
+					"id": playerNumber === id1 ? id2 : id1,
+					"myScore": myPad.score,
+					"opScore": opPad.score,
+					"endScore": endScore
+				}));
+			}
 		}
 	}
 }
-
-// window.addEventListener("beforeunload", function (e) {
-// 	// e.returnValue = "refresh message";
-// });
-
-// window.onload = function() {
-// 	// 페이지가 이미 로드되었는지 확인
-// 	if (sessionStorage.getItem('pong_pageLoaded')) {
-// 		// 페이지가 이미 로드되었다면 (즉, 새로고침된 경우)
-// 		setTimeout(function() {
-// 		// 원하는 URL로 변경하세요
-// 		myPad.score = 0;
-// 		opPad.score = endScore;
-// 		checkGameEnd();
-// 	  }, 100);
-// 	} else {
-// 	  // 페이지가 처음 로드된 경우
-// 	  sessionStorage.setItem('pong_pageLoaded', 'true');
-// 	}
-//   };
 
 window.addEventListener('keydown', function(e) {
 	if (websocket && websocket.readyState === WebSocket.OPEN)
@@ -252,7 +226,7 @@ window.cleanUpMultiPong = function()
 	if (animationFrameId)
 		cancelAnimationFrame(animationFrameId);
 
-	// console.log("Multi Pong 게임이 정리되었습니다.");
+	console.log("Multi Pong 게임이 정리되었습니다.");
 }
 
 function gameLoop()
@@ -302,16 +276,11 @@ function checkGameEnd()
 			'loserScore': loserScore,
 			'checkWinner': checkWinner
 		}));
-		// game type에 따라 다르게 redirect - 1vs1, tournament
 		console.log(playerNumber, id1, id2, myPad.score, opPad.score, gameType);
-		// console.log(winner, winnerScore, loser, loserScore, gameType);
-		// render(`#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
 		setTimeout(() => {
 			render(`#/result?gameType=${gameType}`);
 			websocket.close();
 		}, 100);
-		// setTimeout(() => {
-		// }, 100);
 	}
 }
 

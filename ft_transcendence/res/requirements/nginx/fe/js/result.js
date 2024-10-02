@@ -2,36 +2,35 @@ import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { navigateTo, render } from "./transcendence.js";
 
 let gameType = null;
+let resultTimer;
+let checkWin;
 
 window.loadResult = function ()
 {
 	const hash = window.location.hash;
 	const queryParams = new URLSearchParams(hash.split('?')[1]);
 	gameType = queryParams.get('gameType');
-	
-	console.log("result gameType : ", gameType);
+	resultTimer = null;
+	checkWin = false;
+
 	if (gameType === "single")
-	{
 		singleResult()
-	}
 	else
-	{
 		updateResult(gameType);
-	}
-	// console.log(result);
-	// cleanUpPong();
-	// postMatchAPI(result);
 }
 
 document.body.addEventListener('click', function(event) {
     if (event.target && event.target.matches('#continueBtn')) {
-        event.preventDefault();
-        // window.history.pushState(null, null, '#/index');
-        // navigateTo('/index');
-		// if (gameType == 'tournament1' || gameType == "tournament2")
-		// 	render('#/matchmaking?gameType=final');
-		// else
-		render('#/index');
+		if ((gameType == 'tournament1' || gameType == "tournament2") && checkWin)
+		{
+			render('#/matchmaking?gameType=final');
+			if (resultTimer) {
+				clearTimeout(resultTimer);
+				resultTimer = null;
+			}
+		}
+		else
+			render('#/index');
     }
 });
 
@@ -79,7 +78,6 @@ function updateResult(gameType)
 			const nickname = localStorage.getItem('nickname');
 			
 			const userNickname = document.getElementById('userNickname');
-			userNickname.textContent = nickname;
 			
 			const userAvatar = document.getElementById('userAvatar');
 			userAvatar.src = avatarUrl;
@@ -90,15 +88,18 @@ function updateResult(gameType)
 			{
 				resultMessage.textContent = 'You Win!';
 				resultMessage.classList.add('win');
+				userNickname.textContent = gameType === "1vs1"? nickname : recentMatch.winner.t_nickname;
 				if (gameType === "tournament1" || gameType === "tournament2")
 				{
-					matchTimer = setTimeout(() => {
+					resultTimer = setTimeout(() => {
 						render('#/matchmaking?gameType=final');
 					}, 2000);
+					checkWin = true;
 				}
 			}
 			else
 			{
+				userNickname.textContent = gameType === "1vs1"? nickname : recentMatch.loser.t_nickname;
 				resultMessage.textContent = 'You Lose!';
 				resultMessage.classList.add('lose');
 			}
