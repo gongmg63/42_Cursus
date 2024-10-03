@@ -109,9 +109,9 @@ export function game_play_websocket(currentPath, type)
 	// 	return ;
 	// }
 	access_token = localStorage.getItem("access_token");
-	// websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
+	websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
 	// websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
-	websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/play/?token=' + access_token);
+	// websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/play/?token=' + access_token);
 
 	websocket.onopen = function() {
 		// 서버로 플레이어 정보와 게임 타입을 보냄
@@ -129,6 +129,7 @@ export function game_play_websocket(currentPath, type)
 	websocket.onclose = function() {
 		console.log("게임 웹소켓 연결 종료");
 	}
+
 	websocket.onmessage = function(event) {
 		const data = JSON.parse(event.data);
 		console.log("type : ", data.type);
@@ -281,6 +282,8 @@ function checkGameEnd()
             winnerScore = myPad.score;
             loserScore = opPad.score;
 		}
+		if (gameType == 'tournament1' || gameType == 'tournament2')
+			gameType = 'tournament';
 		websocket.send(JSON.stringify({
 			'type': "endGame",
 			'gameType': gameType,
@@ -292,7 +295,10 @@ function checkGameEnd()
 		}));
 		console.log(playerNumber, id1, id2, myPad.score, opPad.score, gameType);
 		setTimeout(() => {
-			render(`#/result?gameType=${gameType}`);
+			if (checkWinner == 'true' && gameType == 'tournament')
+				render('#/matchmaking?gameType=final');
+			else
+				render(`#/result?gameType=${gameType}`);
 			websocket.close();
 		}, 100);
 	}

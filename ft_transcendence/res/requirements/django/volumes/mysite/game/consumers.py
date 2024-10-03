@@ -21,8 +21,6 @@ match_data = {}
 class MatchConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope["user"]
-        if self.user.id in match_data:
-            del match_data[self.user.id]
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -40,7 +38,17 @@ class MatchConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
         message_type = data.get("type")
-
+        if self.user.id in match_data:
+            if message_type == "final":
+                p1_id = match_data[self.user.id]["player1"]["id"]
+                p2_id = match_data[self.user.id]["player2"]["id"]
+                p3_id = match_data[self.user.id]["player3"]["id"]
+                p4_id = match_data[self.user.id]["player4"]["id"]
+                if self.user.id in {p1_id, p2_id}:
+                    self.opponent = {p3_id, p4_id}
+                else:
+                    self.opponent = {p1_id, p2_id}
+            del match_data[self.user.id]
         print("매칭 데이터:", data)
         if message_type == "1vs1":
             self.group_name = "1vs1_group"
@@ -177,10 +185,20 @@ class MatchConsumer(AsyncWebsocketConsumer):
 
     async def send_to_final_user(self, gametype):
         global final_waiting_queue
+        
+        winner1 = None
+        winner2 = self.user
+        final_waiting_queue.pop(final_waiting_queue.index(self.user))
+        for user in final_waiting_queue:
+            if  user.id in self.opponent:
+                winner1 = user
+                final_waiting_queue.pop(final_waiting_queue.index(user))
+                break
 
-        winner1 = final_waiting_queue.pop(0)
-        winner2 = final_waiting_queue.pop(0)
-
+        if winner1 == None:
+            final_waiting_queue.append(winner2)
+            return
+        
         winner1_user = await database_sync_to_async(get_user_model().objects.get)(id=winner1.id)
         winner2_user = await database_sync_to_async(get_user_model().objects.get)(id=winner2.id)
 
@@ -487,28 +505,32 @@ class GameConsumer(AsyncWebsocketConsumer):
         global client
         global game_loop_dict
 
-        while True:
-            if player1_id in client and player2_id in client:
-                self.ball = ball_group[self.group_name]
-                if player1_id not in game_loop_dict:
-                    game_loop_dict[player1_id] = asyncio.create_task(self.game_loop())
-                self.game_loop_task = game_loop_dict[player1_id]
-                await self.channel_layer.group_send(
-                    self.group_name,
-                    {
-                        "type": "startGame",
-                        'message': 'All clients connected. Starting game...'
-                    }
-                )
-                break
-            await asyncio.sleep(2)
+        asyncio.create_task(self.check_ready(player1_id))
+        if player1_id in client and player2_id in client:
+            self.ball = ball_group[self.group_name]
+            if player1_id not in game_loop_dict:
+                game_loop_dict[player1_id] = asyncio.create_task(self.game_loop())
+            self.game_loop_task = game_loop_dict[player1_id]
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "startGame",
+                    'message': 'All clients connected. Starting game...'
+                }
+            )
+    
+    async def check_ready(self, player1_id):
+        global game_loop_dict
+        
+        try:
+            await asyncio.sleep(0.5)
             if not player1_id in game_loop_dict:
                 await self.send(json.dumps({
-                    "type" : "freeWin"
+                    "type": "freeWin"
                 }))
-            break
-
-
+        except asyncio.CancelledError:
+            # 태스크가 취소될 때 필요한 정리 작업
+            print("Game loop cancelled")
 
     async def startGame(self, event):
         message = event["message"]

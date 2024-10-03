@@ -22,16 +22,7 @@ window.loadResult = function ()
 
 document.body.addEventListener('click', function(event) {
     if (event.target && event.target.matches('#continueBtn')) {
-		if ((gameType == 'tournament1' || gameType == "tournament2") && checkWin)
-		{
-			render('#/matchmaking?gameType=final');
-			if (resultTimer) {
-				clearTimeout(resultTimer);
-				resultTimer = null;
-			}
-		}
-		else
-			render('#/index');
+		render('#/index');
     }
 });
 
@@ -90,13 +81,6 @@ function updateResult(gameType)
 				resultMessage.textContent = 'You Win!';
 				resultMessage.classList.add('win');
 				userNickname.textContent = gameType === "1vs1"? nickname : recentMatch.winner.t_nickname;
-				if (gameType === "tournament1" || gameType === "tournament2")
-				{
-					resultTimer = setTimeout(() => {
-						render('#/matchmaking?gameType=final');
-					}, 2000);
-					checkWin = true;
-				}
 			}
 			else
 			{
