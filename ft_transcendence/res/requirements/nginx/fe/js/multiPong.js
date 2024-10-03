@@ -16,7 +16,7 @@ let ballY = 200;
 let ballRadius = 20;
 let ballVelocityX = 20;
 let ballVelocityY = 15;
-let endScore = 3;
+let endScore = 5;
 
 let ball;
 let myPad, opPad;
