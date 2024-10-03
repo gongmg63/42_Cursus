@@ -17,7 +17,7 @@ const routes = {
 };
 const forbiddenHashTo = {
 	'/authentication':true,
-	'/result':true,
+	// '/result':true,
 };
 
 const forbiddenHashFrom = {
