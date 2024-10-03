@@ -8,6 +8,13 @@ let websocket = null;
 let checkCancel;
 let matchTimer = null; // 2초안에 다시 들어오는 걸 방지
 
+window.closeMatchMaking = function() {
+	
+	if (websocket && websocket.readyState === WebSocket.OPEN)
+		websocket.close();
+	return ;
+};
+
 export function match_websocket(currentPath, type)
 {
 	checkCancel = false;
@@ -25,9 +32,9 @@ export function match_websocket(currentPath, type)
 	}
 
 	const access_token = localStorage.getItem("access_token");
-	websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
+	// websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
 	// websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
-	// websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/match/?token=' + access_token);
+	websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/match/?token=' + access_token);
 
 	websocket.onopen = function(event) {
 		console.log("매칭 웹소켓 연결");

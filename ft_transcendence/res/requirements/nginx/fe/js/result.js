@@ -5,6 +5,7 @@ let gameType = null;
 
 window.loadResult = function ()
 {
+	console.log('[loadResult]')
 	const hash = window.location.hash;
 	const queryParams = new URLSearchParams(hash.split('?')[1]);
 	gameType = queryParams.get('gameType');
