@@ -70,7 +70,6 @@ export function match_websocket(currentPath, type)
 				clearTimeout(matchTimer);
 				matchTimer = null;
 			}
-
 			websocket.close();
 			checkCancel = true;
 			render('#/mode');

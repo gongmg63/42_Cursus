@@ -339,6 +339,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_type = data.get("type")
         gameType = match_data[self.user.id]["gameType"]
+        print("message Type : ", message_type)
         if message_type == 'initMatch':
             # 상대 정보를 기반으로 그룹 이름을 설정
             player1 = None
@@ -420,8 +421,11 @@ class GameConsumer(AsyncWebsocketConsumer):
             loser_user = User.objects.get(nickname=loser)
             
             if game_type == "tournament":
-                self.save_t_loser(winner_user, loser_user.t_nickname)
+                await self.save_t_loser(winner_user, loser_user.t_nickname)
                 print("save t_nickname : ", winner_user.t_nickname, loser_user.t_nickname)
+            elif game_type == "1vs1":
+                await self.save_win_lose(winner_user, loser_user)
+                
 
             # GameResult 모델에 결과 저장
             GameResult.objects.create(
@@ -449,6 +453,14 @@ class GameConsumer(AsyncWebsocketConsumer):
         winner.t_loser = loser
         winner.save()
 
+    @database_sync_to_async
+    def save_win_lose(self, winner, loser):
+        winner.wins += 1
+        loser.losses += 1
+        winner.save()
+        loser.save()
+    
+
     async def check_refresh_page(self, data):
         out_player = data.get("id")
         out_score = data.get("myScore")
@@ -475,18 +487,28 @@ class GameConsumer(AsyncWebsocketConsumer):
         global client
         global game_loop_dict
 
-        if player1_id in client and player2_id in client:
-            self.ball = ball_group[self.group_name]
-            if player1_id not in game_loop_dict:
-                game_loop_dict[player1_id] = asyncio.create_task(self.game_loop())
-            self.game_loop_task = game_loop_dict[player1_id]
-            await self.channel_layer.group_send(
-                self.group_name,
-                {
-                    "type": "startGame",
-                    'message': 'All clients connected. Starting game...'
-                }
-            )
+        while True:
+            if player1_id in client and player2_id in client:
+                self.ball = ball_group[self.group_name]
+                if player1_id not in game_loop_dict:
+                    game_loop_dict[player1_id] = asyncio.create_task(self.game_loop())
+                self.game_loop_task = game_loop_dict[player1_id]
+                await self.channel_layer.group_send(
+                    self.group_name,
+                    {
+                        "type": "startGame",
+                        'message': 'All clients connected. Starting game...'
+                    }
+                )
+                break
+            await asyncio.sleep(2)
+            if not player1_id in game_loop_dict:
+                await self.send(json.dumps({
+                    "type" : "freeWin"
+                }))
+            break
+
+
 
     async def startGame(self, event):
         message = event["message"]
