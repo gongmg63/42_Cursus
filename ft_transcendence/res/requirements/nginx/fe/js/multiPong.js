@@ -102,15 +102,16 @@ export function game_play_websocket(currentPath, type)
 		}
 		return ;
 	}
-	if (currentPath === '/multiPong' && type == null)
-	{
-		render('#/mode');
-		return ;
-	}
+	// console.log("multipong:", type);
+	// if (currentPath === '/multiPong' && type == null)
+	// {
+	// 	render('#/mode');
+	// 	return ;
+	// }
 	access_token = localStorage.getItem("access_token");
-	websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
+	// websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/play/?token=' + access_token);
 	// websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/play/?token=' + access_token);
-	// websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/play/?token=' + access_token);
+	websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/play/?token=' + access_token);
 
 	websocket.onopen = function() {
 		// 서버로 플레이어 정보와 게임 타입을 보냄

@@ -4,9 +4,10 @@ import { render } from "./transcendence.js";
 const inputs = document.querySelectorAll('.auth-input');
 
 inputs.forEach((input) => {
+	console.log('init authentication??');
+	input.value = '';
     input.removeEventListener('input', handleInput);
     input.removeEventListener('keydown', handleBackspace);
-
     input.addEventListener('input', handleInput);
     input.addEventListener('keydown', handleBackspace);
 });
