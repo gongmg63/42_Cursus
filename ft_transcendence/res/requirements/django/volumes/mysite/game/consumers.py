@@ -636,7 +636,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 ball.y + ball.radius >= self.paddle_pos_y and
                 ball.y - ball.radius <= self.paddle_pos_y + self.paddle_height):
                 # 공의 x 방향 반전
-                ball.velocity_x *= -1
+                ball.velocity_x *= -1.1
                 # 충돌 후 공의 위치를 패들 바로 앞에 배치
                 ball.x = self.paddle_pos_x + self.paddle_width + ball.radius
         else:
@@ -646,7 +646,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 ball.y + ball.radius >= self.paddle_pos_y and
                 ball.y - ball.radius <= self.paddle_pos_y + self.paddle_height):
                 # 공의 x 방향 반전
-                ball.velocity_x *= -1
+                ball.velocity_x *= -1.1
                 # 충돌 후 공의 위치를 패들 바로 앞에 배치
                 ball.x = self.paddle_pos_x - ball.radius
 
@@ -664,6 +664,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         ball.x = self.canvas_width / 2
         ball.y = random.uniform(self.canvas_height / 2 - 200, self.canvas_height / 2 + 200)
         print(ball.y)
+        ball.velocity_x = 20
+        ball.velocity_y = 15
         if self.spawn:
             ball.velocity_x = -abs(ball.velocity_x)
         else:
