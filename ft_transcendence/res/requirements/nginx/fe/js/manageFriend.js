@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			})
 			// 500 error?
 			.catch(error => console.error('Error fetching user data: ', error));
+		})
+		.catch(error => {
+			alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+			render('#/');
 		});
 	}
 
@@ -216,6 +220,10 @@ document.getElementById("addFriendForm").addEventListener("submit", (event) => {
 		// 모달 닫기 및 입력 필드 초기화
 		modal.style.display = "none";
 		document.getElementById("friendNameInput").value = "";
+	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
 	});
 });
 
@@ -252,7 +260,7 @@ document.getElementById("removeFriendForm").addEventListener("submit", (event) =
     const selectedFriend = friendSelect.value;
 	checkAndRefreshToken().then(() => {
 		const access_token = localStorage.getItem("access_token");
-	
+		console.log("access token: ", access_token);
 		const data = { nickname: selectedFriend };
 	
 		fetch('/api/user/friend/', {
@@ -289,6 +297,10 @@ document.getElementById("removeFriendForm").addEventListener("submit", (event) =
 			console.error('Error removing friend:', error);
 		})
 	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
+	});
 });
 
 // 드롭다운에 친구 목록을 동적으로 추가하는 함수
@@ -415,6 +427,10 @@ document.getElementById('editUserForm').addEventListener('submit', function(even
 		.catch(error => {
 			console.error('Error updating profile:', error);
 		});
+	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
 	});
 });
 

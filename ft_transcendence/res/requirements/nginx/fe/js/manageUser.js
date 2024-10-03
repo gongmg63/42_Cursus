@@ -59,6 +59,10 @@ export function fetchUserData()
 			console.error('Error fetching user data: ', error);
 			handleError(error);
 		});
+	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
 	});
 }
 
@@ -99,6 +103,10 @@ export function fetchRecentMatch()
 			console.error('Error fetching user data: ', error);
 			handleError(error);
 		});
+	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
 	});
 }
 
@@ -210,15 +218,19 @@ export function editUser()
 {
 	const nickname = document.getElementById('nicknameInput').value;
     const avatarFile = document.getElementById('avatarInput').files[0];
-	const access_token = localStorage.getItem("access_token");
-
+	
     const formData = new FormData();
     formData.append('nickname', nickname);
     if (avatarFile) {
-        formData.append('profile', avatarFile);
+		formData.append('profile', avatarFile);
     }
 	checkAndRefreshToken().then(() => {
+		const access_token = localStorage.getItem("access_token");
 		patchUserAPI(formData, nickname, avatarFile, access_token);
+	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
 	});
 }
 

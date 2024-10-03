@@ -28,16 +28,16 @@ export function deleteFriend()
 	const friendSelect = document.getElementById("friendSelect");
     const selectedFriend = friendSelect.value;
 	const data = { nickname: selectedFriend };
-	const access_token = localStorage.getItem("access_token");
 
-	deleteFriendAPI(data, access_token, selectedFriend);
+	deleteFriendAPI(data, selectedFriend);
 }
 
-function deleteFriendAPI(data, access_token, selectedFriend)
+function deleteFriendAPI(data, selectedFriend)
 {
 	const removeModal = document.getElementById("removeFriendModal");
 
 	checkAndRefreshToken().then(() => {
+		const access_token = localStorage.getItem("access_token");
 		fetch('/api/user/friend/', {
 			method: 'DELETE',
 			headers: {
@@ -73,4 +73,8 @@ function deleteFriendAPI(data, access_token, selectedFriend)
 			handleError(error);
 		})
 	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
+	});
 }
