@@ -130,6 +130,7 @@ export function game_play_websocket(currentPath, type)
 	}
 	websocket.onmessage = function(event) {
 		const data = JSON.parse(event.data);
+		console.log("type : ", data.type);
 		if (data.type === 'parseGameData')
 		{
 			parseGameURL(data);
@@ -184,6 +185,7 @@ export function game_play_websocket(currentPath, type)
 				myPad.score = endScore;
 				opPad.score = 0;
 			}
+			checkGameEnd();
 		}
 		else if (data.type === 'checkGameEnd')
 		{
@@ -197,6 +199,17 @@ export function game_play_websocket(currentPath, type)
 					"endScore": endScore
 				}));
 			}
+		}
+		else if (data.type === 'freeWin')
+		{
+			console.log(playerNumber, id1, myPad.score, opPad.score, endScore);
+			websocket.send(JSON.stringify({
+				"type": 'outPage',
+				"id": playerNumber === id1 ? id2 : id1,
+				"myScore": myPad.score,
+				"opScore": opPad.score,
+				"endScore": endScore
+			}));
 		}
 	}
 }
