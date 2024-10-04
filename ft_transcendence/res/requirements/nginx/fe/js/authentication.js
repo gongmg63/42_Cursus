@@ -1,33 +1,19 @@
 // import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { render } from "./transcendence.js";
 
-const inputs = document.querySelectorAll('.auth-input');
+let inputs;
 
-inputs.forEach((input) => {
-	console.log('init authentication??');
-	input.value = '';
-    input.removeEventListener('input', handleInput);
-    input.removeEventListener('keydown', handleBackspace);
-    input.addEventListener('input', handleInput);
-    input.addEventListener('keydown', handleBackspace);
-});
-
-window.authToken = function()
+window.initAuth = function()
 {
-	const urlParams = new URLSearchParams(window.location.search);
-	const accessToken = urlParams.get('access_token');
-	const refreshToken = urlParams.get('refresh_token');
-	
-	if (accessToken && refreshToken)
-	{
-		localStorage.setItem('access_token', accessToken);
-		localStorage.setItem('refresh_token', refreshToken);
-		console.log('Token stored successfully');
-	}
-	else
-	{
-		console.log('fuck you');
-	}
+	inputs = document.querySelectorAll('.auth-input');
+
+	inputs.forEach((input) => {
+		input.value = '';
+		input.removeEventListener('input', handleInput);
+		input.removeEventListener('keydown', handleBackspace);
+		input.addEventListener('input', handleInput);
+		input.addEventListener('keydown', handleBackspace);
+	});
 }
 
 document.body.addEventListener('click', function(event) {

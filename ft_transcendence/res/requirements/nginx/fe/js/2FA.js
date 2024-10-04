@@ -126,7 +126,11 @@ function enable2FA() {
             console.error('Error fetching user data: ', error);
             handleError(error);
         });
-    });
+    })
+    .catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
+	});
 }
 
 // 2FA 비활성화 함수
@@ -158,5 +162,9 @@ function disable2FA() {
             console.error('Error fetching user data: ', error);
             handleError(error);
         });
-    });
+    })
+    .catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
+	});
 }

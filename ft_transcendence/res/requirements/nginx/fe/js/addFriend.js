@@ -1,6 +1,7 @@
 import { handleError, updateFriendsList } from "./utils.js";
 import { friends, pushFriends } from "./index.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { render } from "./transcendence.js";
 
 
 // 상위 요소(body)에 이벤트 리스너 등록하여 이벤트 위임 적용
@@ -33,16 +34,15 @@ export function addFriend()
     // 실제로는 여기서 서버에 추가 요청을 보냄
     console.log(`Added friend: ${friendName}`);
 	const data = { nickname: friendName };
-	const access_token = localStorage.getItem("access_token");
-	postFriendAPI(data, access_token);
+	postFriendAPI(data);
 }
 
-function postFriendAPI(data, access_token)
+function postFriendAPI(data)
 {
 	const modal = document.getElementById("addFriendModal");
-
+	
 	checkAndRefreshToken().then(() => {
-		console.log("data: ", data);
+		const access_token = localStorage.getItem("access_token");
 		fetch('/api/user/friend/', {
 			method: 'POST',
 			headers: {
@@ -83,5 +83,9 @@ function postFriendAPI(data, access_token)
 	
 		modal.style.display = "none";
 		document.getElementById("friendNameInput").value = "";
+	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
 	});
 }

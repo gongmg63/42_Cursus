@@ -17,7 +17,7 @@ const routes = {
 };
 const forbiddenHashTo = {
 	'/authentication':true,
-	// '/result':true,
+	'/result':true,
 };
 
 const forbiddenHashFrom = {
@@ -41,13 +41,11 @@ let previousPath2 = window.location.hash.slice(1) || '/';
 if (currentPath.includes('?')) {
 	currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
 }
-
 console.log(currentPath);
 if (currentPath !== '/pong')
 {
 	cleanUpPong();
 }
-
 if (currentPath === '/multiPong')
 {
 	render('#/mode');
@@ -69,8 +67,23 @@ export async function navigateTo(url) {
 	const res = await fetch(route.page);
 	const content = await res.text();
 	app.innerHTML = content;
-
-	console.log("navigate To url: ", url);
+	
+	console.log("[navigateTo] url: ", url);
+	if (url !== '/' && url !== '/authentication')
+	{
+		checkAndRefreshToken().then(() => {
+			friend_websocket()
+				.then((websocket) => {
+				})
+				.catch((error) => {
+					console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+				});
+		})
+		.catch(error => {
+			alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+			render('#/');
+		});
+	}
 	// CSS 파일을 동적으로 로드
 	if (route.css) {
 		dynamicCSS.setAttribute('href', `/css/${route.css}`);
@@ -121,7 +134,7 @@ export async function navigateTo(url) {
 				else if (js.file === 'result.js')
 					loadResult();
 				else if (js.file === 'authentication.js')
-					authToken();
+					initAuth();
 				else if (js.file === 'pong.js')
 					startPong();
 				else if (js.file === 'multiPong.js')
@@ -130,17 +143,6 @@ export async function navigateTo(url) {
 			document.body.appendChild(script);
 			currentScripts.push(script);
 		});
-		if (url !== '/' && url !== '/authentication')
-		{
-			checkAndRefreshToken().then(() => {
-				friend_websocket()
-					.then((websocket) => {
-					})
-					.catch((error) => {
-						console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
-					});
-			});
-		}
 	}
 }
 
@@ -150,13 +152,10 @@ export function render(hash)
 	let pathwithoutparam = path.split('?')[0];
 	previousPath = path;
 	previousPath2 = window.location.hash.slice(1).split('?')[0];
-	console.log("[render]: current hash: ", previousPath2);
-	console.log("[render]: where to go: ", pathwithoutparam);
-	console.log("[render]: window.location.hash before pushState", window.location.hash);
+	console.log("[render]: page from: ", previousPath2);
+	console.log("[render]: page to: ", pathwithoutparam);
 	window.history.pushState({ page: pathwithoutparam }, null, hash);
-	console.log("[render]: window.location.hash after pushState: ", window.location.hash);
 	navigateTo(pathwithoutparam);
-	console.log("[render]: window.location.hash after navigate: ", window.location.hash);
 }
 
 // 뒤로가기, 앞으로가기 버튼을 눌렀을 시 호출되는 함수
@@ -172,7 +171,7 @@ window.onpopstate = function(event) {
 	
 	console.log("[onpopstate]: page from", pathFrom);
 	console.log("[onpopstate]: page to:", event.state);
-	
+
 	if (event.state && event.state.page in forbiddenHashTo)
 	{
 		alert("이 페이지로 이동 할 수 없습니다.");

@@ -9,6 +9,7 @@ export function refreshToken() {
     return new Promise((resolve, reject) => {
         const refreshToken = localStorage.getItem('refresh_token'); // 저장된 refresh token 가져오기
         if (!refreshToken) {
+            reject(new Error('Token is not exist'));
             return; // 함수 종료
         }
 

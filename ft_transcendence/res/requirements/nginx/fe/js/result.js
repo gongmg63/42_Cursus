@@ -94,6 +94,10 @@ function updateResult(gameType)
 		.catch(error => {
 			console.error('Error fetching user data: ', error);
 		});
+	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
 	});
 }
 
