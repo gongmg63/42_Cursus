@@ -16,8 +16,10 @@ window.loadResult = function ()
 
 	if (gameType === "single" || gameType === "finalLeave")
 		singleResult()
-	else
+	else if (gameType === "1vs1" || gameType === "tournament" || gameType === "final")
 		updateResult(gameType);
+	else
+		render('#/index');
 }
 
 document.body.addEventListener('click', function(event) {

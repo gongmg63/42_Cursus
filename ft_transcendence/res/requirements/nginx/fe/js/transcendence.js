@@ -70,6 +70,10 @@ window.refresh = function(){
 	{
 		render('#/');
 	}
+	else if (currentPath === '/result')
+	{
+		render('#/index');
+	}
 	else
 	{
 		navigateTo(currentPath);
@@ -190,7 +194,7 @@ window.onpopstate = function(event) {
 	console.log("[onpopstate]: page from", pathFrom);
 	console.log("[onpopstate]: page to:", event.state);
 
-	if (event.state && event.state.page in forbiddenHashTo)
+	if (currentPath in forbiddenHashTo)
 	{
 		alert("이 페이지로 이동 할 수 없습니다.");
 		render('#/index');
