@@ -14,7 +14,7 @@ window.loadResult = function ()
 	resultTimer = null;
 	checkWin = false;
 
-	if (gameType === "single")
+	if (gameType === "single" || gameType === "finalLeave")
 		singleResult()
 	else
 		updateResult(gameType);
