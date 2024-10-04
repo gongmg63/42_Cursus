@@ -41,21 +41,59 @@ export function refreshToken() {
         });
     });
 }
+export function verifyToken() {
+    return new Promise((resolve, reject) => {
+        const accessToken = localStorage.getItem('access_token'); // 저장된 access token 가져오기
+        if (!accessToken) {
+            reject(new Error('Token is not exist'));
+            return; // 함수 종료
+        }
+
+        fetch('/api/user/token/verify/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'token': accessToken }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                reject(new Error('Failed to refresh token'));
+                return; // reject 후 함수 종료
+            }
+            resolve();
+            return ;
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+            reject(error); // 오류 발생 시 reject
+        });
+    });
+}
 
 export function checkAndRefreshToken() {
     return new Promise((resolve, reject) => {
         const accessToken = localStorage.getItem('access_token');
-        if (isTokenExpired(accessToken)) {
-            refreshToken()
-            .then(() => {
-                resolve(); // 토큰 갱신 완료 후 resolve
-            })
-            .catch(error => {
-                console.error(error.message);
-                reject(error); // 오류 발생 시 reject
-            });
-        } else {
-            resolve(); // 토큰이 유효할 경우 resolve
-        }
+
+        verifyToken()
+        .then(() => {
+            if (isTokenExpired(accessToken)) {
+
+                refreshToken()
+                .then(() => {
+                    resolve(); // 토큰 갱신 완료 후 resolve
+                })
+                .catch(error => {
+                    console.error(error.message);
+                    reject(error); // 오류 발생 시 reject
+                });
+            } else {
+                resolve(); // 토큰이 유효할 경우 resolve
+            }
+        })
+        .catch(error => {
+            console.error(error.message);
+            reject(error); // 오류 발생 시 reject
+        });
     });
 }
