@@ -6,11 +6,15 @@
 			"username": "Steve Jobs",
 			"oauthid": 1,
 			"nickname": "Jobs",
+			"t_nickname": "",
+			"t_loser": "",
 			"wins": 10,
 			"losses": 5,
 			"profile": "/images/Jobs.png",
 			"active": true,
-			"friends": []
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "7JPDNKTGUGS3BJZ6OWXPFFL33JOJPNN2"
 		}
 	},
 	{
@@ -20,11 +24,15 @@
 			"username": "Jensen Huang",
 			"oauthid": 2,
 			"nickname": "Huang",
+			"t_nickname": "",
+			"t_loser": "",
 			"wins": 8,
 			"losses": 15,
 			"profile": "/images/Huang.png",
 			"active": true,
-			"friends": []
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "7JPDNKTGUGS3BJZ6OWXPFFL33JOJPNN2"
 		}
 	},
 	{
@@ -34,11 +42,15 @@
 			"username": "Larry Page",
 			"oauthid": 3,
 			"nickname": "Page",
+			"t_nickname": "",
+			"t_loser": "",
 			"wins": 11,
 			"losses": 7,
 			"profile": "/images/Page.png",
 			"active": true,
-			"friends": []
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "7JPDNKTGUGS3BJZ6OWXPFFL33JOJPNN2"
 		}
 	},
 	{

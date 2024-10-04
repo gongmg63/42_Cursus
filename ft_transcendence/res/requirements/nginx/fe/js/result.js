@@ -2,36 +2,27 @@ import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { navigateTo, render } from "./transcendence.js";
 
 let gameType = null;
+let resultTimer;
+let checkWin;
 
 window.loadResult = function ()
 {
+	console.log('[loadResult]')
 	const hash = window.location.hash;
 	const queryParams = new URLSearchParams(hash.split('?')[1]);
 	gameType = queryParams.get('gameType');
-	
-	console.log("result gameType : ", gameType);
+	resultTimer = null;
+	checkWin = false;
+
 	if (gameType === "single")
-	{
 		singleResult()
-	}
 	else
-	{
 		updateResult(gameType);
-	}
-	// console.log(result);
-	// cleanUpPong();
-	// postMatchAPI(result);
 }
 
 document.body.addEventListener('click', function(event) {
     if (event.target && event.target.matches('#continueBtn')) {
-        event.preventDefault();
-        // window.history.pushState(null, null, '#/index');
-        // navigateTo('/index');
-		if (gameType == 'tournament')
-			render('#/matchmaking?gameType=final');
-		else
-			render('#/index');
+		render('#/index');
     }
 });
 
@@ -79,7 +70,6 @@ function updateResult(gameType)
 			const nickname = localStorage.getItem('nickname');
 			
 			const userNickname = document.getElementById('userNickname');
-			userNickname.textContent = nickname;
 			
 			const userAvatar = document.getElementById('userAvatar');
 			userAvatar.src = avatarUrl;
@@ -90,15 +80,11 @@ function updateResult(gameType)
 			{
 				resultMessage.textContent = 'You Win!';
 				resultMessage.classList.add('win');
-				if (gameType === "tournament")
-				{
-					matchTimer = setTimeout(() => {
-						render('#/matchmaking?gameType=final');
-					}, 2000);
-				}
+				userNickname.textContent = gameType === "1vs1"? nickname : recentMatch.winner.t_nickname;
 			}
 			else
 			{
+				userNickname.textContent = gameType === "1vs1"? nickname : recentMatch.loser.t_nickname;
 				resultMessage.textContent = 'You Lose!';
 				resultMessage.classList.add('lose');
 			}
@@ -108,6 +94,10 @@ function updateResult(gameType)
 		.catch(error => {
 			console.error('Error fetching user data: ', error);
 		});
+	})
+	.catch(error => {
+		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
+		render('#/');
 	});
 }
 

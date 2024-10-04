@@ -15,6 +15,9 @@ import environ
 from pathlib import Path
 from datetime import timedelta
 
+env = environ.Env()
+environ.Env.read_env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,15 +26,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(1av3nwo*p1vrgt%r#k4g%=ff&dvnl5k(@ti!6avs7w2m^h0t#'
+# SECRET_KEY = 'django-insecure-(1av3nwo*p1vrgt%r#k4g%=ff&dvnl5k(@ti!6avs7w2m^h0t#'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-env = environ.Env()
-environ.Env.read_env()
 
 ACCESS_URL = 'https://' + env('ACCESS_URL')
 TFA_URL = 'https://' + env('ACCESS_URL') + '/#/authentication'
@@ -57,8 +59,8 @@ INSTALLED_APPS = [
 	'qrcode',
 ]
 
-INTRA_42_CLIENT_ID = 'u-s4t2ud-a991aa69f5866fee60773246fd85a925d581cc6b802b9a326424b96733b4b5ac'
-INTRA_42_CLIENT_SECRET = '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'
+INTRA_42_CLIENT_ID = env('INTRA_42_CLIENT_ID')
+INTRA_42_CLIENT_SECRET = env('INTRA_42_CLIENT_SECRET')
 INTRA_42_REDIRECT_CALLBACK_URI = 'https://' + env('ACCESS_URL') + '/api/user/oauth/callback'
 
 REST_FRAMEWORK = {
