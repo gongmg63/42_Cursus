@@ -171,8 +171,6 @@ function checkGameEnd()
             loserScore = paddle1.score;
         }
 		// game type도 추가.
-		// window.history.pushState(null, null, `#/result?winner=${winner}&winnerScore=${winnerScore}&loser=${loser}&loserScore=${loserScore}&gameType=${gameType}`);
-		// navigateTo('/result');
 		render(`#/result?gameType=${gameType}`);
 	}
 }

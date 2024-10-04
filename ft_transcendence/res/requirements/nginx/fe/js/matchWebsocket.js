@@ -64,15 +64,9 @@ export function match_websocket(currentPath, type)
 				}
 			}, 2000);
 		}
-		else if (data.type === "match_cancel")
+		else if (data.type === "opponent_leave")
 		{
-			if (matchTimer) {
-				clearTimeout(matchTimer);
-				matchTimer = null;
-			}
-			websocket.close();
-			checkCancel = true;
-			render('#/mode');
+			render('#/result?gameType=finalLeave');
 		}
 	};
 
