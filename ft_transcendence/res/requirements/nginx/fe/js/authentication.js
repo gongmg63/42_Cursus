@@ -67,7 +67,7 @@ function postAuthCodeAPI()
 		else if (response.status == 500)
 			throw new Error('Server error (500)')
 		else if (!response.ok)
-			throw new Error(`Unexpected error: ${response.status}`);
+			throw new Error(`2FA code Error`);
 		return response.json();
 	})
 	.then(data => {
@@ -78,7 +78,7 @@ function postAuthCodeAPI()
 		render('#/index');
 	})
 	.catch(error => {
+		alert(error);
 		console.error('Error fetching user data: ', error);
-		handleError(error);
 	});
 }

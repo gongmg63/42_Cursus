@@ -68,13 +68,3 @@ export function editLocalStorage(nickname, avatar)
 	localStorage.setItem('nickname', nickname);
 	localStorage.setItem('profile', avatar);
 }
-
-export function handleError(error)
-{
-	if (error.message.includes('404')) 
-		alert('Error (404):User data not found. Please check the user information.');
-	else if (error.message.includes('500'))
-		alert('Error (500):Server error. Please try again later.');
-	else
-		alert(error.message);
-}

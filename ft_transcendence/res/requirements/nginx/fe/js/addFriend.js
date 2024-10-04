@@ -1,4 +1,4 @@
-import { handleError, updateFriendsList } from "./utils.js";
+import { updateFriendsList } from "./utils.js";
 import { friends, pushFriends } from "./index.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 import { render } from "./transcendence.js";
@@ -77,8 +77,8 @@ function postFriendAPI(data)
 			document.getElementById("friendNameInput").value = "";
 		})
 		.catch(error => {
+			alert(error);
 			console.error('Error updating profile:', error);
-			handleError(error);
 		});
 	
 		modal.style.display = "none";
