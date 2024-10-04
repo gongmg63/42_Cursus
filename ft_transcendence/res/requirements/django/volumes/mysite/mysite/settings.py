@@ -14,6 +14,7 @@ import os
 import environ
 from pathlib import Path
 from datetime import timedelta
+from cryptography.fernet import Fernet
 
 env = environ.Env()
 environ.Env.read_env()
@@ -28,6 +29,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-(1av3nwo*p1vrgt%r#k4g%=ff&dvnl5k(@ti!6avs7w2m^h0t#'
 SECRET_KEY = env('SECRET_KEY')
+
+ENCRYPTION_KEY = os.getenv('TFA_ENCRYPTION_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

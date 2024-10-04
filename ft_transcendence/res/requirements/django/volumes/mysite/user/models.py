@@ -15,7 +15,7 @@ class User(AbstractUser):
 	active = models.BooleanField(default=True)  # 접속 여부
 	is_tfa_active = models.BooleanField(default=False)
 	is_tfa_setting = models.BooleanField(default=False)
-	otp_base32 = models.CharField(max_length=32, blank=True, null=True)
+	otp_base32 = models.CharField(max_length=256, blank=True, null=True)
 	qrcode_url = models.CharField(max_length=100, blank=True, null=True)
 
 	def save(self, *args, **kwargs):

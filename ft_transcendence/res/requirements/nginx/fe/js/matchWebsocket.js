@@ -32,8 +32,8 @@ export function match_websocket(currentPath, type)
 	}
 
 	const access_token = localStorage.getItem("access_token");
-	// websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
-	websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
+	websocket = new WebSocket('wss://cx1r5s2.42seoul.kr/ws/game/match/?token=' + access_token);
+	// websocket = new WebSocket('wss://cx1r5s3.42seoul.kr/ws/game/match/?token=' + access_token);
 	// websocket = new WebSocket('wss://cx1r4s6.42seoul.kr/ws/game/match/?token=' + access_token);
 
 	websocket.onopen = function(event) {

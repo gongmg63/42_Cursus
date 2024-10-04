@@ -20,6 +20,7 @@ window.loadResult = function ()
 		updateResult(gameType);
 	else
 		render('#/index');
+
 }
 
 document.body.addEventListener('click', function(event) {
@@ -62,7 +63,7 @@ function updateResult(gameType)
 			else if (!response.ok)
 			{
 				return response.json().then(errData => {
-					throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+					throw new Error(`(${response.status}): ${errData.detail || 'Unknown error'}`);
 				});
 			}
 			return response.json();
@@ -145,7 +146,7 @@ function postMatchAPI(result)
 		else if (response.status === 500)
 			throw new Error('Server error (500)')
 		else if (!response.ok)
-			throw new Error(`Unexpected error: ${response.status}`);
+			throw new Error(`${response.status}`);
 		return response.json();
 	})
 	.then(data => {

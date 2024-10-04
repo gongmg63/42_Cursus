@@ -70,7 +70,7 @@ function patchTempUserAPI(nickname, gameType)
 		else if (!response.ok)
 		{
 			return response.json().then(errData => {
-				throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+				throw new Error(`(${response.status}): ${errData.detail || 'Unknown error'}`);
 			});
 		}
 		return response.json();
@@ -80,7 +80,7 @@ function patchTempUserAPI(nickname, gameType)
 		render(`#/matchmaking?gameType=${gameType}`);
     })
     .catch(error => {
+		alert(error);
         console.error('Error updating profile:', error);
-		handleError(error);
     });
 }

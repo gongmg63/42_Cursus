@@ -88,7 +88,6 @@ class MatchConsumer(AsyncWebsocketConsumer):
                             "type": "opponent_leave",
                         }))
         except asyncio.CancelledError:
-            # 태스크가 취소될 때 필요한 정리 작업
             print("Check final end cancelled")
         
 
@@ -508,7 +507,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                     "type": "freeWin"
                 }))
         except asyncio.CancelledError:
-            # 태스크가 취소될 때 필요한 정리 작업
             print("Check ready cancelled")
 
     async def startGame(self, event):
@@ -558,7 +556,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await self.update_game_state()
                 await asyncio.sleep(0.02)  # 20ms 간격으로 업데이트
         except asyncio.CancelledError:
-            # 태스크가 취소될 때 필요한 정리 작업
             print("Game loop cancelled")
 
     async def update_game_state(self):

@@ -1,4 +1,4 @@
-import { editLocalStorage, handleError, updateFriendsList } from "./utils.js";
+import { editLocalStorage, updateFriendsList } from "./utils.js";
 import { setFriends } from "./index.js";
 import { setTFA } from "./2FA.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
@@ -57,8 +57,8 @@ export function fetchUserData()
 			updateFriendsList(data.friends);
 		})
 		.catch(error => {
+			alert(error);
 			console.error('Error fetching user data: ', error);
-			handleError(error);
 		});
 	})
 	.catch(error => {
@@ -86,7 +86,7 @@ export function fetchRecentMatch()
 			else if (!response.ok)
 			{
 				return response.json().then(errData => {
-					throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+					throw new Error(`(${response.status}): ${errData.detail || 'Unknown error'}`);
 				});
 			}
 			return response.json();
@@ -101,8 +101,8 @@ export function fetchRecentMatch()
 			}
 		})
 		.catch(error => {
+			alert(error);
 			console.error('Error fetching user data: ', error);
-			handleError(error);
 		});
 	})
 	.catch(error => {
@@ -253,7 +253,7 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
 		else if (!response.ok)
 		{
 			return response.json().then(errData => {
-				throw new Error(`Unexpected error (${response.status}): ${errData.detail || 'Unknown error'}`);
+				throw new Error(`(${response.status}): ${errData.detail || 'Unknown error'}`);
 			});
 		}
 		return response.json();
@@ -274,7 +274,7 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
 		localStorage.setItem('nickname', nickname);
     })
     .catch(error => {
+        alert(error);
         console.error('Error updating profile:', error);
-		handleError(error);
     });
 }

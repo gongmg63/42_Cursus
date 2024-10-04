@@ -43,7 +43,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     def validate_t_nickname(self, t_nickname):
         if not re.match(r'^[A-Za-z0-9]+$', t_nickname):
-            raise CustomValidationError('T_nickname must contain only English letters and numbers, and cannot contain spaces.', code=400)
+            raise CustomValidationError('Nickname must contain only English letters and numbers, and cannot contain spaces.', code=400)
         return t_nickname
     
     def update(self, instance, validated_data):
