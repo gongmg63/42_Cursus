@@ -38,52 +38,74 @@ let currentPath = window.location.hash.slice(1) || '/';
 let previousPath = window.location.hash.slice(1) || '/';
 let previousPath2 = window.location.hash.slice(1) || '/';
 
-if (currentPath.includes('?')) {
-	currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
+
+window.refresh = function(){
+	if (currentPath.includes('?')) {
+		currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
+	}
+	console.log('[init trancendance]: ', currentPath);
+	if (currentPath !== '/' && currentPath !== '/authentication')
+	{
+		try {
+			checkAndRefreshToken();
+			friend_websocket().then((websocket) => {
+			}).catch((error) => {
+				console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+			});
+		} catch (error) {
+			alert('토큰이 유효하지 않습니다. 다시 로그인하세요');
+			render('#/');
+			return;
+		}
+	}
+	if (currentPath !== '/pong')
+	{
+		cleanUpPong();
+	}
+	if (currentPath === '/multiPong')
+	{
+		render('#/mode');
+	}
+	else if (currentPath === '/matchmaking')
+	{
+		render('#/');
+	}
+	else if (currentPath === '/result')
+	{
+		render('#/index');
+	}
+	else
+	{
+		navigateTo(currentPath);
+	}
 }
-console.log(currentPath);
-if (currentPath !== '/pong')
-{
-	cleanUpPong();
-}
-if (currentPath === '/multiPong')
-{
-	render('#/mode');
-}
-else if (currentPath === '/matchmaking')
-{
-	render('#/');
-}
-else
-{
-	navigateTo(currentPath);
-}
+refresh();
 
 // 경우에 따라 나눠야 할듯 - 초기 로딩
 
 // 페이지 이동 시 실행됨
 export async function navigateTo(url) {
+	console.log("[navigateTo] url: ", url);
+	if (url !== '/' && url !== '/authentication')
+	{
+		try {
+			await checkAndRefreshToken();
+			await friend_websocket().then((websocket) => {
+			}).catch((error) => {
+				console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
+			});
+		} catch (error) {
+			alert('토큰이 유효하지 않습니다. 다시 로그인하세요');
+			render('#/');
+			return;
+		}
+	}
 	const route = routes[url] || routes['/'];
 	const res = await fetch(route.page);
 	const content = await res.text();
 	app.innerHTML = content;
 	
-	console.log("[navigateTo] url: ", url);
-	if (url !== '/' && url !== '/authentication')
-	{
-		checkAndRefreshToken().then(() => {
-			friend_websocket()
-				.then((websocket) => {
-				})
-				.catch((error) => {
-					console.error("웹소켓 연결 중 오류가 발생했습니다:", error);
-				});
-		})
-		.catch(error => {
-			alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
-			render('#/');
-		});
-	}
+	console.log('you keep going after render????', url);
 	// CSS 파일을 동적으로 로드
 	if (route.css) {
 		dynamicCSS.setAttribute('href', `/css/${route.css}`);
@@ -172,7 +194,7 @@ window.onpopstate = function(event) {
 	console.log("[onpopstate]: page from", pathFrom);
 	console.log("[onpopstate]: page to:", event.state);
 
-	if (event.state && event.state.page in forbiddenHashTo)
+	if (currentPath in forbiddenHashTo)
 	{
 		alert("이 페이지로 이동 할 수 없습니다.");
 		render('#/index');

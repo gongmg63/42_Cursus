@@ -2,6 +2,7 @@ import { editLocalStorage, updateFriendsList } from "./utils.js";
 import { setFriends } from "./index.js";
 import { setTFA } from "./2FA.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
+import { render } from "./transcendence.js";
 
 
 document.body.addEventListener('click', function(event) {
@@ -107,6 +108,7 @@ export function fetchRecentMatch()
 	.catch(error => {
 		alert('토큰이 유효하지 않습니다. 다시 로그인하세요')
 		render('#/');
+		return ;
 	});
 }
 
