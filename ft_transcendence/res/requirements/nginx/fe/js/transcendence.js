@@ -36,7 +36,6 @@ console.log('초기 로딩');
 
 let currentPath = window.location.hash.slice(1) || '/';
 let previousPath = window.location.hash.slice(1) || '/';
-let previousPath2 = window.location.hash.slice(1) || '/';
 
 
 window.refresh = function(){
@@ -69,6 +68,10 @@ window.refresh = function(){
 	else if (currentPath === '/matchmaking')
 	{
 		render('#/');
+	}
+	else if (currentPath === '/result')
+	{
+		render('#/index');
 	}
 	else
 	{
@@ -169,8 +172,7 @@ export function render(hash)
 	let path = hash.slice(1);
 	let pathwithoutparam = path.split('?')[0];
 	previousPath = path;
-	previousPath2 = window.location.hash.slice(1).split('?')[0];
-	console.log("[render]: page from: ", previousPath2);
+	console.log("[render]: page from: ", previousPath);
 	console.log("[render]: page to: ", pathwithoutparam);
 	window.history.pushState({ page: pathwithoutparam }, null, hash);
 	navigateTo(pathwithoutparam);
@@ -189,8 +191,9 @@ window.onpopstate = function(event) {
 	
 	console.log("[onpopstate]: page from", pathFrom);
 	console.log("[onpopstate]: page to:", event.state);
+	console.log("[onpopstate]: page to:", currentPath);
 
-	if (event.state && event.state.page in forbiddenHashTo)
+	if (currentPath in forbiddenHashTo)
 	{
 		alert("이 페이지로 이동 할 수 없습니다.");
 		render('#/index');
