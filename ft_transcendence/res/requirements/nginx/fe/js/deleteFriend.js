@@ -1,4 +1,4 @@
-import { updateFriendsList, populateFriendSelect, handleError } from "./utils.js";
+import { updateFriendsList, populateFriendSelect } from "./utils.js";
 import { friends } from "./index.js";
 import { checkAndRefreshToken } from "./jwtRefresh.js";
 
@@ -52,7 +52,7 @@ function deleteFriendAPI(data, selectedFriend)
 			else if (response.status == 500)
 				throw new Error('Server error (500)')
 			else if (!response.ok)
-				throw new Error(`Unexpected error: ${response.status}`);
+				throw new Error(`${response.status}`);
 			return response.json();
 		})
 		.then(data => {
@@ -69,8 +69,8 @@ function deleteFriendAPI(data, selectedFriend)
 			updateFriendsList(friends);
 		})
 		.catch(error => {
+			alert(error);
 			console.error('Error removing friend:', error);
-			handleError(error);
 		})
 	})
 	.catch(error => {

@@ -14,7 +14,8 @@ RUN pip3 install Django \
 	daphne \
 	pillow \
 	pyotp \
-	qrcode
+	qrcode \
+	cryptography
 	# uvicorn \
 # RUN pinstall --upgrade djangorestframework-simplejwt
 

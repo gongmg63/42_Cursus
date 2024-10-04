@@ -108,7 +108,7 @@ function enable2FA() {
         .then(response => {
             if (response.status == 404) throw new Error('User data not found (404)');
             if (response.status == 500) throw new Error('Server error (500)');
-            if (!response.ok) throw new Error(`Unexpected error: ${response.status}`);
+            if (!response.ok) throw new Error(`${response.status}`);
             return response.json();
         })
         .then(data => {
@@ -123,8 +123,8 @@ function enable2FA() {
             update2FAStatus();
         })
         .catch(error => {
+            alert(error);
             console.error('Error fetching user data: ', error);
-            handleError(error);
         });
     })
     .catch(error => {
@@ -147,7 +147,7 @@ function disable2FA() {
         .then(response => {
             if (response.status == 404) throw new Error('User data not found (404)');
             if (response.status == 500) throw new Error('Server error (500)');
-            if (!response.ok) throw new Error(`Unexpected error: ${response.status}`);
+            if (!response.ok) throw new Error(`${response.status}`);
             return response.json();
         })
         .then(data => {
@@ -159,8 +159,8 @@ function disable2FA() {
             update2FAStatus();
         })
         .catch(error => {
+            alert(error);
             console.error('Error fetching user data: ', error);
-            handleError(error);
         });
     })
     .catch(error => {

@@ -15,6 +15,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers, status
+from cryptography.fernet import Fernet
 from urllib.parse import urlencode
 import pyotp
 import qrcode
@@ -96,11 +97,19 @@ def OauthCallback(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def Enable(request):
+    print("E_KEY:", settings.ENCRYPTION_KEY)
+    def encrypt_otp(otp_base32):
+        key = bytes(f"{settings.ENCRYPTION_KEY}", 'utf-8')
+        f = Fernet(key)
+        return f.encrypt(otp_base32.encode()).decode()
+    
     user = request.user
-    user.otp_base32 = pyotp.random_base32()
+    raw_otp_base32 = pyotp.random_base32()
+    user.otp_base32 = encrypt_otp(raw_otp_base32)
+    # user.otp_base32 = pyotp.random_base32()
     user.is_tfa_setting = True
 
-    totp = pyotp.TOTP(user.otp_base32)    
+    totp = pyotp.TOTP(raw_otp_base32)
     qr_uri = totp.provisioning_uri(
             name=user.nickname,
             issuer_name='Trancendence'
@@ -127,7 +136,11 @@ def Disable(request):
 
 class TFAView(APIView):
     def post(self, request):
-
+        def decrypt_otp(encrypted_otp):
+            key = bytes(f"{settings.ENCRYPTION_KEY}", 'utf-8')
+            f = Fernet(key)
+            return f.decrypt(encrypted_otp.encode()).decode()
+        
         # 사용자 닉네임과 코드 가져오기
         nickname = request.data.get('nickname')
         code = request.data.get('code')
@@ -142,7 +155,8 @@ class TFAView(APIView):
 
         # OTP 검증
         if (user.is_tfa_active or user.is_tfa_setting):
-            totp = pyotp.TOTP(user.otp_base32)
+            # totp = pyotp.TOTP(user.otp_base32)
+            totp = pyotp.TOTP(decrypt_otp(user.otp_base32))
             if str(code) == str(totp.now()):
                 user.is_tfa_active = True
                 user.is_tfa_setting = False

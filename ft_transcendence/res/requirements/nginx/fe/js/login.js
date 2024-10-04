@@ -17,7 +17,7 @@ function fetchOAuth() {
         else if (response.status == 500)
             throw new Error('Server error (500)');
         else if (!response.ok)
-            throw new Error(`Unexpected error: ${response.status}`);
+            throw new Error(`${response.status}`);
         return response.json();
     })
     .then(data => {
