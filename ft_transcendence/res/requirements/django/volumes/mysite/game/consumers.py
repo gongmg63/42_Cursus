@@ -18,6 +18,11 @@ tournament_waiting_queue = []
 final_waiting_queue = []
 match_data = {}
 
+# GameConsumer에서 사용
+client = {}
+ball_group = {}
+game_loop_dict = {}
+
 class MatchConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope["user"]
@@ -26,8 +31,6 @@ class MatchConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         # 연결 성공 시 대기열에서 제거
         print("매칭 웹소켓 연결 종료")
-        if hasattr(self, 'group_name'):
-            await self.matching_out()
         if self.user in vs_waiting_queue:
             vs_waiting_queue.remove(self.user)
         elif self.user in tournament_waiting_queue:
@@ -44,10 +47,11 @@ class MatchConsumer(AsyncWebsocketConsumer):
                 p2_id = match_data[self.user.id]["player2"]["id"]
                 p3_id = match_data[self.user.id]["player3"]["id"]
                 p4_id = match_data[self.user.id]["player4"]["id"]
-                if self.user.id in {p1_id, p2_id}:
-                    self.opponent = {p3_id, p4_id}
+                if self.user.id in [p1_id, p2_id]:
+                    self.opponent = [p3_id, p4_id]
                 else:
-                    self.opponent = {p1_id, p2_id}
+                    self.opponent = [p1_id, p2_id]
+                asyncio.create_task(self.check_final_end())
             del match_data[self.user.id]
         print("매칭 데이터:", data)
         if message_type == "1vs1":
@@ -71,44 +75,22 @@ class MatchConsumer(AsyncWebsocketConsumer):
                 self.channel_name  # 현재 연결된 채널의 이름
             )
             await self.handle_match_request(message_type)
-        elif message_type == 'matchingOut':
-            if hasattr(self, 'group_name'):
-                await self.matching_out()
-        
-    async def matching_out(self):
-        print("matching out", self.user.nickname)
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name
-        )
-        # 그룹 내 다른 사용자들에게 disconnect 메시지 보내기
-        # await self.channel_layer.group_send(
-        #     self.group_name,
-        #     {
-        #         'type': 'matchingOut',
-        #         'out_id': self.user.id,
-        #     }
-        # )
     
-    async def matchingOut(self, event):
-        out_id = event["out_id"]
-        if self.user.id in match_data:
-            my_match = match_data[self.user.id]
-            if my_match["gameType"] == "1vs1":
-                if out_id in [my_match["player1"]["id"], my_match["player2"]["id"]]:
-                    await self.send(json.dumps({
-                        "type": "match_cancel",
-                    }))
-            elif my_match["gameType"] == "final":
-                if out_id in [my_match["player1"]["id"], my_match["player3"]["id"]]:
-                    await self.send(json.dumps({
-                        "type": "match_cancel",
-                    }))
-            else:
-                if out_id in [my_match["player1"]["id"], my_match["player2"]["id"], my_match["player3"]["id"], my_match["player4"]["id"]]:
-                    await self.send(json.dumps({
-                        "type": "match_cancel",
-                    }))
+    async def check_final_end(self):
+        try:
+            while True:
+                if self.opponent[0] in game_loop_dict:
+                    await asyncio.sleep(2)  # 2초 간격으로 게임이 끝났는지 확인
+                else:
+                    await asyncio.sleep(2)
+                    if self.user in final_waiting_queue:
+                        await self.send(json.dumps({
+                            "type": "opponent_leave",
+                        }))
+        except asyncio.CancelledError:
+            # 태스크가 취소될 때 필요한 정리 작업
+            print("Check final end cancelled")
+        
 
     async def handle_match_request(self, gametype):
         global vs_waiting_queue
@@ -285,7 +267,6 @@ class MatchConsumer(AsyncWebsocketConsumer):
                 }))
             
 
-ball_group = {}
 
 class ball():
     x = 200
@@ -294,9 +275,7 @@ class ball():
     velocity_y = 15
     radius = 20
 
-client = {}
-client_lock = asyncio.Lock()
-game_loop_dict = {}
+# client_lock = asyncio.Lock()
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -530,7 +509,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }))
         except asyncio.CancelledError:
             # 태스크가 취소될 때 필요한 정리 작업
-            print("Game loop cancelled")
+            print("Check ready cancelled")
 
     async def startGame(self, event):
         message = event["message"]
