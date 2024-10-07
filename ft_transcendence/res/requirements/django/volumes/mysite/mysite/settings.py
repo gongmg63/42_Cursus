@@ -33,7 +33,7 @@ SECRET_KEY = env('SECRET_KEY')
 ENCRYPTION_KEY = os.getenv('TFA_ENCRYPTION_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -125,7 +125,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'mysite.middleware.LogAllRequestsMiddleware',  # 추가한 미들웨어
+    # 'mysite.middleware.LogAllRequestsMiddleware',  # 추가한 미들웨어
 ]
 
 ROOT_URLCONF = 'mysite.urls'

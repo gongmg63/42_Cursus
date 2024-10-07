@@ -58,10 +58,7 @@ function deleteFriendAPI(data, selectedFriend)
 		.then(data => {
 			const index = friends.findIndex(friend => friend.nickname === selectedFriend);
 			if (index !== -1)
-				friends.splice(index, 1);  // 배열에서 해당 친구를 삭제
-	
-			console.log(`Removed friend: ${selectedFriend}`);
-		
+				friends.splice(index, 1);  // 배열에서 해당 친구를 삭제		
 			removeModal.style.display = "none";
 			populateFriendSelect();
 		

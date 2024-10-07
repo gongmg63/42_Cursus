@@ -18,7 +18,6 @@ class FriendStatusConsumer(AsyncWebsocketConsumer):
             await self.close()
 
     async def disconnect(self, close_code):
-        print("친구 웹소켓 연결 종료 : ", close_code)
         if self.user.is_authenticated:
             await self.save_user_status(False)
             await self.channel_layer.group_discard(

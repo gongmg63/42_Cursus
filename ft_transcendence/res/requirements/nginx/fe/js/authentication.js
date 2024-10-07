@@ -71,7 +71,6 @@ function postAuthCodeAPI()
 		return response.json();
 	})
 	.then(data => {
-		console.log(data.accessToken);
 		localStorage.setItem('access_token', data.access_token);
 		localStorage.setItem('refresh_token', data.refresh_token);
 		console.log('Token stored successfully');

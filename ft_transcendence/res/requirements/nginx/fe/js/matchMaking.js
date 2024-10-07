@@ -13,7 +13,6 @@ window.loadMessage = function()
 	const loadingMessage = document.getElementById('loadingMessage');
 	let loadingDots = 0;
 	
-	// console.log("load message");
 	if (loadingMessage)
 	{
 		setInterval(() => {
@@ -23,7 +22,7 @@ window.loadMessage = function()
 	}
 
 	const hash = window.location.hash;
-	const queryParams = new URLSearchParams(hash.split('?')[1]);  // ?gameType= 이후의 파라미터만 추출
+	const queryParams = new URLSearchParams(hash.split('?')[1]);
 	const type = queryParams.get('gameType');
 
 	checkAndRefreshToken().then(() => {
