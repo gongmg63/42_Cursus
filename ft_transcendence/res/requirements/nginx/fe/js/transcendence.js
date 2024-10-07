@@ -18,6 +18,7 @@ const routes = {
 const forbiddenHashTo = {
 	'/authentication':true,
 	'/result':true,
+	'/multiPong':true,
 };
 
 const forbiddenHashFrom = {
