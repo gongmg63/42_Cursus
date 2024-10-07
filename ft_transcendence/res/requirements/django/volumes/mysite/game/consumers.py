@@ -7,15 +7,14 @@ from user.models import User
 from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 from .signals import play_disconnect_signal
 from .models import GameResult
 
 # 메모리 내 대기열
-vs_waiting_queue = []
-tournament_waiting_queue = []
-final_waiting_queue = []
+vs_waiting_queue = asyncio.Queue()
+tournament_waiting_queue = asyncio.Queue()
+final_waiting_queue = asyncio.Queue()
+
 match_data = {}
 
 # GameConsumer에서 사용
@@ -29,12 +28,28 @@ class MatchConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        if self.user in vs_waiting_queue:
-            vs_waiting_queue.remove(self.user)
-        elif self.user in tournament_waiting_queue:
-            tournament_waiting_queue.remove(self.user)
-        elif self.user in final_waiting_queue:
-            final_waiting_queue.remove(self.user)
+        # 연결 성공 시 대기열에서 제거
+        print("매칭 웹소켓 연결 종료")
+        if await self.is_user_in_queue(vs_waiting_queue, self.user):
+            await self.remove_user_from_queue(vs_waiting_queue, self.user)
+        elif await self.is_user_in_queue(tournament_waiting_queue, self.user):
+            await self.remove_user_from_queue(tournament_waiting_queue, self.user)
+        elif await self.is_user_in_queue(final_waiting_queue, self.user):
+            await self.remove_user_from_queue(final_waiting_queue, self.user)
+
+    async def remove_user_from_queue(self, queue, user):
+        # 큐에 있는 모든 유저를 임시로 저장할 리스트
+        temp_queue = []
+
+        # 큐를 비동기적으로 처리
+        while not queue.empty():
+            current_user = await queue.get()
+            if current_user != user:
+                temp_queue.append(current_user)  # 제거할 유저가 아니면 임시 리스트에 추가
+
+        # 다시 큐에 남은 유저들을 넣음
+        for u in temp_queue:
+            await queue.put(u)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -80,7 +95,7 @@ class MatchConsumer(AsyncWebsocketConsumer):
                     await asyncio.sleep(2)  # 2초 간격으로 게임이 끝났는지 확인
                 else:
                     await asyncio.sleep(2)
-                    if self.user in final_waiting_queue:
+                    if await self.is_user_in_queue(final_waiting_queue, self.user):
                         await self.send(json.dumps({
                             "type": "opponent_leave",
                         }))
@@ -91,26 +106,38 @@ class MatchConsumer(AsyncWebsocketConsumer):
     async def handle_match_request(self, gametype):
         global vs_waiting_queue
         global tournament_waiting_queue
+        global final_waiting_queue
 
+        # 1vs1 매칭
+        if gametype == "1vs1":
+            if not await self.is_user_in_queue(vs_waiting_queue, self.user):
+                await vs_waiting_queue.put(self.user)
+                if vs_waiting_queue.qsize() >= 2:
+                    await self.send_to_user(gametype)
+        # tournament 매칭
+        elif gametype == "tournament":
+            if not await self.is_user_in_queue(tournament_waiting_queue, self.user):
+                await tournament_waiting_queue.put(self.user)
+                if tournament_waiting_queue.qsize() >= 4:
+        	        # 두 유저에게 매칭 정보를 전송
+                    await self.send_to_tourtnament_user(gametype)
+        # final 매칭
+        elif gametype == "final":
+            if not await self.is_user_in_queue(final_waiting_queue, self.user):
+                await final_waiting_queue.put(self.user)
+                if final_waiting_queue.qsize() >= 2:
+        	        # 두 유저에게 매칭 정보를 전송
+                    await self.send_to_final_user(gametype)
 
-        if gametype == "1vs1" and self.user not in vs_waiting_queue:
-            vs_waiting_queue.append(self.user)
-            if len(vs_waiting_queue) >= 2:
-                await self.send_to_user(gametype)
-        elif gametype == "tournament" and self.user not in tournament_waiting_queue:
-            tournament_waiting_queue.append(self.user)
-            if len(tournament_waiting_queue) >= 4:
-                await self.send_to_tourtnament_user(gametype)
-        elif gametype == "final" and self.user not in final_waiting_queue:
-            final_waiting_queue.append(self.user)
-            if len(final_waiting_queue) >= 2:
-                await self.send_to_final_user(gametype)
+    async def is_user_in_queue(self, queue, user):
+        queue_list = list(queue._queue)  # asyncio.Queue 내부 데이터를 리스트로 변환
+        return user in queue_list
 
     async def send_to_user(self, gametype):
-        global tournament_waiting_queue
+        global vs_waiting_queue
 
-        player1 = vs_waiting_queue.pop(0)
-        player2 = vs_waiting_queue.pop(0)
+        player1 = await vs_waiting_queue.get()  
+        player2 = await vs_waiting_queue.get() 
         player1_user = await database_sync_to_async(get_user_model().objects.get)(id=player1.id)
         player2_user = await database_sync_to_async(get_user_model().objects.get)(id=player2.id)
 		
@@ -130,10 +157,10 @@ class MatchConsumer(AsyncWebsocketConsumer):
     async def send_to_tourtnament_user(self, gametype):
         global tournament_waiting_queue
 
-        player1 = tournament_waiting_queue.pop(0)
-        player2 = tournament_waiting_queue.pop(0)
-        player3 = tournament_waiting_queue.pop(0)
-        player4 = tournament_waiting_queue.pop(0)
+        player1 = await tournament_waiting_queue.get()
+        player2 = await tournament_waiting_queue.get()
+        player3 = await tournament_waiting_queue.get()
+        player4 = await tournament_waiting_queue.get()
         
         player1_user = await database_sync_to_async(get_user_model().objects.get)(id=player1.id)
         player2_user = await database_sync_to_async(get_user_model().objects.get)(id=player2.id)
@@ -163,17 +190,33 @@ class MatchConsumer(AsyncWebsocketConsumer):
         
         winner1 = None
         winner2 = self.user
-        final_waiting_queue.pop(final_waiting_queue.index(self.user))
-        for user in final_waiting_queue:
-            if  user.id in self.opponent:
+
+        # 임시 리스트로 큐 내용을 꺼내면서 특정 유저 제거
+        temp_queue = []
+
+        # 큐에서 self.user를 제거
+        while not final_waiting_queue.empty():
+            user = await final_waiting_queue.get()
+            if user == self.user:
+                continue  # self.user는 제거
+            temp_queue.append(user)  # 나머지 유저들은 임시 리스트에 추가
+        
+        # opponent 유저 찾기
+        for user in temp_queue:
+            if user.id in self.opponent:
                 winner1 = user
-                final_waiting_queue.pop(final_waiting_queue.index(user))
+                temp_queue.remove(user)  # opponent 유저도 큐에서 제거
                 break
 
-        if winner1 == None:
-            final_waiting_queue.append(winner2)
+        # 만약 winner1이 없다면, self.user를 다시 큐에 넣음
+        if winner1 is None:
+            await final_waiting_queue.put(winner2)
             return
-        
+
+        # 큐에 남은 유저들을 다시 넣음
+        for user in temp_queue:
+            await final_waiting_queue.put(user)
+
         winner1_user = await database_sync_to_async(get_user_model().objects.get)(id=winner1.id)
         winner2_user = await database_sync_to_async(get_user_model().objects.get)(id=winner2.id)
 
