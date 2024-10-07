@@ -16,7 +16,7 @@ const routes = {
 	'/authentication': { page: 'authentication.html', css: 'authentication.css', js: [{file: 'authentication.js', type: 'module'}] }
 };
 const forbiddenHashTo = {
-	// '/authentication':true,
+	'/authentication':true,
 	'/result':true,
 	'/multiPong':true,
 };
