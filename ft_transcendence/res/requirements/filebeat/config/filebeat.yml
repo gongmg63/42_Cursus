@@ -9,29 +9,29 @@ filebeat.modules:
 #   enabled: true
 #   path: ${path.config}/modules.d/*.yml
 
-filebeat.autodiscover:
-  providers:
-    - type: docker
-      templates:
-        - condition:
-            contains:
-              docker.container.image: nginx
-          config:
-            - module: nginx
-              access: 
-                enabled: true
-                input:
-                  type: container
-                  paths:
-                    - /var/lib/docker/containers/${data.docker.container.id}/*.log
-                  stream: stdout
-              error:
-                enabled: true
-                input:
-                  type: container
-                  paths:
-                    - /var/lib/docker/containers/${data.docker.container.id}/*.log
-                  stream: stderr
+# filebeat.autodiscover:
+#   providers:
+#     - type: docker
+#       templates:
+#         - condition:
+#             contains:
+#               docker.container.image: nginx
+#           config:
+#             - module: nginx
+#               access: 
+#                 enabled: true
+#                 input:
+#                   type: container
+#                   paths:
+#                     - /var/lib/docker/containers/${data.docker.container.id}/*.log
+#                   stream: stdout
+#               error:
+#                 enabled: true
+#                 input:
+#                   type: container
+#                   paths:
+#                     - /var/lib/docker/containers/${data.docker.container.id}/*.log
+#                   stream: stderr
 
 # filebeat.autodiscover:
 #   providers:
@@ -43,15 +43,15 @@ filebeat.autodiscover:
 #               containers.ids:
 #                 - "*"
 
-# filebeat:
-#   autodiscover:
-#     providers:
-#     - hints.default_config:
-#         paths:
-#         - /var/lib/docker/containers/${data.container.id}/*.log
-#         type: container
-#       hints.enabled: true
-#       type: docker
+filebeat:
+  autodiscover:
+    providers:
+    - hints.default_config:
+        paths:
+        - /var/lib/docker/containers/${data.container.id}/*.log
+        type: container
+      hints.enabled: true
+      type: docker
 
 processors:
 - add_docker_metadata: ~

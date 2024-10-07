@@ -3,11 +3,9 @@ import { friends } from "./index.js";
 export function populateFriendSelect()
 {
 	const friendSelect = document.getElementById("friendSelect");
-	// console.log("populate friend select");
     friendSelect.innerHTML = '';
 
     friends.forEach(friend => {
-		console.log(friend);
         const option = document.createElement("option");
         option.value = friend.nickname;
         option.textContent = friend.nickname;
@@ -40,18 +38,14 @@ export function updateFriendsList(friends)
 			nameSpan.classList.add('friend-name');
 			nameSpan.textContent = friend.nickname;
 	
-			// Online, Offline 상태 표시
 			const statusSpan = document.createElement('span');
 			if (friend.active) {
-				statusSpan.classList.add('friend-status', 'online'); // 활성 상태 클래스 추가
-				statusSpan.textContent = 'Online'; // 또는 friend.status를 사용할 수 있음
+				statusSpan.classList.add('friend-status', 'online');
+				statusSpan.textContent = 'Online';
 			} else {
-				statusSpan.classList.add('friend-status', 'offline'); // 비활성 상태 클래스 추가
-				statusSpan.textContent = 'Offline'; // 또는 friend.status를 사용할 수 있음
+				statusSpan.classList.add('friend-status', 'offline');
+				statusSpan.textContent = 'Offline';
 			}
-			// statusSpan.classList.add('friend-status', friend.active);
-			// statusSpan.textContent = friend.active + friend.status.slice(1);
-			// statusSpan.textContent = friend.status.charAt(0).toUpperCase() + friend.status.slice(1);
 			
 			infoDiv.appendChild(nameSpan);
 			infoDiv.appendChild(statusSpan);

@@ -31,9 +31,6 @@ document.querySelectorAll('nav a').forEach(link => {
     link.style.display = 'none';  // 모든 링크를 숨김
 })
 
-// 초기 로딩
-console.log('초기 로딩');
-
 let currentPath = window.location.hash.slice(1) || '/';
 let previousPath = window.location.hash.slice(1) || '/';
 
@@ -42,7 +39,6 @@ window.refresh = function(){
 	if (currentPath.includes('?')) {
 		currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
 	}
-	console.log('[init trancendance]: ', currentPath);
 	if (currentPath !== '/' && currentPath !== '/authentication')
 	{
 		try {
@@ -84,7 +80,6 @@ refresh();
 
 // 페이지 이동 시 실행됨
 export async function navigateTo(url) {
-	console.log("[navigateTo] url: ", url);
 	if (url !== '/' && url !== '/authentication')
 	{
 		try {
@@ -104,22 +99,16 @@ export async function navigateTo(url) {
 	const content = await res.text();
 	app.innerHTML = content;
 	
-	console.log('you keep going after render????', url);
-	// CSS 파일을 동적으로 로드
 	if (route.css) {
 		dynamicCSS.setAttribute('href', `/css/${route.css}`);
-		// console.log("css: ", route.css);
 	} else {
-		dynamicCSS.removeAttribute('href'); // CSS가 없으면 제거
+		dynamicCSS.removeAttribute('href');
 	}
-
-	 // 이전에 로드된 스크립트 파일들을 제거
 	 currentScripts.forEach(script => {
 		const scriptSrc = script.src;
 
 		if (scriptSrc) {
 			const deletedfile = scriptSrc.substring(scriptSrc.lastIndexOf('/') + 1);
-			console.log("[navigateTo]: deleted script file:", deletedfile);
 			if (deletedfile == 'pong.js')
 			{
 				cleanUpPong();
@@ -138,7 +127,6 @@ export async function navigateTo(url) {
 	if (route.js.length > 0) {
 		// 새로운 JS 파일을 동적으로 로드하고 실행
 		route.js.forEach(js => {
-			console.log("[navigateTo]: loaded script file:", js.file);
 			const script = document.createElement('script');
 			script.src = `/js/${js.file}`;
 			script.type = js.type || 'text/javascript';
@@ -172,8 +160,6 @@ export function render(hash)
 	let path = hash.slice(1);
 	let pathwithoutparam = path.split('?')[0];
 	previousPath = path;
-	console.log("[render]: page from: ", previousPath);
-	console.log("[render]: page to: ", pathwithoutparam);
 	window.history.pushState({ page: pathwithoutparam }, null, hash);
 	navigateTo(pathwithoutparam);
 }
@@ -188,10 +174,6 @@ window.onpopstate = function(event) {
 		currentPath = currentPath.split('?')[0];  // ? 앞의 경로 부분만 추출
 	}
 	let pathFrom = previousPath.split('?')[0];
-	
-	console.log("[onpopstate]: page from", pathFrom);
-	console.log("[onpopstate]: page to:", event.state);
-	console.log("[onpopstate]: page to:", currentPath);
 
 	if (currentPath in forbiddenHashTo)
 	{

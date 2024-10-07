@@ -81,7 +81,6 @@ export function setTFA(tfa)
 function update2FAStatus() {
     const statusMessage = document.getElementById('2faStatusMessage');
 
-	console.log("is2FAEnabled: ", is2FAEnabled);
 	if (is2FAEnabled)
 		statusMessage.textContent = '2FA가 활성화된 상태입니다.';
 	else

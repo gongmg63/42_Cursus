@@ -32,9 +32,7 @@ function handleKeyDown(e) {
 }
 
 window.startPong = function()
-{
-	console.log("start pong");
-	
+{	
 	setUpPong();
 	parseGameURL();
 	gameLoop();
@@ -119,39 +117,14 @@ function gameLoop()
 
 export function cleanUpPong()
 {
-	// 애니메이션 프레임 중단
     if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);  // 게임 루프 중지
     }
-
-    // 이벤트 리스너 제거
-    // window.removeEventListener('keydown', handleKeyDown);
-    // window.removeEventListener('keyup', handleKeyUp);
-
-	// keyPressed.length = 0;
-
-    console.log("Pong 게임이 정리되었습니다.");
 }
 
-// window.cleanUpPong = function()
-// {
-// 	// 애니메이션 프레임 중단
-//     if (animationFrameId) {
-//         cancelAnimationFrame(animationFrameId);  // 게임 루프 중지
-//     }
-
-//     // 이벤트 리스너 제거
-//     // window.removeEventListener('keydown', handleKeyDown);
-//     // window.removeEventListener('keyup', handleKeyUp);
-
-// 	// keyPressed.length = 0;
-
-//     console.log("Pong 게임이 정리되었습니다.");
-// }
 
 function checkGameEnd()
 {
-	// 점수 설정
 	let endScore = 3;
 	if (paddle1.score >= endScore || paddle2.score >= endScore)
 	{
@@ -170,7 +143,6 @@ function checkGameEnd()
             winnerScore = paddle2.score;
             loserScore = paddle1.score;
         }
-		// game type도 추가.
 		render(`#/result?gameType=${gameType}`);
 	}
 }
@@ -182,7 +154,6 @@ function gameUpdate()
 	paddle2.update();
 	paddleCollisionWithEdges(paddle1);
 	paddleCollisionWithEdges(paddle2);
-	// paddle2.update();
 	ballCollisionWithEdges(ball);
 	if (ballPaddleCollision(ball, paddle1))
 	{

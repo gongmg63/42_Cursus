@@ -7,7 +7,6 @@ let checkWin;
 
 window.loadResult = function ()
 {
-	console.log('[loadResult]')
 	const hash = window.location.hash;
 	const queryParams = new URLSearchParams(hash.split('?')[1]);
 	gameType = queryParams.get('gameType');
@@ -91,8 +90,6 @@ function updateResult(gameType)
 				resultMessage.textContent = 'You Lose!';
 				resultMessage.classList.add('lose');
 			}
-			
-			console.log(recentMatch.winner.nickname, recentMatch.winner_score, recentMatch.loser.nickname, recentMatch.loser_score, recentMatch.game_date);
 		})
 		.catch(error => {
 			console.error('Error fetching user data: ', error);
@@ -150,7 +147,6 @@ function postMatchAPI(result)
 		return response.json();
 	})
 	.then(data => {
-		console.log('Match updated successfully:', data);
 	})
 	.catch(error => {
         console.error('Error updating match:', error);

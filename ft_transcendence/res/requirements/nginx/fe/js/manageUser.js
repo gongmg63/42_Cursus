@@ -139,7 +139,6 @@ function updateRecentMatches(recentMatches)
 	if(matchHistoryContainer)
 	{
 		matchHistoryContainer.innerHTML = '';
-		console.log(recentMatches);
 		recentMatches.slice(-5).forEach(match => {
 			const matchDiv = document.createElement('div');
 			const myNickname = localStorage.getItem("nickname");
@@ -259,7 +258,6 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
 		return response.json();
     })
     .then(data => {
-        console.log('User profile updated:', data);
         document.querySelector('.user-details h1').textContent = nickname;
         if (avatarFile) {
             const reader = new FileReader();
@@ -270,7 +268,6 @@ function patchUserAPI(formData, nickname, avatarFile, access_token)
             reader.readAsDataURL(avatarFile);
         }
         editUserModal.style.display = 'none';
-		// editLocalStorage(nickname, avatarFile);
 		localStorage.setItem('nickname', nickname);
     })
     .catch(error => {

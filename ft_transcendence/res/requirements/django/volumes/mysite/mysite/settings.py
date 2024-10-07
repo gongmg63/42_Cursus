@@ -125,7 +125,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'mysite.middleware.LogAllRequestsMiddleware',  # 추가한 미들웨어
+    # 'mysite.middleware.LogAllRequestsMiddleware',  # 추가한 미들웨어
 ]
 
 ROOT_URLCONF = 'mysite.urls'

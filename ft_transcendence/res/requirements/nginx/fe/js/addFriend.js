@@ -13,7 +13,6 @@ document.body.addEventListener('click', function(event) {
     // 친구 추가 버튼 클릭 시 모달 표시
     if (event.target && event.target.matches('.friends-controls .btn:first-child')) {
 		modal.style.display = 'block';
-		console.log(modal.style.display);
     }
 
     // 모달 닫기 버튼 클릭 시 모달 숨김
@@ -32,7 +31,6 @@ export function addFriend()
 	const friendName = document.getElementById("friendNameInput").value;
     
     // 실제로는 여기서 서버에 추가 요청을 보냄
-    console.log(`Added friend: ${friendName}`);
 	const data = { nickname: friendName };
 	postFriendAPI(data);
 }
@@ -65,12 +63,8 @@ function postFriendAPI(data)
 			return response.json();
 		})
 		.then(data => {
-			console.log('Friend added successfully:', data);
 			
-			// friends -> readonly data, index.js 쪽에서 수정.
 			pushFriends(data.friend);
-			// Update friends UI 
-			// renderFriends();
 			updateFriendsList(friends);
 	
 			modal.style.display = "none";

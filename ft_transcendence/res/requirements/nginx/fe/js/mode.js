@@ -14,19 +14,16 @@ function handleClickEvent(event)
 	if (modal === null)
 		return ;
 	if (event.target && event.target.matches('#single')) {
-		console.log('Single mode selected');
 		gameType = "single";
 		render(`#/pong?gameType=${gameType}`);
 	}
 
 	if (event.target && event.target.matches('#pvp')) {
-		// console.log('1 vs 1 mode selected');
 		gameType = "1vs1";
 		render(`#/matchmaking?gameType=${gameType}`);
 	}
 
 	if (event.target && event.target.matches('#tournament')) {
-		console.log('Tournament mode selected');
 		modal.style.display = "block";
 	}
 
@@ -76,7 +73,6 @@ function patchTempUserAPI(nickname, gameType)
 		return response.json();
     })
     .then(data => {
-		console.log("tournament patch : ",data);
 		render(`#/matchmaking?gameType=${gameType}`);
     })
     .catch(error => {
