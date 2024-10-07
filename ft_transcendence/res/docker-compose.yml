@@ -12,8 +12,6 @@ services:
     env_file: .env
     volumes:
       - db:/var/lib/postgresql/data
-    # ports:
-    #   - "5432"
     networks:
       - intra
     tty: true
