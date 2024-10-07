@@ -318,6 +318,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.paddle_width = 20
         self.paddle_height = 200
         self.score = 0
+        self.o_score = 0
         self.spawn = False
 
         await self.accept()
@@ -337,18 +338,19 @@ class GameConsumer(AsyncWebsocketConsumer):
         )
         del client[self.user.id]
         play_disconnect_signal.send(sender=self.__class__, instance=self)
-        if hasattr(self, 'game_loop_task') and not self.game_loop_task.done():
-            self.game_loop_task.cancel()
-            try: 
-                await self.game_loop_task
-            except:
-                print("Game loop task properly cancelled")
+        if hasattr(self, 'game_loop_task'):
             if self.player1 in game_loop_dict:
                 del game_loop_dict[self.player1]
+            if not self.game_loop_task.done():
+                self.game_loop_task.cancel()
+                try: 
+                    await self.game_loop_task
+                except:
+                    print("Game loop task properly cancelled")
 
     async def userDisconnected(self, event):
         await self.send(json.dumps({
-            "type": "checkGameEnd",
+            "type": "userDisconnet",
             "message": "Other player disconnected. Check game end."
         }))
 
@@ -368,6 +370,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         if message_type == 'initMatch':
             player1 = None
             player2 = None
+            self.end_score = data.get("end_score")
             if gameType == "1vs1" or gameType == "tournament1":
                 player1 = match_data[self.user.id]["player1"]
                 player2 = match_data[self.user.id]["player2"]
@@ -414,8 +417,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.check_all_clients_ready(player1_id, player2_id)
         elif message_type == 'paddleMove':
             await self.paddle_move(data.get("id"), data.get("key"))
-        elif message_type == 'increaseScore':
-            await self.increase_score(data.get("score1"), data.get("score2"))
         elif message_type == 'outPage':
             await self.check_refresh_page(data)
         elif message_type == 'endGame':
@@ -478,9 +479,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         out_player = data.get("id")
         out_score = data.get("myScore")
         op_score = data.get("opScore")
-        end_score = data.get("endScore")
 
-        if out_score != end_score and op_score != end_score:
+        if out_score != self.end_score and op_score != self.end_score:
             await self.channel_layer.group_send(
                 self.group_name,
                 {
@@ -517,7 +517,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         global game_loop_dict
         
         try:
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1)
             if not player1_id in game_loop_dict:
                 await self.send(json.dumps({
                     "type": "freeWin"
@@ -568,11 +568,28 @@ class GameConsumer(AsyncWebsocketConsumer):
     
     async def game_loop(self):
         try:
-            while True:
+            while self.score < self.end_score and self.o_score < self.end_score:
                 await self.update_game_state()
                 await asyncio.sleep(0.02)
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "checkGameEnd",
+                    "id": self.user.id,
+                    "myScore": self.score,
+                    "opScore": self.o_score,
+                }
+            )
         except asyncio.CancelledError:
             print("Game loop cancelled")
+
+    async def checkGameEnd(self, event):
+        await self.send(json.dumps({
+            "type": "checkGameEnd",
+            "id": event["id"],
+            "myScore": event["myScore"],
+            "opScore": event["opScore"],
+        }))
 
     async def update_game_state(self):
         ball_group[self.group_name].x += ball_group[self.group_name].velocity_x
@@ -608,8 +625,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         if self.pos == winner:
             result = "win"
+            self.score += 1
         else:
             result = "lose"
+            self.o_score += 1
+
         await self.send(json.dumps({
             "type": "increaseScore",
             "result": result

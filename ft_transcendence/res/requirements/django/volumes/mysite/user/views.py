@@ -63,6 +63,13 @@ def OauthCallback(request):
     email = user_data.get('email')
     nickname = user_data.get('login')
 
+    # nickname이 이미 존재하는지 확인
+    counter = 1
+    while User.objects.filter(nickname=nickname).exists():
+        # nickname 뒤에 숫자를 붙여서 새로 시도
+        nickname = f"{nickname}{counter}"
+        counter += 1
+
     # 유저 DB 업데이트
     user, created = User.objects.get_or_create(oauthid=oauth_user_id)
     

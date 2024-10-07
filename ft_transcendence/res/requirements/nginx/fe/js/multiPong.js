@@ -89,7 +89,6 @@ export function game_play_websocket(currentPath, type)
 				"id": playerNumber,
 				"myScore": myPad.score,
 				"opScore": opPad.score,
-				"endScore": endScore
 			}));
 			websocket.close();
 		}
@@ -104,6 +103,7 @@ export function game_play_websocket(currentPath, type)
 		{
 			websocket.send(JSON.stringify({
 				type: "initMatch",
+				end_score: endScore,
 				canvas_width: canvas.width,
 				canvas_height: canvas.height,
 			}));
@@ -172,7 +172,7 @@ export function game_play_websocket(currentPath, type)
 			}
 			checkGameEnd();
 		}
-		else if (data.type === 'checkGameEnd')
+		else if (data.type === 'userDisconnet')
 		{
 			if (!checkEnd)
 			{
@@ -184,6 +184,12 @@ export function game_play_websocket(currentPath, type)
 					"endScore": endScore
 				}));
 			}
+		}
+		else if (data.type === 'checkGameEnd')
+		{
+			myPad.score = data.id === playerNumber ? data.myScore : data.opScore;
+			opPad.score = data.id === playerNumber ? data.opScore : data.myScore;
+			checkGameEnd();
 		}
 		else if (data.type === 'freeWin')
 		{
