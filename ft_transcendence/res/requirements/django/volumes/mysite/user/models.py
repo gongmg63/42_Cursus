@@ -12,7 +12,7 @@ class User(AbstractUser):
 	losses = models.PositiveIntegerField(default=0, verbose_name='패')
 	profile = models.ImageField(blank=True, upload_to=uuid_name_upload_to)
 	friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_set', verbose_name='친구')
-	active = models.BooleanField(default=True)  # 접속 여부
+	active = models.BooleanField(default=False)  # 접속 여부
 	is_tfa_active = models.BooleanField(default=False)
 	is_tfa_setting = models.BooleanField(default=False)
 	otp_base32 = models.CharField(max_length=256, blank=True, null=True)
