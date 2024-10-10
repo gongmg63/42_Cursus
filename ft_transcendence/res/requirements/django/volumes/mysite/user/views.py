@@ -72,7 +72,9 @@ def OauthCallback(request):
 
     # 유저 DB 업데이트
     user, created = User.objects.get_or_create(oauthid=oauth_user_id)
-    
+    if user.active == True:
+        return redirect(f"{settings.ACCESS_URL}")
+
     user.active = True
     if created:
         user.oauthid = oauth_user_id

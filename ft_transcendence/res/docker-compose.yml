@@ -206,10 +206,6 @@ services:
 volumes:
   db:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: '${PWD}/requirements/postgresql/volumes'
   django:
     driver: local
     driver_opts:
