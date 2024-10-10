@@ -236,17 +236,15 @@ function gameLoop()
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	animationFrameId = window.requestAnimationFrame(gameLoop);	
 
-	if (!checkEnd)
-		checkGameEnd();
+	checkGameEnd();
 	gameDraw();
 }
 
 function checkGameEnd()
 {
-	if (myPad.score >= endScore || opPad.score >= endScore)
+	if ((myPad.score >= endScore || opPad.score >= endScore) && !checkEnd)
 	{
 		checkEnd = true;
-	
         let winner, loser;
         let winnerScore, loserScore;
 		let checkWinner = 'false';
