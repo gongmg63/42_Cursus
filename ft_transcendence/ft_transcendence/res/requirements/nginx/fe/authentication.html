@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA Authentication</title>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Enter your authentication code</h2>
+        <div class="input-container">
+            <input type="text" maxlength="1" class="auth-input" id="code1" data-next="code2" autofocus>
+            <input type="text" maxlength="1" class="auth-input" id="code2" data-next="code3" data-prev="code1">
+            <input type="text" maxlength="1" class="auth-input" id="code3" data-next="code4" data-prev="code2">
+            <input type="text" maxlength="1" class="auth-input" id="code4" data-next="code5" data-prev="code3">
+            <input type="text" maxlength="1" class="auth-input" id="code5" data-next="code6" data-prev="code4">
+            <input type="text" maxlength="1" class="auth-input" id="code6" data-prev="code5">
+        </div>
+        <button id="verifyBtn" class="verify-btn">Verify</button>
+    </div>
+
+</body>
+</html>

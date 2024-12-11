@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchmaking</title>
+    <link rel="stylesheet" href="../css/matchmaking.css">
+    <link rel="stylesheet" href="../css/tournament.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap&family=Bangers&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="loading-container">
+        <h1 class="loading-message" id="loadingMessage">Loading</h1>
+    </div>
+    <div class="match-container" style="display: none;">
+        <h1 class="battle-title">Get Ready for the Next Battle!</h1>
+        <div class="match-players">
+            <div class="player" id="player1">
+                <img src="" alt="Your Avatar" class="avatar" id="player1Avatar">
+                <h2 class="nickname" id="player1Nickname"></h2>
+                <p class="stats" id="player1Stats"></p>
+            </div>
+            <div class="vs">
+                <h1>VS</h1>
+            </div>
+            <div class="player" id="player2">
+                <img src="" alt="Opponent Avatar" class="avatar" id="player2Avatar">
+                <h2 class="nickname" id="player2Nickname"></h2>
+                <p class="stats" id="player2Stats"></p>
+            </div>
+        </div>
+    </div>
+    <div class="tournament" style="display: none;">
+        <ul class="round round-1">
+            <li class="spacer">&nbsp;</li>
+            
+            <li class="game game-top"><span class="team-name"></span></li>
+            <li class="game game-spacer">&nbsp;</li>
+            <li class="game game-bottom"><span class="team-name"></span></li>
+        
+            <li class="spacer">&nbsp;</li>
+            
+            <li class="game game-top"><span class="team-name"></span></li>
+            <li class="game game-spacer">&nbsp;</li>
+            <li class="game game-bottom"><span class="team-name"></span></li>
+        
+            <li class="spacer">&nbsp;</li>
+        </ul>
+        
+        <ul class="round round-2">
+            <li class="spacer">&nbsp;</li>
+            
+            <li class="game game-top"><span class="team-name"></span></li>
+            <li class="game game-spacer">&nbsp;</li>
+            <li class="game game-bottom"><span class="team-name"></span></li>
+        
+            <li class="spacer">&nbsp;</li>
+        </ul>
+    </div>
+    <script type="module" src="../js/matchmaking.js"></script>
+</body>
+</html>

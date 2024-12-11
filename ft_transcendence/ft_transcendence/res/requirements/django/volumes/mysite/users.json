@@ -1,0 +1,84 @@
+[
+	{
+		"model": "user.user",
+		"pk": 1,
+		"fields": {
+			"username": "Steve Jobs",
+			"oauthid": 1,
+			"nickname": "Jobs",
+			"t_nickname": "",
+			"t_loser": "",
+			"wins": 10,
+			"losses": 5,
+			"profile": "/images/Jobs.png",
+			"active": true,
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "gAAAAABm_7Uw-ISo40593L_729BYlW97wPkJOxRpv0VaFESfjbJnNeesyC_ketip-yRTShUn__sxsgh3bUb83fv3t-KDjKOWSqd_V3Q2z-Lcsaf1Mnc6IatMf0kyUMzgX4BTb9uoAVim"
+		}
+	},
+	{
+		"model": "user.user",
+		"pk": 2,
+		"fields": {
+			"username": "Jensen Huang",
+			"oauthid": 2,
+			"nickname": "Huang",
+			"t_nickname": "",
+			"t_loser": "",
+			"wins": 8,
+			"losses": 15,
+			"profile": "/images/Huang.png",
+			"active": true,
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "gAAAAABm_7Uw-ISo40593L_729BYlW97wPkJOxRpv0VaFESfjbJnNeesyC_ketip-yRTShUn__sxsgh3bUb83fv3t-KDjKOWSqd_V3Q2z-Lcsaf1Mnc6IatMf0kyUMzgX4BTb9uoAVim"
+		}
+	},
+	{
+		"model": "user.user",
+		"pk": 3,
+		"fields": {
+			"username": "Larry Page",
+			"oauthid": 3,
+			"nickname": "Page",
+			"t_nickname": "",
+			"t_loser": "",
+			"wins": 11,
+			"losses": 7,
+			"profile": "/images/Page.png",
+			"active": true,
+			"friends": [],
+			"is_tfa_active": true,
+			"otp_base32": "gAAAAABm_7Uw-ISo40593L_729BYlW97wPkJOxRpv0VaFESfjbJnNeesyC_ketip-yRTShUn__sxsgh3bUb83fv3t-KDjKOWSqd_V3Q2z-Lcsaf1Mnc6IatMf0kyUMzgX4BTb9uoAVim"
+		}
+	},
+	{
+		"model": "user.user",
+		"pk": 4,
+		"fields": {
+			"username": "Elon Musk",
+			"oauthid": 4,
+			"nickname": "Musk",
+			"wins": 16,
+			"losses": 15,
+			"profile": "/images/Musk.png",
+			"active": true,
+			"friends": []
+		}
+	},
+	{
+		"model": "user.user",
+		"pk": 5,
+		"fields": {
+			"username": "Bill Gates",
+			"oauthid": 5,
+			"nickname": "Gates",
+			"wins": 9,
+			"losses": 19,
+			"profile": "/images/Gates.png",
+			"active": true,
+			"friends": []
+		}
+	}
+]

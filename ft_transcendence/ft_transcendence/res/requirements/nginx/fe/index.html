@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!-- <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Dashboard</title>
+</head> -->
+<body>
+    <div class="container">
+        <div class="friends-panel">
+            <div class="friends-header">
+                <h2>Social</h2>
+                <div class="friends-controls">
+                    <button class="btn">+</button>
+                    <button class="btn">-</button>
+                </div>
+            </div>
+            <div class="friends-list-container">
+                <ul class="friends-list">
+                </ul>
+            </div>
+            <button class="game-start-btn">Game Start</button>
+        </div>
+
+		<div id="addFriendModal" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<h2>Add Friend</h2>
+				<form id="addFriendForm">
+					<input type="text" id="friendNameInput" placeholder="Enter friend's nickname" required>
+					<button type="submit" class="submit-btn">Add Friend</button>
+				</form>
+			</div>
+		</div>
+		<div id="removeFriendModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Remove Friend</h2>
+                <form id="removeFriendForm">
+                    <label for="friendSelect">Select a friend to remove:</label>
+                    <select id="friendSelect" required></select>
+                    <button type="submit" class="submit-btn">Remove Friend</button>
+                </form>
+            </div>
+        </div>
+
+		<div class="user-panel">
+            <div class="user-header">
+                <div class="avatar-container">
+                    <img src="" alt="User Avatar" class="avatar">
+                </div>
+                <div class="user-details">
+                    <h1></h1>
+                    <p></p>
+                </div>
+            </div>
+
+			<div class="button-group">
+                <button class="edit-user-btn">Edit Profile</button>
+                <button class="security-btn">Security</button>
+            </div>
+
+            <div class="recent-matches">
+                <h2>Recent Matches</h2>
+                <div class="match-history-container">
+                </div>
+            </div>
+        </div>
+
+        <div id="securityModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="2faStatusTitle">2FA 설정</h2>
+                <p id="2faStatusMessage"></p>
+                <button id="changeSettingsBtn" class="submit-btn">Change Settings</button>
+            </div>
+        </div>
+
+        <div id="change2faModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="2faChangeTitle"></h2>
+				<div id="qrCodeContainer" style="display: none;">
+					<h3>Scan the QR Code</h3>
+					<img id="qrCodeImage" src="" alt="QR Code for 2FA">
+					<button id="nextStepBtn" class="submit-btn" style="display: none; margin-top: 20px;">Next Step</button>
+				</div>
+                <div>
+                    <button id="confirm2faBtn" class="submit-btn">예</button>
+                    <button id="cancel2faBtn" class="submit-btn">아니오</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div id="editUserModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h2>Edit Profile</h2>
+			<form id="editUserForm">
+				<label for="nicknameInput">Nickname:</label>
+				<input type="text" id="nicknameInput" placeholder="Enter new nickname" required>
+				
+				<label for="avatarInput">Upload Avatar:</label>
+				<input type="file" id="avatarInput" accept="image/*">
+	
+				<button type="submit" class="submit-btn">Save Changes</button>
+			</form>
+		</div>
+	</div>
+
+</body>
+<!-- </html> -->

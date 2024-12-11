@@ -1,0 +1,74 @@
+/*
+ *  Flex Layout Specifics
+*/
+main {
+	display:flex;
+	flex-direction:row;
+	justify-content:center;
+}
+h1 {
+	justify-content:center;
+
+}
+.round{
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	width:800px;
+	list-style:none;
+	padding:0;
+	gap: 20px; /* 각 경기 사이의 간격 조정 */
+}
+.round .spacer{ flex-grow:1; }
+.round .spacer:first-child,
+.round .spacer:last-child { flex-grow:1; }
+
+.round .game-spacer {
+	flex-grow:1;
+}
+  
+/*
+*  General Styles
+*/
+body {
+	margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 화면 전체 높이를 채우도록 설정 */
+    font-family: 'Montserrat', 'Roboto', sans-serif; /* 글꼴 설정 */
+    background-color: #f0f0f0; /* 배경색 설정 */
+}
+
+h1 {
+    text-align: center; /* 텍스트 중앙 정렬 */
+    font-family: 'Bangers', cursive; /* Bangers 폰트 적용 */
+    font-size: 48px; /* 글꼴 크기 */
+    color: #333; /* 글꼴 색상 */
+    margin: 20px 0; /* 위 아래 마진 */
+}
+
+li.game {
+	padding-left:20px;
+}
+
+li.game.winner {
+	font-weight:bold;
+}
+li.game span {
+	float:right;
+	margin-right:5px;
+}
+
+li.game-top { border-bottom:1px solid #aaa; }
+
+li.game-spacer { 
+	border-right:1px solid #aaa;
+	min-height:40px;
+}
+
+li.game-bottom { 
+	border-top:1px solid #aaa;
+}
