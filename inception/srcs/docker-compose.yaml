@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+    mariadb:
+        build:
+            context: ./requirements/mariadb
+            dockerfile: Dockerfile
+        image: mariadb
+        container_name: mariadb
+        restart: always
+        init: true
+        env_file: ./.env
+        volumes:
+            - db:/var/lib/mysql
+        networks:
+            - intra
+        tty: true
+
+    wordpress:
+        build:
+            context: ./requirements/wordpress
+            dockerfile: Dockerfile
+        image: wordpress
+        container_name: wordpress
+        restart: always
+        init: true
+        env_file: ./.env
+        depends_on:
+            - mariadb
+        volumes:
+            - wp:/var/www/html
+        networks:
+            - intra
+        tty: true
+
+    nginx:
+        build:
+            context: ./requirements/nginx
+            dockerfile: Dockerfile
+        image: nginx
+        container_name: nginx
+        restart: always
+        init: true
+        env_file: ./.env
+        depends_on:
+            - mariadb
+            - wordpress
+        ports:
+            - "443:443"
+        volumes:
+            - wp:/var/www/html
+        networks:
+            - intra
+        tty: true
+
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: '/home/mkong/data/db'
+  wp:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: '/home/mkong/data/wp'
+
+networks:
+    intra:
+        driver: bridge
