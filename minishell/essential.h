@@ -26,6 +26,6 @@
 # include <readline/history.h>
 # include "./libft/libft.h"
 
-volatile sig_atomic_t	g_last_signal;
+extern volatile sig_atomic_t	g_last_signal;
 
 #endif

@@ -83,9 +83,7 @@ void	free_cmdlst(t_cmdlst *lst)
 {
 	t_cnode	*cur;
 	t_cnode	*free_cur;
-	int		i;
 
-	i = -1;
 	cur = lst->head;
 	while (cur != NULL)
 	{

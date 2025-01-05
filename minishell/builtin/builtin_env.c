@@ -36,10 +36,8 @@ char	*remove_twin(char *cmd, char c, int *i)
 {
 	char	*tmp1;
 	char	*tmp2;
-	int		cnt;
 	int		k;
 
-	cnt = 0;
 	k = ft_strchr(cmd + *i + 1, c) - cmd - *i - 1;
 	null_guard(tmp1 = ft_substr(cmd, 0, *i));
 	null_guard(tmp2 = ft_substr(cmd, *i + 1, ft_strlen(cmd + *i + 1)));

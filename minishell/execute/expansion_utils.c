@@ -109,7 +109,6 @@ char	*change_env_question(t_dict *dic, char *arg, int *i)
 	char	*tmp1;
 	char	*tmp2;
 	char	*tmp3;
-	int		len;
 
 	(*i)++;
 	null_guard(tmp1 = ft_substr(arg, 0, *i - 1));
@@ -120,7 +119,6 @@ char	*change_env_question(t_dict *dic, char *arg, int *i)
 	}
 	else
 		null_guard(tmp2 = ft_itoa(dic->exit_status));
-	len = ft_strlen(tmp2);
 	null_guard(tmp3 = ft_strjoin(tmp1, tmp2));
 	free(tmp1);
 	null_guard(tmp1 = ft_substr(arg + *i + 1, 0, ft_strlen(arg + *i + 1)));
