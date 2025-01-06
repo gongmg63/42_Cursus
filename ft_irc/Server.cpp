@@ -94,7 +94,7 @@ void	Server::addClient() {
 
 void    Server::makeCommand(int ident) {
     Command cmd;
-    char    buf[MAX_BUF];
+    char    buf[MAX_BUF + 1];
     ssize_t n = recv(ident, buf, MAX_BUF, 0); //메세지 수신
 	Client *client = _client_list[ident];
 
@@ -105,10 +105,7 @@ void    Server::makeCommand(int ident) {
 			std::cout << "client EOF\n";
 		disconnectClient(ident);
 	} else {
-		if (n < 512)
-			buf[n] = 0;
-		else
-			buf[n - 1] = 0;
+		buf[n] = 0;
 		client->setCommand(client->getCommand() + buf);
         if (client->getCommand().find('\n') != std::string::npos ||\
 			client->getCommand().find('\r') != std::string::npos) {
