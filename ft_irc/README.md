@@ -35,7 +35,7 @@
 make
 ./ircserv <port> <password> 
 ```
-![시연영상](../asset/ft_irc.gif)
+![시연영상](../assets/ft_irc.gif)
 - 좌측 터미널은 실제 irc클라이언트 중 하나인 irssi를 통해 접속하는 모습
 - 우측 터미널은 동작하는 서버 모습
 

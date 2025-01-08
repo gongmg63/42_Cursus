@@ -48,7 +48,7 @@ make
 ./minishell
 ```
 
-![실행데모](../asset/minishellgif.gif)
+![실행데모](../assets/minishellgif.gif)
 
 # 🚀Project Layout
 - `builtin`

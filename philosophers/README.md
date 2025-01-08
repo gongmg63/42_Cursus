@@ -25,7 +25,7 @@ make
 
 ./philo "number_of_philosophers" "time_to_die" "time_to_eat" "time_to_sleep" "[number_of_times_each_philosopher_must_eat]"
 ```
-![시연영상](../asset/philo.gif)
+![시연영상](../assets/philo.gif)
 
 ## 🚀 프로젝트 목표
 1. **동시성 제어**: 여러 스레드가 자원을 공유할 때 발생할 수 있는 문제를 이해하고 해결.
