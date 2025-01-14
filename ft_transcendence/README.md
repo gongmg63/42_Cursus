@@ -24,12 +24,15 @@ make #https://127.0.0.1 로 접속 가능
 ```
 
 > OAuth Login
+
 ![로그인 영상](../assets/transcendence_login.gif)
 
 > Game
+
 ![게임 영상](../assets/transcendence_game.gif)
 
 > Profile
+
 ![프로필](../assets/transcendence_profile.png)
 
 > 
