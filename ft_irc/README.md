@@ -26,7 +26,7 @@
             - l: Set/remove the user limit to channel
 
 # Developer
-@ mkong : [서버](./server.md)  
+@ mkong : [서버](./server.md),클라이언트
 @ jaejilee : 명령어  
 @ junhylee : 채널  
 
